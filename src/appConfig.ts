@@ -139,12 +139,12 @@ export const APP_CONFIG = {
 
   certificates: [
     { 
-      title: "Google UX Design Professional Certificate", 
-      issuer: "Coursera", 
-      year: "2025", 
+      title: "Juara 2 Aplikasi Dapur Kuliner Pak Ndut", 
+      issuer: "Java Tech Exhbilition 4.0 Politeknik Negeri Jember", 
+      year: "2026", 
       image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1600&auto=format&fit=crop",
-      rank: "Juara 1",
-      competition: "Lomba Desain Antarmuka Nasional"
+      rank: "Juara 2",
+      competition: "Juara 2 Aplikasi Dapur Kuliner Pak Ndut"
     },
     { 
       title: "Full-Stack Web Development", 
