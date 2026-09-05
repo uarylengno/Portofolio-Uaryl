@@ -144,39 +144,39 @@ export const APP_CONFIG = {
       year: "2026", 
       image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1600&auto=format&fit=crop",
       rank: "Juara 2",
-      competition: "Juara 2 Aplikasi Dapur Kuliner Pak Ndut"
+      competition: "Java Tech Exhbilition 4.0 Politeknik Negeri Jember"
     },
     { 
-      title: "Full-Stack Web Development", 
-      issuer: "Dicoding Indonesia", 
-      year: "2024", 
+      title: "Juara 1 Lomba Poster Digital Think Before You Post", 
+      issuer: "Universitas Duta Bangsa Surakarta", 
+      year: "2026", 
       image: "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?q=80&w=1600&auto=format&fit=crop",
-      rank: "Juara 2",
-      competition: "Hackathon Mahasiswa IT"
+      rank: "Juara 1",
+      competition: "Universitas Duta Bangsa Surakarta"
     },
     { 
-      title: "Network Fundamentals", 
-      issuer: "Cisco Academy", 
-      year: "2023", 
+      title: "Juara 1 Lomba Poster Dapur Kuliner Pak Ndut", 
+      issuer: "Java Tech Exhbilition 3.0 Politeknik Negeri Jember", 
+      year: "2026", 
       image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1600&auto=format&fit=crop",
-      rank: "Finalis 10 Besar",
-      competition: "Olimpiade Jaringan Komputer"
+      rank: "Juara 1",
+      competition: "Java Tech Exhbilition 3.0 Politeknik Negeri Jember"
     },
     {
-      title: "Cloud Computing Bootcamp",
-      issuer: "Bangkit Academy",
-      year: "2024",
+      title: "Juara 3 Lomba Poster Digital ",
+      issuer: "Java Tech Exhbilition 2.0 Politeknik Negeri Jember",
+      year: "2025",
       image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop",
       rank: "Lulusan Terbaik",
-      competition: "Program Bangkit Google"
+      competition: "Java Tech Exhbilition 2.0 Politeknik Negeri Jember"
     },
     {
-      title: "UI/UX Design Challenge",
-      issuer: "Kementerian Kominfo",
-      year: "2023",
+      title: "Juara 2 Master Of Ceremony",
+      issuer: "HUT RI Ke 79 Kecamatan Gondang Nganjuk",
+      year: "2024",
       image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1600&auto=format&fit=crop",
-      rank: "Juara Harapan 1",
-      competition: "Lomba Desain Inovasi Digital"
+      rank: "Juara 2",
+      competition: "HUT RI Ke 79 Kecamatan Gondang Nganjuk"
     }
   ],
 
