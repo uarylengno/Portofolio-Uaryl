@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #250BF0;
+  --color-secondary: #3B1CFF;
+  --color-accent: #C8FF00;
+  --color-background: #F4F7FC;
+  --color-surface-white: #FFFFFF;
+  --color-dark: #111111;
+  --color-muted: #6B7280;
+  
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-dark);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-dark);
+}
+
+.clip-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.text-stroke-transparent {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  color: transparent;
+}
