@@ -114,19 +114,19 @@ export const APP_CONFIG = {
     {
       school: "Politeknik Negeri Jember",
       major: "Teknik Informatika",
-      year: "2023 - Sekarang",
+      year: "2025 - Sekarang",
       achievements: "Anggota HMJTI Departemen Kominfo biro Publikasi"
     },
     {
       school: "SMK Negeri 1 Gondang Nganjuk",
       major: "Teknik Jaringan dan Komputer",
-      year: "2020 - 2023",
+      year: "2023 - 2025",
       achievements: "Anggota Osis Devisi Publikasi, dokumentasi & Desain"
     },
     {
       school: "SMP Negeri 3 Tanjunganom",
       major: "",
-      year: "2017 - 2020",
+      year: "2020 - 2023",
       achievements: "Anggota OSIS Devisi Publikasi, dokumentasi & Desain"
     },
     {
