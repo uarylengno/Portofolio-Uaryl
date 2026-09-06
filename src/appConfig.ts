@@ -166,7 +166,7 @@ export const APP_CONFIG = {
       title: "Juara 3 Lomba Poster Digital ",
       issuer: "Java Tech Exhbilition 2.0 Politeknik Negeri Jember",
       year: "2025",
-      image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop",
+      image: "foto/sertifikat/sertifikat-juara-3-lomba-poster-digital.jpg",
       rank: "Lulusan Terbaik",
       competition: "Java Tech Exhbilition 2.0 Politeknik Negeri Jember"
     },
