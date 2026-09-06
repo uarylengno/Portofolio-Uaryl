@@ -142,7 +142,7 @@ export const APP_CONFIG_EN = {
       title: "Google UX Design Professional Certificate", 
       issuer: "Coursera", 
       year: "2025", 
-      image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1600&auto=format&fit=crop",
+      image: "/assets/aistudio/foto/juara3posterjavatech.jpg",
       rank: "1st Place",
       competition: "National UI Design Competition"
     },
