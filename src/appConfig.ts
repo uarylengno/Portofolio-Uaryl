@@ -150,7 +150,7 @@ export const APP_CONFIG = {
       title: "Juara 1 Lomba Poster Digital Think Before You Post", 
       issuer: "Universitas Duta Bangsa Surakarta", 
       year: "2026", 
-      image: "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?q=80&w=1600&auto=format&fit=crop",
+      image: "/assets/images/juara1posterdutabangsasurakarta.jpg",
       rank: "Juara 1",
       competition: "Universitas Duta Bangsa Surakarta"
     },
@@ -167,7 +167,7 @@ export const APP_CONFIG = {
       issuer: "Java Tech Exhbilition 2.0 Politeknik Negeri Jember",
       year: "2025",
       image: "/assets/images/juara3jposteravatech.jpg",
-      rank: "Lulusan Terbaik",
+      rank: "Juara 3",
       competition: "Java Tech Exhbilition 2.0 Politeknik Negeri Jember"
     },
     {
