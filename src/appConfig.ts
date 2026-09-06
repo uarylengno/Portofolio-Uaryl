@@ -18,16 +18,16 @@ export const APP_CONFIG = {
   },
 
   contact: {
-    email: "hello@arilengno.com",
-    whatsapp: "https://wa.me/6281234567890",
-    instagram: "https://instagram.com",
-    linkedin: "https://linkedin.com",
+    email: "dpa71845@gmail.com",
+    whatsapp: "https://wa.me/62082334889598",
+    instagram: "https://instagram.com/arilengno",
+    linkedin: "https://www.linkedin.com/in/uaryl-engno-laurenca-b6a979249?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     github: "https://github.com"
   },
 
   skills: {
     programming: ["HTML", "CSS", "JavaScript", "PHP", "Python"],
-    design: ["Figma", "Adobe Photoshop", "Adobe Illustrator"],
+    design: ["Figma", "Ibis Paint X", "Infinite Design", "Canva", "PixelLab"],
     it: ["Networking", "Database Management", "Linux"],
     other: ["Video Editing", "UI/UX Design"]
   },
