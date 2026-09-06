@@ -59,7 +59,7 @@ export const APP_CONFIG = {
     },
     {
       id: "project-3",
-      title: "Aplikasi Dan Website SiTani Dinas Pertanian",
+      title: "Aplikasi Dan Website SiTani Dinas Pertanian Kabupaten Nganjuk",
       category: "Web Development",
       description: "Website company profile responsif untuk startup teknologi dengan animasi modern dan performa tinggi.",
       image: "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
