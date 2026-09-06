@@ -114,7 +114,7 @@ export function Experience() {
                   <div className={`relative z-10 ${theme.bg} p-8 rounded-3xl rounded-tl-none shadow-md border border-white/10 transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-xl h-full flex flex-col`}>
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
                       <div>
-                        <h4 className={`font-black text-2xl tracking-tight ${theme.title}`}>{exp.role}</h4>
+                        <h4 className={`font-black text-xl sm:text-2xl tracking-tight break-words ${theme.title}`}>{exp.role}</h4>
                         <p className={`font-bold mt-1 ${theme.company}`}>{exp.company}</p>
                       </div>
                       <div className={`${theme.pill} px-4 py-1.5 rounded-full text-sm font-bold border inline-block shadow-sm whitespace-nowrap`}>
@@ -158,7 +158,7 @@ export function Education() {
               <div className="pl-14 md:pl-20 w-full">
                 <div className="bg-background p-8 md:p-10 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-6 hover:shadow-lg transition-shadow">
                   <div>
-                    <h4 className="font-black text-3xl text-dark tracking-tight mb-2">{edu.school}</h4>
+                    <h4 className="font-black text-2xl sm:text-3xl text-dark tracking-tight mb-2 break-words">{edu.school}</h4>
                     {edu.major && (
                       <p className="text-xl text-primary font-bold mb-4">{edu.major}</p>
                     )}

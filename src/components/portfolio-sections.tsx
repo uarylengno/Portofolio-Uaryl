@@ -14,7 +14,7 @@ export function Certificates() {
     <section id="awards" className="py-20 md:py-32 px-6 bg-dark text-surface-white">
       <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-start">
         <div className="lg:col-span-5 sticky top-32">
-          <h2 className="font-black text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
+          <h2 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
             CERTIFICATES<br />& AWARDS
           </h2>
           <p className="text-surface-white/60 text-lg font-medium">
@@ -67,11 +67,11 @@ export function Certificates() {
                 <X size={24} />
               </button>
               
-              <div className="flex-1 min-h-0 bg-gray-100 flex items-center justify-center">
+              <div className="h-[45vh] sm:h-[55vh] min-h-0 bg-gray-100 flex items-center justify-center">
                 <img 
                   src={selectedCert.image} 
                   alt={selectedCert.title} 
-                  className="w-full h-full object-contain"
+                  className="max-w-full max-h-full object-contain"
                 />
               </div>
               
@@ -146,7 +146,7 @@ export function ContactSection() {
         
         {/* Contact Info */}
         <div>
-          <h2 className="font-black text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-[0.9] mb-8">
+          <h2 className="font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-[0.9] mb-8">
             CONTACT <span className="text-accent">US.</span>
           </h2>
           <p className="text-lg text-surface-white/80 font-medium mb-12 max-w-md">
@@ -181,8 +181,8 @@ export function ContactSection() {
         </div>
 
         {/* Contact Form UI */}
-        <div className="bg-surface-white rounded-[2rem] p-8 md:p-12 text-dark shadow-2xl">
-          <h3 className="font-black text-3xl mb-8">{t("Kirim Pesan", "Send Message")}</h3>
+        <div className="bg-surface-white rounded-[2rem] p-6 sm:p-8 md:p-12 text-dark shadow-2xl">
+          <h3 className="font-black text-2xl sm:text-3xl mb-8">{t("Kirim Pesan", "Send Message")}</h3>
           <form className="space-y-6" onSubmit={handleContactSubmit}>
             <div className="space-y-2">
               <label className="text-sm font-bold tracking-wider text-muted uppercase">{t("Nama Lengkap", "Full Name")}</label>

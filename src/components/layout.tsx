@@ -119,13 +119,13 @@ export function Footer() {
         </div>
         
         <div className="flex flex-col space-y-4 md:text-right">
-          <div className="flex space-x-6 text-sm font-bold tracking-wider text-surface-white mb-4">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-bold tracking-wider text-surface-white mb-4">
             <a href="#about" className="hover:text-accent transition-colors">{t('TENTANG', 'ABOUT')}</a>
             <a href="#skills" className="hover:text-accent transition-colors">{t('KEAHLIAN', 'SKILLS')}</a>
             <a href="#projects" className="hover:text-accent transition-colors">{t('PROYEK', 'PROJECTS')}</a>
             <a href="#contact" className="hover:text-accent transition-colors">{t('KONTAK', 'CONTACT')}</a>
           </div>
-          <div className="flex space-x-6 md:justify-end text-muted">
+          <div className="flex flex-wrap gap-x-6 gap-y-3 md:justify-end text-muted">
             <a href={config.contact.whatsapp} target="_blank" rel="noreferrer" className="hover:text-surface-white transition-colors">WhatsApp</a>
             <a href={config.contact.instagram} target="_blank" rel="noreferrer" className="hover:text-surface-white transition-colors">Instagram</a>
             <a href={config.contact.linkedin} target="_blank" rel="noreferrer" className="hover:text-surface-white transition-colors">LinkedIn</a>
@@ -133,7 +133,7 @@ export function Footer() {
           </div>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-surface-white/10 text-muted text-xs flex justify-between">
+      <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-surface-white/10 text-muted text-xs flex flex-col sm:flex-row gap-3 justify-between">
         <p>&copy; {new Date().getFullYear()} {config.personal.name}. {t('Seluruh hak cipta dilindungi.', 'All rights reserved.')}</p>
       </div>
     </footer>

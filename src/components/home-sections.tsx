@@ -27,19 +27,19 @@ export function Hero() {
           </div>
           
           <h1 className="font-black tracking-tighter mb-6 flex flex-col items-start gap-1">
-            <span className="leading-[0.9] text-surface-white" style={{ fontSize: 'clamp(3.5rem, 8vw, 6.5rem)' }}>PORTOFOLIO</span>
-            <span className="leading-tight text-dark bg-accent px-3 py-1 mt-1 inline-block" style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)' }}>{config.personal.name.toUpperCase()}</span>
+            <span className="max-w-full leading-[0.9] text-surface-white break-words" style={{ fontSize: 'clamp(2.75rem, 13vw, 6.5rem)' }}>PORTOFOLIO</span>
+            <span className="max-w-full leading-tight text-dark bg-accent px-3 py-1 mt-1 inline-block break-words" style={{ fontSize: 'clamp(1rem, 5vw, 3rem)' }}>{config.personal.name.toUpperCase()}</span>
           </h1>
           
           <p className="text-surface-white/80 text-lg md:text-xl font-medium max-w-xl mb-12 leading-relaxed">
             {config.personal.tagline}
           </p>
           
-          <div className="flex flex-wrap gap-4">
-            <a href="#projects" className="bg-accent text-dark px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-white hover:scale-105 transition-all flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+            <a href="#projects" className="w-full sm:w-auto text-center bg-accent text-dark px-6 sm:px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-white hover:scale-105 transition-all flex items-center justify-center gap-2">
               {t("LIHAT PORTOFOLIO", "VIEW PORTFOLIO")}
             </a>
-            <a href="#contact" className="border-2 border-surface-white/30 text-surface-white px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-surface-white hover:text-dark transition-all">
+            <a href="#contact" className="w-full sm:w-auto text-center border-2 border-surface-white/30 text-surface-white px-6 sm:px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-surface-white hover:text-dark transition-all">
               {t("HUBUNGI SAYA", "CONTACT ME")}
             </a>
           </div>
@@ -135,7 +135,7 @@ export function About() {
           <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
             {t("TENTANG SAYA", "ABOUT ME")}
           </div>
-          <h2 className="font-black text-dark text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[1] mb-8">
+          <h2 className="font-black text-dark text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[1] mb-8">
             {t("Lebih dari sekadar ", "More than just a ")}<span className="text-primary">{t("Kreator.", "Creator.")}</span>
           </h2>
           <div className="space-y-6 text-lg text-dark/80 font-medium">
@@ -167,7 +167,7 @@ export function SelectedWorks() {
           <h2 className="font-black text-dark text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
             PROJECTS
           </h2>
-          <p className="text-xl text-muted font-medium">
+          <p className="text-lg md:text-xl text-muted font-medium">
             {t(
               "Koleksi karya terbaik yang mencakup pengembangan web, desain UI/UX, dan eksplorasi digital lainnya.",
               "A collection of my best works covering web development, UI/UX design, and other digital explorations."
