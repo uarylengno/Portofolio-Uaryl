@@ -142,7 +142,7 @@ export const APP_CONFIG = {
       title: "Juara 2 Aplikasi Dapur Kuliner Pak Ndut", 
       issuer: "Java Tech Exhbilition 4.0 Politeknik Negeri Jember", 
       year: "2026", 
-      image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1600&auto=format&fit=crop",
+      image: "https://cdn.phototourl.com/free/2026-09-06-d0a9e7f3-9f8e-4aab-ac0b-b76d5a591be9.jpg",
       rank: "Juara 2",
       competition: "Java Tech Exhbilition 4.0 Politeknik Negeri Jember"
     },
