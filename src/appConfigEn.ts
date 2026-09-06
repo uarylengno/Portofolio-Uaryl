@@ -166,7 +166,7 @@ export const APP_CONFIG_EN = {
       title: "3rd Place, Digital Poster Competition",
       issuer: "Java Tech Exhibition 2.0, Politeknik Negeri Jember",
       year: "2025",
-      image: "/assets/aistudio/foto/juara3posterjavatech.jpg",
+      image: "/assets/images/juara3jposteravatech.jpg",
       rank: "Best Graduate",
       competition: "Java Tech Exhibition 2.0, Politeknik Negeri Jember"
     },
