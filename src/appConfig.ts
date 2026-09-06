@@ -35,7 +35,7 @@ export const APP_CONFIG = {
   projects: [
     {
       id: "project-1",
-      title: "Sistem Informasi Sekolah",
+      title: "Aplikasi Dapur Kuliner Pak Ndut",
       category: "Web Development",
       description: "Sistem terintegrasi untuk mengelola data siswa, absensi guru, dan informasi akademik sekolah secara real-time.",
       image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1600&auto=format&fit=crop",
@@ -47,7 +47,7 @@ export const APP_CONFIG = {
     },
     {
       id: "project-2",
-      title: "E-Commerce Mobile App",
+      title: "Webite Dapur Kuliner Pak Ndut",
       category: "UI/UX Design",
       description: "Desain antarmuka aplikasi mobile e-commerce dengan fokus pada pengalaman pengguna dan kemudahan checkout.",
       image: "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=1600&auto=format&fit=crop",
@@ -59,7 +59,7 @@ export const APP_CONFIG = {
     },
     {
       id: "project-3",
-      title: "Company Profile Startup",
+      title: "Aplikasi Dan Website SiTani Dinas Pertanian",
       category: "Web Development",
       description: "Website company profile responsif untuk startup teknologi dengan animasi modern dan performa tinggi.",
       image: "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
@@ -158,7 +158,7 @@ export const APP_CONFIG = {
       title: "Juara 1 Lomba Poster Dapur Kuliner Pak Ndut", 
       issuer: "Java Tech Exhbilition 3.0 Politeknik Negeri Jember", 
       year: "2026", 
-      image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1600&auto=format&fit=crop",
+      image: "/assets/images/juara1posterpakndut.jpg",
       rank: "Juara 1",
       competition: "Java Tech Exhbilition 3.0 Politeknik Negeri Jember"
     },
