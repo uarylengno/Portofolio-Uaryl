@@ -18,16 +18,16 @@ export const APP_CONFIG_EN = {
   },
 
   contact: {
-    email: "hello@arilengno.com",
-    whatsapp: "https://wa.me/6281234567890",
-    instagram: "https://instagram.com",
-    linkedin: "https://linkedin.com",
+    email: "dpa71845@gmail.com",
+    whatsapp: "https://wa.me/62082334889598",
+    instagram: "https://instagram.com/arilengno",
+    linkedin: "https://www.linkedin.com/in/uaryl-engno-laurenca-b6a979249?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     github: "https://github.com"
   },
 
   skills: {
     programming: ["HTML", "CSS", "JavaScript", "PHP", "Python"],
-    design: ["Figma", "Adobe Photoshop", "Adobe Illustrator"],
+    design: ["Figma", "Ibis Paint X", "Infinite Design", "Canva", "PixelLab"],
     it: ["Networking", "Database Management", "Linux"],
     other: ["Video Editing", "UI/UX Design"]
   },
@@ -37,7 +37,7 @@ export const APP_CONFIG_EN = {
       id: "project-1",
       title: "School Information System",
       category: "Web Development",
-      description: "An integrated system to manage student data, teacher attendance, and academic school information in real-time.",
+      description: "An integrated system for managing student data, teacher attendance, and school academic information in real time.",
       image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1600&auto=format&fit=crop",
       techStack: ["Laravel", "MySQL", "Bootstrap"],
       role: "Full-stack Developer",
@@ -49,7 +49,7 @@ export const APP_CONFIG_EN = {
       id: "project-2",
       title: "E-Commerce Mobile App",
       category: "UI/UX Design",
-      description: "Mobile e-commerce app interface design with a focus on user experience and checkout ease.",
+      description: "A mobile e-commerce app interface designed with a focus on user experience and an easy checkout process.",
       image: "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=1600&auto=format&fit=crop",
       techStack: ["Figma", "Prototyping"],
       role: "UI/UX Designer",
@@ -61,7 +61,7 @@ export const APP_CONFIG_EN = {
       id: "project-3",
       title: "Startup Company Profile",
       category: "Web Development",
-      description: "Responsive company profile website for a tech startup with modern animations and high performance.",
+      description: "A responsive company profile website for a technology startup with modern animations and high performance.",
       image: "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
       techStack: ["React", "Tailwind CSS", "Vite"],
       role: "Front-end Developer",
@@ -76,31 +76,31 @@ export const APP_CONFIG_EN = {
       role: "Creative Developer Intern",
       company: "Tech Innovation Hub",
       year: "2025 - Present",
-      description: "Developed interactive web interfaces, managed databases, and collaborated in an agile team."
+      description: "Developed interactive web interfaces, managed databases, and collaborated with an agile team."
     },
     {
       role: "Freelance Graphic Designer",
       company: "Self-Employed",
       year: "2024 - 2025",
-      description: "Created UI/UX designs and branding materials for various national MSME clients."
+      description: "Created UI/UX designs and branding materials for various Indonesian MSME clients."
     },
     {
       role: "Frontend Web Developer",
       company: "Digital Studio Nusantara",
       year: "2023 - 2024",
-      description: "Built responsive websites using React and integrated APIs for various internal projects."
+      description: "Built responsive websites with React and integrated APIs for various internal projects."
     },
     {
       role: "IT Support Staff",
       company: "PT Teknologi Muda Berkarya",
       year: "2022 - 2023",
-      description: "Handled software installation, light troubleshooting, and ensured local network stability in the office."
+      description: "Handled software installation, basic troubleshooting, and maintained the office's local network stability."
     },
     {
       role: "Junior Web Developer",
       company: "Kreatif Tech Studio",
       year: "2021 - 2022",
-      description: "Assisted in website feature development, fixed bugs, and maintained client content management systems."
+      description: "Assisted with website feature development, fixed bugs, and maintained clients' content management systems."
     },
     {
       role: "Content Creator Intern",
@@ -114,20 +114,20 @@ export const APP_CONFIG_EN = {
     {
       school: "Politeknik Negeri Jember",
       major: "Teknik Informatika",
-      year: "2023 - Present",
-      achievements: "Member of HMJTI Communication & Info Dept, Publication Bureau"
+      year: "2025 - Present",
+      achievements: "Member of HMJTI Communication and Information Department, Publication Bureau"
     },
     {
       school: "SMK Negeri 1 Gondang Nganjuk",
       major: "Teknik Jaringan dan Komputer",
-      year: "2020 - 2023",
-      achievements: "Student Council Member, Publication, Documentation & Design Division"
+      year: "2023 - 2025",
+      achievements: "Student Council Member, Publication, Documentation and Design Division"
     },
     {
       school: "SMP Negeri 3 Tanjunganom",
       major: "",
-      year: "2017 - 2020",
-      achievements: "Student Council Member, Publication, Documentation & Design Division"
+      year: "2020 - 2023",
+      achievements: "Student Council Member, Publication, Documentation and Design Division"
     },
     {
       school: "SD Negeri 2 Sambirejo",
@@ -139,44 +139,44 @@ export const APP_CONFIG_EN = {
 
   certificates: [
     { 
-      title: "Google UX Design Professional Certificate", 
-      issuer: "Coursera", 
-      year: "2025", 
-      image: "/assets/aistudio/foto/juara3posterjavatech.jpg",
-      rank: "1st Place",
-      competition: "National UI Design Competition"
-    },
-    { 
-      title: "Full-Stack Web Development", 
-      issuer: "Dicoding Indonesia", 
-      year: "2024", 
-      image: "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?q=80&w=1600&auto=format&fit=crop",
+      title: "2nd Place, Pak Ndut Culinary Kitchen Application", 
+      issuer: "Java Tech Exhibition 4.0, Politeknik Negeri Jember", 
+      year: "2026", 
+      image: "https://cdn.phototourl.com/free/2026-09-06-d0a9e7f3-9f8e-4aab-ac0b-b76d5a591be9.jpg",
       rank: "2nd Place",
-      competition: "IT Student Hackathon"
+      competition: "Java Tech Exhibition 4.0, Politeknik Negeri Jember"
     },
     { 
-      title: "Network Fundamentals", 
-      issuer: "Cisco Academy", 
-      year: "2023", 
+      title: "1st Place, Think Before You Post Digital Poster Competition", 
+      issuer: "Universitas Duta Bangsa Surakarta", 
+      year: "2026", 
+      image: "https://images.unsplash.com/photo-1491336477066-31156b5e4f35?q=80&w=1600&auto=format&fit=crop",
+      rank: "1st Place",
+      competition: "Universitas Duta Bangsa Surakarta"
+    },
+    { 
+      title: "1st Place, Pak Ndut Culinary Kitchen Poster Competition", 
+      issuer: "Java Tech Exhibition 3.0, Politeknik Negeri Jember", 
+      year: "2026", 
       image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1600&auto=format&fit=crop",
-      rank: "Top 10 Finalist",
-      competition: "Computer Network Olympiad"
+      rank: "1st Place",
+      competition: "Java Tech Exhibition 3.0, Politeknik Negeri Jember"
     },
     {
-      title: "Cloud Computing Bootcamp",
-      issuer: "Bangkit Academy",
-      year: "2024",
-      image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop",
+      title: "3rd Place, Digital Poster Competition",
+      issuer: "Java Tech Exhibition 2.0, Politeknik Negeri Jember",
+      year: "2025",
+      image: "/assets/aistudio/foto/juara3posterjavatech.jpg",
       rank: "Best Graduate",
-      competition: "Google Bangkit Program"
+      competition: "Java Tech Exhibition 2.0, Politeknik Negeri Jember"
     },
     {
-      title: "UI/UX Design Challenge",
-      issuer: "Kementerian Kominfo",
-      year: "2023",
+      title: "2nd Place, Master of Ceremony Competition",
+      issuer: "79th Indonesian Independence Day, Gondang Nganjuk District",
+      year: "2024",
       image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1600&auto=format&fit=crop",
-      rank: "Honorable Mention 1",
-      competition: "Digital Innovation Design Competition"
+      rank: "2nd Place",
+      competition: "79th Indonesian Independence Day, Gondang Nganjuk District"
     }
   ],
 
