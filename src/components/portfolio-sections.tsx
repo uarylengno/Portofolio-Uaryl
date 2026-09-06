@@ -125,6 +125,20 @@ export function Services() {
 export function ContactSection() {
   const { language, t } = useLanguage();
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+
+  const handleContactSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const whatsappMessage = [
+      `Nama: ${contactForm.name}`,
+      `Email: ${contactForm.email}`,
+      '',
+      contactForm.message,
+    ].join('\n');
+
+    window.open(`${config.contact.whatsapp}?text=${encodeURIComponent(whatsappMessage)}`, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <section id="contact" className="py-20 md:py-32 px-6 bg-primary text-surface-white">
@@ -169,18 +183,39 @@ export function ContactSection() {
         {/* Contact Form UI */}
         <div className="bg-surface-white rounded-[2rem] p-8 md:p-12 text-dark shadow-2xl">
           <h3 className="font-black text-3xl mb-8">{t("Kirim Pesan", "Send Message")}</h3>
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-6" onSubmit={handleContactSubmit}>
             <div className="space-y-2">
               <label className="text-sm font-bold tracking-wider text-muted uppercase">{t("Nama Lengkap", "Full Name")}</label>
-              <input type="text" className="w-full bg-background border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" placeholder="John Doe" />
+              <input
+                type="text"
+                required
+                value={contactForm.name}
+                onChange={(event) => setContactForm({ ...contactForm, name: event.target.value })}
+                className="w-full bg-background border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                placeholder="John Doe"
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-bold tracking-wider text-muted uppercase">Email Address</label>
-              <input type="email" className="w-full bg-background border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" placeholder="john@example.com" />
+              <input
+                type="email"
+                required
+                value={contactForm.email}
+                onChange={(event) => setContactForm({ ...contactForm, email: event.target.value })}
+                className="w-full bg-background border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                placeholder="john@example.com"
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-bold tracking-wider text-muted uppercase">{t("Pesan", "Message")}</label>
-              <textarea rows={4} className="w-full bg-background border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none" placeholder={t("Ceritakan tentang ide atau project Anda...", "Tell us about your idea or project...")}></textarea>
+              <textarea
+                rows={4}
+                required
+                value={contactForm.message}
+                onChange={(event) => setContactForm({ ...contactForm, message: event.target.value })}
+                className="w-full bg-background border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                placeholder={t("Ceritakan tentang ide atau project Anda...", "Tell us about your idea or project...")}
+              ></textarea>
             </div>
             <button className="w-full bg-dark text-surface-white font-bold text-lg tracking-wider py-4 rounded-xl hover:bg-primary transition-colors">
               {t("KIRIM PESAN", "SEND MESSAGE")}
