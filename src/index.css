@@ -41,3 +41,28 @@ body {
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
   color: transparent;
 }
+
+/* ============================================================
+   JUDUL "Porto*folio*"
+   Bagian depan: sans-serif tebal. Huruf "f" dan sisanya: serif italic.
+   Dipakai oleh komponen PortfolioTitle (src/components/PortfolioTitle.tsx)
+   ============================================================ */
+.title-bold {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.title-serif {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* Huruf "f" dibuat lebih besar supaya menjulang seperti contoh */
+.title-serif-f {
+  font-size: 1.3em;
+  line-height: 0.8;
+  margin-right: 0.02em;
+}

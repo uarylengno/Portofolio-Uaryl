@@ -1,0 +1,133 @@
+{
+  "id": {
+    "experience": [
+      {
+        "role": "Creative Developer Intern",
+        "company": "Tech Innovation Hub",
+        "year": "2025 - Present",
+        "description": "Mengembangkan antarmuka web interaktif, mengelola database, dan berkolaborasi dalam tim agile."
+      },
+      {
+        "role": "Frontend Web Developer",
+        "company": "Digital Studio Nusantara",
+        "year": "2023 - 2024",
+        "description": "Membangun tampilan website responsif berbasis React dan melakukan integrasi API untuk berbagai proyek internal."
+      },
+      {
+        "role": "Freelance Graphic Designer",
+        "company": "Self-Employed",
+        "year": "2024 - 2025",
+        "description": "Membuat desain UI/UX dan materi branding untuk berbagai klien UMKM nasional."
+      },
+      {
+        "role": "IT Support Staff",
+        "company": "PT Teknologi Muda Berkarya",
+        "year": "2022 - 2023",
+        "description": "Menangani instalasi perangkat lunak, trouble shooting ringan, serta memastikan kelancaran jaringan lokal di kantor."
+      },
+      {
+        "role": "Junior Web Developer",
+        "company": "Kreatif Tech Studio",
+        "year": "2021 - 2022",
+        "description": "Membantu pengembangan fitur website, memperbaiki bug, dan memelihara sistem manajemen konten klien."
+      },
+      {
+        "role": "Content Creator Intern",
+        "company": "Media Edukasi Digital",
+        "year": "2020 - 2021",
+        "description": "Memproduksi desain grafis dan video pendek untuk keperluan edukasi dan pemasaran di media sosial."
+      }
+    ],
+    "certificates": [
+      {
+        "title": "Juara 2 Aplikasi Dapur Kuliner Pak Ndut",
+        "issuer": "Java Tech Exhibition 4.0 Politeknik Negeri Jember",
+        "year": "2026",
+        "image": "https://cdn.phototourl.com/free/2026-09-06-d0a9e7f3-9f8e-4aab-ac0b-b76d5a591be9.jpg",
+        "rank": "Juara 2",
+        "competition": "Java Tech Exhibition 4.0 Politeknik Negeri Jember"
+      },
+      {
+        "title": "Juara 1 Lomba Poster Digital Think Before You Post",
+        "issuer": "Universitas Duta Bangsa Surakarta",
+        "year": "2026",
+        "image": "/assets/images/juara1posterdutabangsasurakarta.jpg",
+        "rank": "Juara 1",
+        "competition": "Universitas Duta Bangsa Surakarta"
+      },
+      {
+        "title": "Juara 1 Lomba Poster Dapur Kuliner Pak Ndut",
+        "issuer": "Java Tech Exhibition 3.0 Politeknik Negeri Jember",
+        "year": "2026",
+        "image": "/assets/images/juara1posterpakndut.jpg",
+        "rank": "Juara 1",
+        "competition": "Java Tech Exhibition 3.0 Politeknik Negeri Jember"
+      },
+      {
+        "title": "Juara 3 Lomba Poster Digital",
+        "issuer": "Java Tech Exhibition 2.0 Politeknik Negeri Jember",
+        "year": "2025",
+        "image": "/assets/images/juara3jposteravatech.jpg",
+        "rank": "Juara 3",
+        "competition": "Java Tech Exhibition 2.0 Politeknik Negeri Jember"
+      },
+      {
+        "title": "Juara 2 Master Of Ceremony",
+        "issuer": "HUT RI Ke 79 Kecamatan Gondang Nganjuk",
+        "year": "2024",
+        "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1600&auto=format&fit=crop",
+        "rank": "Juara 2",
+        "competition": "HUT RI Ke 79 Kecamatan Gondang Nganjuk"
+      }
+    ],
+    "projects": [
+      {
+        "id": "project-1",
+        "title": "Aplikasi Dapur Kuliner Pak Ndut",
+        "category": "Web Development",
+        "description": "Sistem terintegrasi untuk mengelola data siswa, absensi guru, dan informasi akademik sekolah secara real-time.",
+        "image": "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1600&auto=format&fit=crop",
+        "techStack": [
+          "Laravel",
+          "MySQL",
+          "Bootstrap"
+        ],
+        "role": "Full-stack Developer",
+        "demoLink": "https://pameran-jti.polije.ac.id/product/589/aplikasi-dapur-kuliner-pak-ndut",
+        "githubLink": "#",
+        "size": "large"
+      },
+      {
+        "id": "project-2",
+        "title": "Website Dapur Kuliner Pak Ndut",
+        "category": "UI/UX Design",
+        "description": "Desain antarmuka aplikasi mobile e-commerce dengan fokus pada pengalaman pengguna dan kemudahan checkout.",
+        "image": "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=1600&auto=format&fit=crop",
+        "techStack": [
+          "Figma",
+          "Prototyping"
+        ],
+        "role": "UI/UX Designer",
+        "demoLink": "https://pameran-jti.polije.ac.id/product/411/dapur-kuliner-pak-ndut",
+        "githubLink": "",
+        "size": "medium"
+      },
+      {
+        "id": "project-3",
+        "title": "Aplikasi Dan Website SiTani Dinas Pertanian Kabupaten Nganjuk",
+        "category": "Web Development",
+        "description": "Website company profile responsif untuk startup teknologi dengan animasi modern dan performa tinggi.",
+        "image": "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
+        "techStack": [
+          "React",
+          "Tailwind CSS",
+          "Vite"
+        ],
+        "role": "Front-end Developer",
+        "demoLink": "#",
+        "githubLink": "#",
+        "size": "medium"
+      }
+    ]
+  }
+}

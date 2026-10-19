@@ -1,43 +1,57 @@
+// ===== Layout =====
 import { Navbar, Footer } from './components/layout';
-import { Hero, About, SelectedWorks } from './components/home-sections';
+
+// ===== Sections: Home =====
+import { Hero, About, SelectedWorks, Designs } from './components/home-sections';
+
+// ===== Sections: Experience =====
 import { Skills, Experience, Education } from './components/experience-sections';
+
+// ===== Sections: Portfolio =====
 import { Services, Certificates, ContactSection } from './components/portfolio-sections';
+
+// ===== Context =====
 import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
   return (
+    // Provider bahasa membungkus seluruh aplikasi (ID/EN)
     <LanguageProvider>
       <main className="font-sans antialiased text-dark bg-background selection:bg-accent selection:text-dark">
+        {/* Navigasi atas */}
         <Navbar />
-        
+
         {/* 1. Hero / Beranda */}
         <Hero />
-        
-        {/* 2. About Me */}
+
+        {/* 2. About Me / Tentang Saya */}
         <About />
-        
+
         {/* 3. Skills / Keahlian */}
         <Skills />
-        
+
         {/* 4. Projects / Portfolio */}
         <SelectedWorks />
-        
-        {/* 5. Experience / Pengalaman */}
+
+        {/* 5. Designs / Karya Desain */}
+        <Designs />
+
+        {/* 6. Experience / Pengalaman */}
         <Experience />
-        
-        {/* 6. Education / Pendidikan */}
+
+        {/* 7. Education / Pendidikan */}
         <Education />
-        
-        {/* 7. Achievements / Sertifikat */}
+
+        {/* 8. Certificates / Sertifikat */}
         <Certificates />
-        
-        {/* 8. Services */}
+
+        {/* 9. Services / Layanan */}
         <Services />
-        
-        {/* 9. Contact */}
+
+        {/* 10. Contact / Kontak */}
         <ContactSection />
-        
-        {/* 10. Footer */}
+
+        {/* 11. Footer */}
         <Footer />
       </main>
     </LanguageProvider>
