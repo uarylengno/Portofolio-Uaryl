@@ -67,9 +67,8 @@ export const APP_CONFIG = {
       category: "Web Development",
       description:
         "Sistem terintegrasi untuk mengelola data siswa, absensi guru, dan informasi akademik sekolah secara real-time.",
-      image:
-        "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1600&auto=format&fit=crop",
-      techStack: ["Laravel", "MySQL", "Bootstrap"],
+      image: "/assets/images/ndut2.png",
+      techStack: [],
       role: "Full-stack Developer",
       demoLink: "https://pameran-jti.polije.ac.id/product/589/aplikasi-dapur-kuliner-pak-ndut",
       githubLink: "#",
@@ -81,23 +80,22 @@ export const APP_CONFIG = {
       category: "UI/UX Design",
       description:
         "Desain antarmuka aplikasi mobile e-commerce dengan fokus pada pengalaman pengguna dan kemudahan checkout.",
-      image:
-        "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=1600&auto=format&fit=crop",
-      techStack: ["Figma", "Prototyping"],
+      image: "/assets/images/ndut1.png",
+      techStack: [],
       role: "UI/UX Designer",
-      demoLink: "#",
+      demoLink: "https://pameran-jti.polije.ac.id/product/411/dapur-kuliner-pak-ndut",
       githubLink: "",
       size: "medium",
     },
     {
       id: "project-3",
-      title: "Aplikasi Dan Website SiTani Dinas Pertanian Kabupaten Nganjuk",
+      title: "Aplikasi Dan Website SMP Negeri 1 Loceret",
       category: "Web Development",
       description:
         "Website company profile responsif untuk startup teknologi dengan animasi modern dan performa tinggi.",
       image:
         "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
-      techStack: ["React", "Tailwind CSS", "Vite"],
+      techStack: [],
       role: "Front-end Developer",
       demoLink: "#",
       githubLink: "#",
@@ -117,18 +115,18 @@ export const APP_CONFIG = {
         "Mengembangkan antarmuka web interaktif, mengelola database, dan berkolaborasi dalam tim agile.",
     },
     {
-      role: "Freelance Graphic Designer",
-      company: "Self-Employed",
-      year: "2024 - 2025",
-      description:
-        "Membuat desain UI/UX dan materi branding untuk berbagai klien UMKM nasional.",
-    },
-    {
       role: "Frontend Web Developer",
       company: "Digital Studio Nusantara",
       year: "2023 - 2024",
       description:
         "Membangun tampilan website responsif berbasis React dan melakukan integrasi API untuk berbagai proyek internal.",
+    },
+    {
+      role: "Freelance Graphic Designer",
+      company: "Self-Employed",
+      year: "2024 - 2025",
+      description:
+        "Membuat desain UI/UX dan materi branding untuk berbagai klien UMKM nasional.",
     },
     {
       role: "IT Support Staff",
@@ -156,7 +154,7 @@ export const APP_CONFIG = {
   // ----------------------------------------------------------
   // PENDIDIKAN (tampil sebagai timeline di section Education)
   // major dan achievements boleh dikosongkan ("")
-  // logo: file di public/assets/images/ (mis. "/assets/images/logo-polije.png")
+  // logo: file di public/assets/images/ (mis. "/assets/images/polije.png")
   //       boleh dikosongkan (""), nanti tampil huruf awal sekolah
   // ----------------------------------------------------------
   education: [
@@ -165,28 +163,28 @@ export const APP_CONFIG = {
       major: "Teknik Informatika",
       year: "2025 - Sekarang",
       achievements: "Anggota HMJTI Departemen Kominfo biro Publikasi",
-      logo: "/assets/images/logo-polije.png",
+      logo: "/assets/images/polije.png",
     },
     {
       school: "SMK Negeri 1 Gondang Nganjuk",
       major: "Teknik Jaringan dan Komputer",
       year: "2023 - 2025",
       achievements: "Anggota Osis Devisi Publikasi, dokumentasi & Desain",
-      logo: "/assets/images/logo-smkn1gondang.png",
+      logo: "/assets/images/smk.jpg",
     },
     {
       school: "SMP Negeri 3 Tanjunganom",
       major: "",
       year: "2020 - 2023",
       achievements: "Anggota OSIS Devisi Publikasi, dokumentasi & Desain",
-      logo: "/assets/images/logo-smpn3tanjunganom.png",
+      logo: "/assets/images/smp.png",
     },
     {
       school: "SD Negeri 2 Sambirejo",
       major: "",
       year: "2011 - 2017",
       achievements: "",
-      logo: "/assets/images/logo-sdn2sambirejo.png",
+      logo: "/assets/images/sd.png",
     },
   ],
 
@@ -196,25 +194,67 @@ export const APP_CONFIG = {
   // ----------------------------------------------------------
   designs: [
     {
-      id: "design-1",
-      title: "Think Before You Post",
-      category: "Poster",
+      id: "design-1792419131722",
+      title: "Speakpreneur HMJTI 2026",
+      category: "Pamflet",
       year: "2026",
-      image: "/assets/images/juara1posterdutabangsasurakarta.jpg",
+      image: "/assets/images/speak.png",
     },
     {
-      id: "design-2",
-      title: "Dapur Kuliner Pak Ndut",
-      category: "Poster",
+      id: "design-1792419187132",
+      title: "Nganjuk Skill Clash Challenge 2026",
+      category: "Pamflet",
       year: "2026",
-      image: "/assets/images/juara1posterpakndut.jpg",
+      image: "/assets/images/nganjukskill.png",
     },
     {
-      id: "design-3",
-      title: "Java Tech Exhibition 2.0",
+      id: "design-1792419223215",
+      title: "Arak Arakan Wisudawan Teknologi Informasi 2026",
+      category: "Pamflet",
+      year: "2026",
+      image: "/assets/images/arak.png",
+    },
+    {
+      id: "design-1792419289402",
+      title: "K3 Mental: Transformasi Keselamatan Kerja era Modern",
       category: "Poster",
-      year: "2025",
-      image: "/assets/images/juara3jposteravatech.jpg",
+      year: "2026",
+      image: "/assets/images/k3kesehatanmental.jpg",
+    },
+    {
+      id: "design-1792419335451",
+      title: "KLATEN Dari mata Air mengalir Peradaban",
+      category: "Poster",
+      year: "2026",
+      image: "/assets/images/klaten.jpg",
+    },
+    {
+      id: "design-1792419371429",
+      title: "EPIM-TI (IT Student Competition 2026)",
+      category: "Pamflet",
+      year: "2026",
+      image: "/assets/images/epim.png",
+    },
+    {
+      id: "design-1792419429363",
+      title: "Satu Klik Seribu Dampak",
+      category: "Poster",
+      year: "2026",
+      image: "/assets/images/satuklikseribudampak.jpg",
+    },
+    {
+      id: "design-1792421268158",
+      title: "Tangguh di Tengah Tekanan",
+      category: "Poster",
+      year: "2026",
+      image: "/assets/images/tangguh.jpg",
+    },
+    {
+      id: "design-1792421302296",
+      title: "TEMPEVOLUSI (Transformasi Tempe menjadi energi Generasi Produktif)",
+      category: "Poster",
+      year: "2026",
+      image: "/assets/images/tempe.jpg",
     },
   ],
 
@@ -227,8 +267,7 @@ export const APP_CONFIG = {
       title: "Juara 2 Aplikasi Dapur Kuliner Pak Ndut",
       issuer: "Java Tech Exhibition 4.0 Politeknik Negeri Jember",
       year: "2026",
-      image:
-        "https://cdn.phototourl.com/free/2026-09-06-d0a9e7f3-9f8e-4aab-ac0b-b76d5a591be9.jpg",
+      image: "/assets/images/juara2aplikasi.png",
       rank: "Juara 2",
       competition: "Java Tech Exhibition 4.0 Politeknik Negeri Jember",
     },
