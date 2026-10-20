@@ -3,7 +3,7 @@
 // ============================================================
 import { useState, useEffect } from 'react';
 import {
-  Plus, Pencil, Trash2, ArrowUp, ArrowDown, ArrowLeft, LogOut, ExternalLink, X, Lock,
+  Plus, Pencil, Trash2, ArrowUp, ArrowDown, ArrowLeft, LogOut, ExternalLink, X, Lock, Languages,
   Code2, FolderKanban, Briefcase, GraduationCap, Award, Palette, type LucideIcon,
 } from 'lucide-react';
 
@@ -21,6 +21,7 @@ type Field = { key: string; label: string; kind?: 'area' | 'list' };
 const PW_KEY = 'admin-password';
 const TAB_KEY = 'admin-tab';
 const LANG_KEY = 'admin-lang';
+const SYNC_KEY = 'admin-sync-en';
 
 const store = {
   get: (k: string) => { try { return sessionStorage.getItem(k); } catch { return null; } },
@@ -111,6 +112,30 @@ const SECTIONS: Record<
   },
 };
 
+// ============================================================
+// KOLOM YANG TIDAK BERGANTUNG BAHASA
+// Saat "Sinkron ke EN" aktif, hanya kolom ini yang disalin dari ID ke EN
+// ketika mengedit item. Teks (judul, deskripsi, dll.) tidak diubah.
+// ============================================================
+const SHARED: Record<string, string[]> = {
+  projects: ['id', 'image', 'techStack', 'demoLink', 'githubLink', 'size'],
+  designs: ['id', 'image', 'year'],
+  experience: [],
+  education: ['logo'],
+  certificates: ['image', 'year'],
+};
+
+// Ambil sebagian kolom dari satu item
+const pick = (item: Item, keys: string[]): Item =>
+  Object.fromEntries(keys.filter((k) => k in item).map((k) => [k, item[k]]));
+
+// Cari posisi item yang sama di daftar EN:
+// pakai "id" jika ada, kalau tidak pakai nomor urut yang sama
+const matchIndex = (list: Item[], ref: Item, fallbackIndex: number): number => {
+  if (ref?.id) return list.findIndex((x) => x.id === ref.id);
+  return fallbackIndex >= 0 && fallbackIndex < list.length ? fallbackIndex : -1;
+};
+
 // Menu sidebar: Skills + semua bagian di atas
 const TABS: { id: string; label: string; Icon: LucideIcon }[] = [
   { id: 'skills', label: 'Skills', Icon: Code2 },
@@ -160,6 +185,8 @@ export function AdminPage() {
     const saved = store.get(TAB_KEY);
     return saved && TABS.some((t) => t.id === saved) ? saved : 'skills';
   });
+  // Sinkron ke EN: aktif secara bawaan, hanya berlaku saat mengedit di bahasa ID
+  const [syncEn, setSyncEn] = useState(() => store.get(SYNC_KEY) !== 'off');
   const [loginError, setLoginError] = useState('');
   const [toast, setToast] = useState<{ text: string; ok: boolean } | null>(null);
   const [newSkill, setNewSkill] = useState<Record<string, string>>({});
@@ -170,9 +197,13 @@ export function AdminPage() {
 
   const headers = { 'Content-Type': 'application/json', 'x-admin-password': password };
 
-  // Ingat tab dan bahasa yang sedang dibuka
+  // true jika perubahan di bahasa ID juga harus diterapkan ke EN
+  const syncing = syncEn && lang === 'id';
+
+  // Ingat tab, bahasa, dan pengaturan sinkron
   useEffect(() => { store.set(TAB_KEY, tab); }, [tab]);
   useEffect(() => { store.set(LANG_KEY, lang); }, [lang]);
+  useEffect(() => { store.set(SYNC_KEY, syncEn ? 'on' : 'off'); }, [syncEn]);
 
   // ---------- Masuk otomatis jika sesi sebelumnya masih tersimpan ----------
   useEffect(() => {
@@ -221,34 +252,69 @@ export function AdminPage() {
     setPassword('');
   };
 
-  // ---------- Simpan satu bagian ke server (dipakai semua aksi CRUD) ----------
-  const persist = async (section: string, value: any) => {
+  // ---------- Simpan satu bagian ke server untuk SATU bahasa ----------
+  const persist = async (section: string, value: any, target: Lang = lang): Promise<boolean> => {
     const data = clean(value);
-    const res = await fetch(`/api/content/${lang}/${section}`, { method: 'PUT', headers, body: JSON.stringify(data) });
-    if (!res.ok) { notify('Gagal menyimpan', false); return false; }
+    const res = await fetch(`/api/content/${target}/${section}`, { method: 'PUT', headers, body: JSON.stringify(data) });
+    if (!res.ok) return false;
 
-    setContent((c) => ({ ...c, [lang]: { ...c[lang], [section]: data } }));
+    setContent((c) => ({ ...c, [target]: { ...c[target], [section]: data } }));
 
     // Perbarui config bersama supaya website dan admin langsung menampilkan data terbaru
-    // (tanpa ini, kembali ke admin setelah melihat website akan menampilkan data lama)
-    (lang === 'id' ? (APP_CONFIG as any) : (APP_CONFIG_EN as any))[section] = data;
+    (target === 'id' ? (APP_CONFIG as any) : (APP_CONFIG_EN as any))[section] = data;
+    return true;
+  };
 
-    notify(`Tersimpan (${lang.toUpperCase()})`);
+  // ---------- Simpan di bahasa aktif, lalu ikut ke EN jika sinkron aktif ----------
+  // toEn: fungsi yang menerima daftar EN saat ini dan mengembalikan daftar EN baru
+  const commit = async (section: string, value: any, toEn: (en: any) => any): Promise<boolean> => {
+    if (!(await persist(section, value))) {
+      notify('Gagal menyimpan', false);
+      return false;
+    }
+    if (syncing) {
+      const enOk = await persist(section, toEn(content.en[section]), 'en');
+      notify(enOk ? 'Tersimpan (ID + EN)' : 'Tersimpan di ID, tetapi gagal ke EN', enOk);
+    } else {
+      notify(`Tersimpan (${lang.toUpperCase()})`);
+    }
     return true;
   };
 
   // ---------- CREATE & UPDATE ----------
   const saveItem = async () => {
     if (!editing) return;
+    const { index, item } = editing;
     const list: Item[] = [...listOf(tab)];
-    if (editing.index === null) list.push(editing.item);
-    else list[editing.index] = editing.item;
-    if (await persist(tab, list)) setEditing(null);
+    if (index === null) list.push(item);
+    else list[index] = item;
+
+    const ok = await commit(tab, list, (en) => {
+      const enList: Item[] = [...(en ?? [])];
+      if (index === null) {
+        // Item baru: disalin ke EN (teks masih bahasa Indonesia, terjemahkan lewat tab EN)
+        enList.push(structuredClone(item));
+        return enList;
+      }
+      // Edit: hanya kolom yang tidak bergantung bahasa yang disalin
+      const n = matchIndex(enList, item, index);
+      if (n >= 0) enList[n] = { ...enList[n], ...pick(item, SHARED[tab] ?? []) };
+      return enList;
+    });
+    if (ok) setEditing(null);
   };
 
   // ---------- DELETE ----------
   const removeItem = (i: number) => {
-    if (confirm('Hapus item ini?')) persist(tab, listOf(tab).filter((_: Item, n: number) => n !== i));
+    const message = syncing ? 'Hapus item ini di versi ID dan EN?' : 'Hapus item ini?';
+    if (!confirm(message)) return;
+    const target = listOf(tab)[i];
+    commit(tab, listOf(tab).filter((_: Item, n: number) => n !== i), (en) => {
+      const enList: Item[] = [...(en ?? [])];
+      const n = matchIndex(enList, target, i);
+      if (n >= 0) enList.splice(n, 1);
+      return enList;
+    });
   };
 
   // ---------- Ubah urutan ----------
@@ -256,13 +322,22 @@ export function AdminPage() {
     const list: Item[] = [...listOf(tab)];
     const j = i + dir;
     if (j < 0 || j >= list.length) return;
+    const a = list[i];
+    const b = list[j];
     [list[i], list[j]] = [list[j], list[i]];
-    persist(tab, list);
+
+    commit(tab, list, (en) => {
+      const enList: Item[] = [...(en ?? [])];
+      const x = matchIndex(enList, a, i);
+      const y = matchIndex(enList, b, j);
+      if (x >= 0 && y >= 0) [enList[x], enList[y]] = [enList[y], enList[x]];
+      return enList;
+    });
   };
 
-  // ---------- Skills ----------
+  // ---------- Skills (nama teknologi sama di kedua bahasa, jadi ikut disalin utuh) ----------
   const saveSkills = (group: string, list: string[]) =>
-    persist('skills', { ...content[lang].skills, [group]: list });
+    commit('skills', { ...content[lang].skills, [group]: list }, (en) => ({ ...(en ?? {}), [group]: list }));
 
   // Jumlah item per menu (ditampilkan sebagai angka kecil di sidebar)
   const countOf = (id: string) =>
@@ -373,7 +448,7 @@ export function AdminPage() {
       {/* ---------- KONTEN ---------- */}
       <main className="flex-1 p-4 md:p-10 min-w-0">
         <div className="max-w-3xl mx-auto space-y-6">
-          {/* Header: judul bagian + pilihan bahasa + tombol tambah */}
+          {/* Header: judul bagian + sinkron + pilihan bahasa + tombol tambah */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-primary text-surface-white rounded-2xl flex items-center justify-center">
@@ -385,7 +460,23 @@ export function AdminPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Sinkron ke EN (hanya tampil saat mengedit versi Indonesia) */}
+              {lang === 'id' && (
+                <button
+                  onClick={() => setSyncEn(!syncEn)}
+                  title="Jika aktif, tambah, hapus, urutan, serta gambar/link/logo ikut diterapkan ke versi Inggris"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
+                    syncEn
+                      ? 'bg-accent text-dark border-accent'
+                      : 'bg-surface-white text-muted border-gray-200 hover:text-dark'
+                  }`}
+                >
+                  <Languages size={16} />
+                  Sinkron ke EN: {syncEn ? 'ON' : 'OFF'}
+                </button>
+              )}
+
               {/* Pilihan bahasa */}
               <div className="bg-surface-white rounded-full p-1 flex shadow-sm border border-gray-100">
                 {(['id', 'en'] as Lang[]).map((l) => (
@@ -543,6 +634,18 @@ export function AdminPage() {
 
             {/* Isian formulir */}
             <div className="p-6 space-y-4 overflow-y-auto">
+              {/* Keterangan sinkron */}
+              {syncing && (
+                <div className="flex items-start gap-3 bg-accent/30 rounded-2xl p-3 text-xs font-medium text-dark">
+                  <Languages size={16} className="shrink-0 mt-0.5" />
+                  <p>
+                    {editing.index === null
+                      ? 'Item baru juga ditambahkan ke versi Inggris dengan teks yang sama. Terjemahkan lewat tab EN.'
+                      : 'Gambar, logo, link, dan tahun ikut diterapkan ke versi Inggris. Teks versi Inggris tidak diubah.'}
+                  </p>
+                </div>
+              )}
+
               {/* Pratinjau gambar jika ada kolom gambar */}
               {editing.item.image && (
                 <img src={editing.item.image} alt="Pratinjau"

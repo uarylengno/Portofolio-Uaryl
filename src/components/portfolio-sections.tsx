@@ -12,12 +12,15 @@ import {
   Facebook,
   Youtube,
   X,
+  Trophy,
+  Medal,
   type LucideIcon,
 } from 'lucide-react';
 
 import { APP_CONFIG } from '../appConfig';
 import { APP_CONFIG_EN } from '../appConfigEn';
 import { useLanguage } from '../contexts/LanguageContext';
+import { ImageWithFallback } from './ImageWithFallback';
 
 // ============================================================
 // TIPE DATA & KONSTANTA
@@ -45,6 +48,16 @@ const INPUT_CLASS =
 
 // Class untuk label form
 const LABEL_CLASS = 'text-sm font-bold tracking-wider text-muted uppercase';
+
+// Ambil angka peringkat dari teks, mis. "Juara 1" atau "1st Place" -> 1
+const getRankNumber = (rank?: string) => Number(rank?.match(/\d+/)?.[0]) || 0;
+
+// Warna lencana sesuai peringkat (1 = hijau neon, 2 = perak, 3 = perunggu)
+const MEDAL_STYLE: Record<number, string> = {
+  1: 'bg-accent text-dark',
+  2: 'bg-gray-200 text-dark',
+  3: 'bg-orange-300 text-dark',
+};
 
 // ============================================================
 // SECTION 1: CERTIFICATES & AWARDS
@@ -120,50 +133,107 @@ function CertificateModal({
 export function Certificates() {
   const { language, t } = useLanguage();
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
+  const certs: Certificate[] = config.certificates;
 
   // Sertifikat yang sedang dibuka di popup (null = popup tertutup)
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
+  // Angka ringkasan (dihitung otomatis dari data)
+  const firstPlaces = certs.filter((c) => getRankNumber(c.rank) === 1).length;
+  const latestYear = certs.length ? Math.max(...certs.map((c) => Number(c.year) || 0)) : '-';
+  const stats = [
+    { value: certs.length, label: t('Penghargaan', 'Awards') },
+    { value: firstPlaces, label: t('Juara 1', '1st Places') },
+    { value: latestYear, label: t('Terbaru', 'Latest') },
+  ];
+
   return (
-    <section id="awards" className="py-20 md:py-32 px-6 bg-dark text-surface-white">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-start">
-        {/* Kolom kiri: judul & deskripsi (menempel saat scroll) */}
-        <div className="lg:col-span-5 sticky top-32">
-          <h2 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
-            CERTIFICATES<br />& AWARDS
-          </h2>
-          <p className="text-surface-white/60 text-lg font-medium">
-            {t(
-              'Bukti dedikasi dan pengembangan diri berkelanjutan di bidang teknologi dan desain. Klik sertifikat untuk melihat detail.',
-              'Proof of dedication and continuous self-development in technology and design. Click on a certificate to view details.'
-            )}
-          </p>
+    <section id="awards" className="relative py-20 md:py-32 px-6 bg-dark text-surface-white overflow-hidden">
+      {/* Cahaya warna di latar belakang */}
+      <div className="absolute -top-32 -right-32 w-96 h-96 bg-primary rounded-full blur-3xl opacity-30"></div>
+      <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-accent rounded-full blur-3xl opacity-10"></div>
+
+      <div className="relative max-w-7xl mx-auto">
+        {/* ---------- Judul, deskripsi, dan angka ringkasan ---------- */}
+        <div className="grid lg:grid-cols-12 gap-10 items-end mb-16">
+          <div className="lg:col-span-7">
+            <h2 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
+              CERTIFICATES<br />& AWARDS
+            </h2>
+            <p className="text-surface-white/60 text-lg font-medium max-w-xl">
+              {t(
+                'Bukti dedikasi dan pengembangan diri berkelanjutan di bidang teknologi dan desain. Klik sertifikat untuk melihat detail.',
+                'Proof of dedication and continuous self-development in technology and design. Click on a certificate to view details.'
+              )}
+            </p>
+          </div>
+
+          {/* Tiga angka ringkasan */}
+          <div className="lg:col-span-5 grid grid-cols-3 gap-3">
+            {stats.map((s) => (
+              <div
+                key={s.label}
+                className="bg-surface-white/5 border border-surface-white/10 rounded-3xl p-4 sm:p-5 text-center"
+              >
+                <p className="font-black text-3xl sm:text-4xl text-accent tracking-tight">{s.value}</p>
+                <p className="text-xs sm:text-sm font-bold text-surface-white/60 mt-1">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Kolom kanan: daftar kartu sertifikat */}
-        <div className="lg:col-span-7">
-          <div className="space-y-4">
-            {config.certificates.map((cert, i) => (
-              <div
+        {/* ---------- Galeri kartu sertifikat ---------- */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {certs.map((cert, i) => {
+            const rankNumber = getRankNumber(cert.rank);
+            const medal = MEDAL_STYLE[rankNumber] ?? 'bg-surface-white/20 text-surface-white';
+
+            return (
+              <motion.button
                 key={i}
                 onClick={() => setSelectedCert(cert)}
-                className="group cursor-pointer bg-surface-white/5 border border-surface-white/10 p-8 rounded-3xl flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-surface-white/10 hover:border-accent transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-80px' }}
+                transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
+                className="group text-left bg-surface-white/5 border border-surface-white/10 rounded-[2rem] p-3 hover:bg-surface-white/10 hover:border-accent hover:-translate-y-2 transition-all duration-300 flex flex-col"
               >
-                {/* Judul & penerbit */}
-                <div>
-                  <h4 className="font-black text-xl mb-2 group-hover:text-accent transition-colors">
+                {/* Gambar sertifikat + lencana peringkat */}
+                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-surface-white/10">
+                  <ImageWithFallback
+                    src={cert.image}
+                    alt={cert.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Lapisan gelap tipis supaya lencana mudah dibaca */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent"></div>
+
+                  {/* Lencana peringkat (hanya tampil jika ada) */}
+                  {cert.rank && (
+                    <div
+                      className={`absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black shadow-lg ${medal}`}
+                    >
+                      {rankNumber > 0 && rankNumber <= 3 ? <Medal size={14} /> : <Trophy size={14} />}
+                      {cert.rank}
+                    </div>
+                  )}
+
+                  {/* Tahun */}
+                  <div className="absolute bottom-3 right-3 bg-dark/70 backdrop-blur-md text-surface-white text-xs font-bold px-3 py-1.5 rounded-full">
+                    {cert.year}
+                  </div>
+                </div>
+
+                {/* Judul & penyelenggara */}
+                <div className="p-4 pb-3">
+                  <h4 className="font-black text-lg leading-snug mb-2 group-hover:text-accent transition-colors">
                     {cert.title}
                   </h4>
                   <p className="text-surface-white/60 text-sm font-medium">{cert.issuer}</p>
                 </div>
-
-                {/* Badge tahun */}
-                <div className="bg-primary/20 text-surface-white font-bold text-sm px-5 py-2 rounded-full whitespace-nowrap self-start sm:self-auto group-hover:bg-primary transition-colors">
-                  {cert.year}
-                </div>
-              </div>
-            ))}
-          </div>
+              </motion.button>
+            );
+          })}
         </div>
       </div>
 

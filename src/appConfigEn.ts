@@ -155,6 +155,8 @@ export const APP_CONFIG_EN = {
   // ----------------------------------------------------------
   // PENDIDIKAN (tampil sebagai timeline di section Education)
   // major dan achievements boleh dikosongkan ("")
+  // logo: file di public/assets/images/ (mis. "/assets/images/logo-polije.png")
+  //       boleh dikosongkan (""), nanti tampil huruf awal sekolah
   // ----------------------------------------------------------
   education: [
     {
@@ -162,24 +164,28 @@ export const APP_CONFIG_EN = {
       major: "Informatics Engineering",
       year: "2025 - Present",
       achievements: "Member of HMJTI Communication and Information Department, Publication Bureau",
+      logo: "/assets/images/logo-polije.png",
     },
     {
       school: "SMK Negeri 1 Gondang Nganjuk (State Vocational High School)",
       major: "Computer and Network Engineering",
       year: "2023 - 2025",
       achievements: "Student Council Member, Publication, Documentation and Design Division",
+      logo: "/assets/images/logo-smkn1gondang.png",
     },
     {
       school: "SMP Negeri 3 Tanjunganom (State Junior High School)",
       major: "",
       year: "2020 - 2023",
       achievements: "Student Council Member, Publication, Documentation and Design Division",
+      logo: "/assets/images/logo-smpn3tanjunganom.png",
     },
     {
       school: "SD Negeri 2 Sambirejo (State Elementary School)",
       major: "",
       year: "2011 - 2017",
       achievements: "",
+      logo: "/assets/images/logo-sdn2sambirejo.png",
     },
   ],
 

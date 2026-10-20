@@ -1,9 +1,21 @@
 // ============================================================
 // IMPORT
 // ============================================================
-import { useState } from 'react';
+import { useState, useRef, type MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowUpRight, Code2, Sparkles, Palette, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Code2,
+  Sparkles,
+  Palette,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  PenTool,
+  Server,
+  Zap,
+  type LucideIcon,
+} from 'lucide-react';
 
 import { APP_CONFIG } from '../appConfig';
 import { APP_CONFIG_EN } from '../appConfigEn';
@@ -536,6 +548,294 @@ export function Designs() {
           </motion.div>
         )}
       </AnimatePresence>
+    </section>
+  );
+}
+
+// ============================================================
+// SECTION 5: SKILLS
+// ============================================================
+
+// Data skill. Untuk menambah skill, cukup tambah teks di array "skills".
+// Judul grup memakai dua bahasa: [Indonesia, Inggris]
+type SkillGroup = {
+  title: [string, string];
+  icon: LucideIcon;
+  skills: string[];
+};
+
+const SKILL_GROUPS: SkillGroup[] = [
+  {
+    title: ['Programming', 'Programming'],
+    icon: Code2,
+    skills: ['HTML', 'CSS', 'JavaScript', 'PHP', 'Python'],
+  },
+  {
+    title: ['Design', 'Design'],
+    icon: PenTool,
+    skills: ['Figma', 'Ibis Paint X', 'Infinite Design', 'Canva', 'PixelLab'],
+  },
+  {
+    title: ['IT & Infra', 'IT & Infra'],
+    icon: Server,
+    skills: ['Networking', 'Database Management', 'Linux'],
+  },
+  {
+    title: ['Keahlian Lain', 'Other Skills'],
+    icon: Zap,
+    skills: ['Video Editing', 'UI/UX Design'],
+  },
+];
+
+// Satu kartu skill: cahaya biru mengikuti kursor, kartu naik saat di-hover
+function SkillCard({ group, index }: { group: SkillGroup; index: number }) {
+  const { t } = useLanguage();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const Icon = group.icon;
+
+  // Simpan posisi kursor ke CSS variable supaya cahaya mengikuti mouse
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+    el.style.setProperty('--my', `${e.clientY - rect.top}px`);
+  };
+
+  return (
+    // Animasi muncul dari bawah saat masuk layar (sekali saja)
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+    >
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        className="group relative h-full overflow-hidden rounded-[2rem] border border-surface-white/10 bg-surface-white/5 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-accent hover:bg-surface-white/10"
+      >
+        {/* Cahaya yang mengikuti kursor */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background:
+              'radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(37,11,240,0.45), transparent 70%)',
+          }}
+        />
+
+        <div className="relative">
+          {/* Ikon */}
+          <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-surface-white shadow-lg shadow-primary/40 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+            <Icon size={26} strokeWidth={2} />
+          </div>
+
+          {/* Judul grup */}
+          <h3 className="mb-6 text-xl font-black uppercase tracking-tight">
+            {t(group.title[0], group.title[1])}
+          </h3>
+
+          {/* Daftar skill sebagai chip (berubah hijau neon saat di-hover) */}
+          <div className="flex flex-wrap gap-2">
+            {group.skills.map((skill) => (
+              <span
+                key={skill}
+                className="cursor-default rounded-full border border-surface-white/10 bg-surface-white/5 px-3.5 py-1.5 text-sm font-medium text-surface-white/80 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-dark"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ============================================================
+// ROBOT LUCU YANG BERJALAN LEWAT
+// Gambar SVG + animasi CSS (keyframes ada di <style> komponen Skills).
+// Warna mengikuti tema: primary (badan), accent (mata & lampu), dark (layar wajah)
+// ============================================================
+function CuteRobot() {
+  return (
+    <svg viewBox="0 0 80 96" className="h-24 w-20 overflow-visible" aria-hidden="true">
+      {/* Seluruh badan robot naik-turun saat melangkah */}
+      <g className="robot-bob">
+        {/* Antena + bola lampu berkedip */}
+        <line x1="40" y1="8" x2="40" y2="17" stroke="var(--color-primary, #250BF0)" strokeWidth="3" strokeLinecap="round" />
+        <circle className="robot-glow" cx="40" cy="6" r="4.5" fill="var(--color-accent, #C8F000)" />
+
+        {/* Telinga */}
+        <rect x="12" y="27" width="6" height="13" rx="3" fill="var(--color-accent, #C8F000)" />
+        <rect x="62" y="27" width="6" height="13" rx="3" fill="var(--color-accent, #C8F000)" />
+
+        {/* Kepala */}
+        <rect x="17" y="16" width="46" height="34" rx="13" fill="var(--color-primary, #250BF0)" />
+        {/* Layar wajah */}
+        <rect x="22" y="21" width="36" height="23" rx="9" fill="var(--color-dark, #111111)" />
+
+        {/* Mata (berkedip) */}
+        <ellipse className="robot-eye" cx="33" cy="31" rx="3.6" ry="4.6" fill="var(--color-accent, #C8F000)" />
+        <ellipse className="robot-eye" cx="47" cy="31" rx="3.6" ry="4.6" fill="var(--color-accent, #C8F000)" />
+
+        {/* Pipi + senyum */}
+        <circle cx="27" cy="38" r="2.2" fill="var(--color-accent, #C8F000)" opacity="0.35" />
+        <circle cx="53" cy="38" r="2.2" fill="var(--color-accent, #C8F000)" opacity="0.35" />
+        <path d="M35 38 Q40 42 45 38" stroke="var(--color-accent, #C8F000)" strokeWidth="2" fill="none" strokeLinecap="round" />
+
+        {/* Lengan (berayun bergantian) */}
+        <g className="robot-arm robot-arm-back">
+          <rect x="15" y="54" width="8" height="19" rx="4" fill="var(--color-primary, #250BF0)" />
+          <circle cx="19" cy="74" r="4" fill="var(--color-accent, #C8F000)" />
+        </g>
+        <g className="robot-arm robot-arm-front">
+          <rect x="57" y="54" width="8" height="19" rx="4" fill="var(--color-primary, #250BF0)" />
+          <circle cx="61" cy="74" r="4" fill="var(--color-accent, #C8F000)" />
+        </g>
+
+        {/* Badan + lampu dada */}
+        <rect x="23" y="52" width="34" height="26" rx="10" fill="var(--color-primary, #250BF0)" />
+        <circle className="robot-glow" cx="40" cy="65" r="5.5" fill="var(--color-accent, #C8F000)" />
+        <circle cx="40" cy="65" r="2.2" fill="var(--color-dark, #111111)" />
+      </g>
+
+      {/* Kaki (melangkah bergantian, tidak ikut naik-turun) */}
+      <g className="robot-leg robot-leg-back">
+        <rect x="28" y="76" width="9" height="14" rx="4.5" fill="var(--color-primary, #250BF0)" />
+        <rect x="25" y="87" width="15" height="7" rx="3.5" fill="var(--color-accent, #C8F000)" />
+      </g>
+      <g className="robot-leg robot-leg-front">
+        <rect x="43" y="76" width="9" height="14" rx="4.5" fill="var(--color-primary, #250BF0)" />
+        <rect x="40" y="87" width="15" height="7" rx="3.5" fill="var(--color-accent, #C8F000)" />
+      </g>
+    </svg>
+  );
+}
+
+export function Skills() {
+  const { t } = useLanguage();
+
+  return (
+    <section
+      id="skills"
+      className="relative overflow-hidden bg-dark py-20 text-surface-white md:py-32"
+    >
+      {/* Animasi robot (otomatis diam jika pengguna memilih reduced motion) */}
+      <style>{`
+        /* Robot berjalan dari kiri ke kanan layar lalu mengulang */
+        .robot-walker {
+          animation: robot-walk 16s linear infinite;
+        }
+        @keyframes robot-walk {
+          from { transform: translateX(-140px); }
+          to { transform: translateX(calc(100vw + 40px)); }
+        }
+
+        /* Badan naik-turun */
+        .robot-bob { animation: robot-bob 0.6s ease-in-out infinite; }
+        @keyframes robot-bob {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
+        }
+
+        /* Kaki melangkah bergantian */
+        .robot-leg, .robot-arm {
+          transform-box: fill-box;
+          transform-origin: 50% 0%;
+        }
+        .robot-leg { animation: robot-swing 0.6s ease-in-out infinite; }
+        .robot-leg-back { animation-delay: -0.3s; }
+        @keyframes robot-swing {
+          0%, 100% { transform: rotate(26deg); }
+          50% { transform: rotate(-26deg); }
+        }
+
+        /* Lengan berayun berlawanan dengan kaki */
+        .robot-arm { animation: robot-arm-swing 0.6s ease-in-out infinite; }
+        .robot-arm-front { animation-delay: -0.3s; }
+        @keyframes robot-arm-swing {
+          0%, 100% { transform: rotate(-30deg); }
+          50% { transform: rotate(30deg); }
+        }
+
+        /* Mata berkedip */
+        .robot-eye {
+          transform-box: fill-box;
+          transform-origin: center;
+          animation: robot-blink 4s ease-in-out infinite;
+        }
+        @keyframes robot-blink {
+          0%, 92%, 100% { transform: scaleY(1); }
+          96% { transform: scaleY(0.1); }
+        }
+
+        /* Lampu antena & dada berkedip pelan */
+        .robot-glow { animation: robot-glow 1.2s ease-in-out infinite; }
+        @keyframes robot-glow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+
+        /* Balon "Beep boop!" muncul sebentar di tengah perjalanan */
+        .robot-bubble { animation: robot-bubble 16s ease-in-out infinite; }
+        @keyframes robot-bubble {
+          0%, 20% { opacity: 0; transform: translateY(6px) scale(0.8); }
+          25%, 40% { opacity: 1; transform: translateY(0) scale(1); }
+          45%, 100% { opacity: 0; transform: translateY(6px) scale(0.8); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .robot-walker { animation: none; transform: translateX(40px); }
+          .robot-bob, .robot-leg, .robot-arm, .robot-eye, .robot-glow { animation: none; }
+          .robot-bubble { animation: none; opacity: 0; }
+        }
+      `}</style>
+
+      {/* Cahaya warna di latar belakang */}
+      <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary opacity-40 blur-3xl"></div>
+      <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-accent opacity-10 blur-3xl"></div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        {/* ---------- Judul & deskripsi ---------- */}
+        <div className="mx-auto mb-16 max-w-2xl text-center">
+          <h2 className="mb-6 text-4xl font-black leading-none tracking-tighter md:text-5xl lg:text-7xl">
+            SKILLS
+          </h2>
+          <p className="text-lg font-medium text-surface-white/60 md:text-xl">
+            {t(
+              'Teknologi, perangkat lunak, dan disiplin ilmu yang saya kuasai untuk membangun solusi digital.',
+              'Technologies, software, and disciplines I use to build digital solutions.'
+            )}
+          </p>
+        </div>
+
+        {/* ---------- Grid kartu: 1 kolom di HP, 2 di tablet, 4 di desktop ---------- */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {SKILL_GROUPS.map((group, index) => (
+            <SkillCard key={group.skills[0]} group={group} index={index} />
+          ))}
+        </div>
+      </div>
+
+      {/* ---------- Jalur robot: robot lucu berjalan lewat di atas garis tanah ---------- */}
+      <div className="relative mt-16 h-36 overflow-hidden" aria-hidden="true">
+        {/* Garis tanah putus-putus */}
+        <div className="absolute inset-x-0 bottom-3 border-t-2 border-dashed border-surface-white/10"></div>
+
+        {/* Robot + balon + bayangan (satu kesatuan yang bergerak) */}
+        <div className="robot-walker absolute bottom-3 left-0 w-20">
+          {/* Balon ucapan */}
+          <div className="robot-bubble absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-3 py-1 text-xs font-black text-dark shadow-lg">
+            Beep boop!
+          </div>
+
+          <CuteRobot />
+
+          {/* Bayangan di tanah */}
+          <div className="absolute -bottom-1 left-1/2 h-2 w-14 -translate-x-1/2 rounded-full bg-black/40 blur-sm"></div>
+        </div>
+      </div>
     </section>
   );
 }

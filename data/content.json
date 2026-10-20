@@ -86,12 +86,8 @@
         "title": "Aplikasi Dapur Kuliner Pak Ndut",
         "category": "Web Development",
         "description": "Sistem terintegrasi untuk mengelola data siswa, absensi guru, dan informasi akademik sekolah secara real-time.",
-        "image": "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1600&auto=format&fit=crop",
-        "techStack": [
-          "Laravel",
-          "MySQL",
-          "Bootstrap"
-        ],
+        "image": "/assets/images/ndut2.png",
+        "techStack": [],
         "role": "Full-stack Developer",
         "demoLink": "https://pameran-jti.polije.ac.id/product/589/aplikasi-dapur-kuliner-pak-ndut",
         "githubLink": "#",
@@ -102,7 +98,7 @@
         "title": "Website Dapur Kuliner Pak Ndut",
         "category": "UI/UX Design",
         "description": "Desain antarmuka aplikasi mobile e-commerce dengan fokus pada pengalaman pengguna dan kemudahan checkout.",
-        "image": "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?q=80&w=1600&auto=format&fit=crop",
+        "image": "/assets/images/ndut1.png",
         "techStack": [],
         "role": "UI/UX Designer",
         "demoLink": "https://pameran-jti.polije.ac.id/product/411/dapur-kuliner-pak-ndut",
@@ -111,15 +107,11 @@
       },
       {
         "id": "project-3",
-        "title": "Aplikasi Dan Website SiTani Dinas Pertanian Kabupaten Nganjuk",
+        "title": "Aplikasi Dan Website SMP Negeri 1 Loceret",
         "category": "Web Development",
         "description": "Website company profile responsif untuk startup teknologi dengan animasi modern dan performa tinggi.",
         "image": "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
-        "techStack": [
-          "React",
-          "Tailwind CSS",
-          "Vite"
-        ],
+        "techStack": [],
         "role": "Front-end Developer",
         "demoLink": "#",
         "githubLink": "#",
@@ -219,6 +211,76 @@
         "year": "2011 - 2017",
         "achievements": "",
         "logo": "/assets/images/sd.png"
+      }
+    ]
+  },
+  "en": {
+    "education": [
+      {
+        "school": "Politeknik Negeri Jember (State Polytechnic of Jember)",
+        "major": "Informatics Engineering",
+        "year": "2025 - Present",
+        "achievements": "Member of HMJTI Communication and Information Department, Publication Bureau",
+        "logo": "/assets/images/polije.png"
+      },
+      {
+        "school": "SMK Negeri 1 Gondang Nganjuk (State Vocational High School)",
+        "major": "Computer and Network Engineering",
+        "year": "2023 - 2025",
+        "achievements": "Student Council Member, Publication, Documentation and Design Division",
+        "logo": "/assets/images/smk.jpg"
+      },
+      {
+        "school": "SMP Negeri 3 Tanjunganom (State Junior High School)",
+        "major": "",
+        "year": "2020 - 2023",
+        "achievements": "Student Council Member, Publication, Documentation and Design Division",
+        "logo": "/assets/images/smp.png"
+      },
+      {
+        "school": "SD Negeri 2 Sambirejo (State Elementary School)",
+        "major": "",
+        "year": "2011 - 2017",
+        "achievements": "",
+        "logo": "/assets/images/sd.png"
+      }
+    ],
+    "projects": [
+      {
+        "id": "project-1",
+        "title": "Pak Ndut Culinary Kitchen Application",
+        "category": "Web Development",
+        "description": "An integrated system for managing student data, teacher attendance, and school academic information in real time.",
+        "image": "/assets/images/ndut2.png",
+        "techStack": [],
+        "role": "Full-stack Developer",
+        "demoLink": "https://pameran-jti.polije.ac.id/product/589/aplikasi-dapur-kuliner-pak-ndut",
+        "githubLink": "#",
+        "size": "large"
+      },
+      {
+        "id": "project-2",
+        "title": "Pak Ndut Culinary Kitchen Website",
+        "category": "UI/UX Design",
+        "description": "A mobile e-commerce app interface designed with a focus on user experience and an easy checkout process.",
+        "image": "/assets/images/ndut1.png",
+        "techStack": [],
+        "role": "UI/UX Designer",
+        "demoLink": "https://pameran-jti.polije.ac.id/product/411/dapur-kuliner-pak-ndut",
+        "githubLink": "",
+        "size": "medium"
+      },
+      {
+        "id": "project-3",
+        "title": "SiTani Application and Website, Nganjuk Regency Agriculture Office",
+        "category": "Web Development",
+        "description": "A responsive company profile website for a technology startup with modern animations and high performance.",
+        "image": "https://images.unsplash.com/photo-1541462608143-67571c6738dd?q=80&w=1600&auto=format&fit=crop",
+        "techStack": [],
+        "role": "Front-end Developer",
+        "demoLink": "#",
+        "githubLink": "#",
+        "size": "medium"
       }
     ]
   }

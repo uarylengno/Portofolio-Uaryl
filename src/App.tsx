@@ -2,10 +2,10 @@
 import { Navbar, Footer } from './components/layout';
 
 // ===== Sections: Home =====
-import { Hero, About, SelectedWorks, Designs } from './components/home-sections';
+import { Hero, About, SelectedWorks, Designs, Skills } from './components/home-sections';
 
 // ===== Sections: Experience =====
-import { Skills, Experience, Education } from './components/experience-sections';
+import { Experience, Education } from './components/experience-sections';
 
 // ===== Sections: Portfolio =====
 import { Services, Certificates, ContactSection } from './components/portfolio-sections';

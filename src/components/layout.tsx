@@ -143,12 +143,12 @@ export function Navbar() {
             </a>
           ))}
 
-          {/* Tombol ajakan menghubungi */}
+          {/* Tombol menuju bagian kontak */}
           <a
             href="#contact"
             className="bg-accent text-dark px-6 py-2 rounded-full font-bold text-sm tracking-wider hover:bg-white hover:scale-105 transition-all"
           >
-            {t('MARI BERBICARA', "LET'S TALK")} &rarr;
+            {t('KONTAK', 'CONTACT')} &rarr;
           </a>
 
           {/* Ikon tiga garis: bahasa & admin */}
@@ -188,13 +188,13 @@ export function Navbar() {
               </a>
             ))}
 
-            {/* Tombol ajakan menghubungi */}
+            {/* Tombol menuju bagian kontak */}
             <a
               href="#contact"
               onClick={() => setIsOpen(false)}
               className="bg-primary text-surface-white px-8 py-4 rounded-full font-bold text-xl tracking-wider hover:bg-accent hover:text-dark transition-all mt-4"
             >
-              {t('MARI BERBICARA', "LET'S TALK")} &rarr;
+              {t('KONTAK', 'CONTACT')} &rarr;
             </a>
 
             {/* Ganti bahasa & masuk admin */}
