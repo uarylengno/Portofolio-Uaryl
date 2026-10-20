@@ -156,6 +156,8 @@ export const APP_CONFIG = {
   // ----------------------------------------------------------
   // PENDIDIKAN (tampil sebagai timeline di section Education)
   // major dan achievements boleh dikosongkan ("")
+  // logo: file di public/assets/images/ (mis. "/assets/images/logo-polije.png")
+  //       boleh dikosongkan (""), nanti tampil huruf awal sekolah
   // ----------------------------------------------------------
   education: [
     {
@@ -163,24 +165,28 @@ export const APP_CONFIG = {
       major: "Teknik Informatika",
       year: "2025 - Sekarang",
       achievements: "Anggota HMJTI Departemen Kominfo biro Publikasi",
+      logo: "/assets/images/logo-polije.png",
     },
     {
       school: "SMK Negeri 1 Gondang Nganjuk",
       major: "Teknik Jaringan dan Komputer",
       year: "2023 - 2025",
       achievements: "Anggota Osis Devisi Publikasi, dokumentasi & Desain",
+      logo: "/assets/images/logo-smkn1gondang.png",
     },
     {
       school: "SMP Negeri 3 Tanjunganom",
       major: "",
       year: "2020 - 2023",
       achievements: "Anggota OSIS Devisi Publikasi, dokumentasi & Desain",
+      logo: "/assets/images/logo-smpn3tanjunganom.png",
     },
     {
       school: "SD Negeri 2 Sambirejo",
       major: "",
       year: "2011 - 2017",
       achievements: "",
+      logo: "/assets/images/logo-sdn2sambirejo.png",
     },
   ],
 

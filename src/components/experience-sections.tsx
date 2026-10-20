@@ -1,6 +1,7 @@
 // ============================================================
 // IMPORT
 // ============================================================
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Code, PenTool, Server, Zap } from 'lucide-react';
 
@@ -198,11 +199,37 @@ export function Experience() {
 // SECTION 3: EDUCATION
 // ============================================================
 
+// Logo sekolah. Jika logo kosong / gagal dimuat, tampil huruf awal nama sekolah
+function SchoolLogo({ src, name }: { src?: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+
+  // Cadangan: kotak biru dengan huruf awal sekolah
+  if (!src || failed) {
+    return (
+      <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary text-surface-white font-black text-2xl md:text-3xl flex items-center justify-center shrink-0">
+        {name.trim().charAt(0).toUpperCase()}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-surface-white border border-gray-200 shadow-sm p-2 flex items-center justify-center shrink-0">
+      <img
+        src={src}
+        alt={`Logo ${name}`}
+        onError={() => setFailed(true)}
+        loading="lazy"
+        className="max-w-full max-h-full object-contain"
+      />
+    </div>
+  );
+}
+
 // Satu item pendidikan di timeline
 function EducationItem({
   edu,
 }: {
-  edu: { school: string; major?: string; achievements?: string; year?: string };
+  edu: { school: string; major?: string; achievements?: string; year?: string; logo?: string };
 }) {
   return (
     <div className="relative flex items-start group">
@@ -213,26 +240,30 @@ function EducationItem({
 
       {/* Kartu isi pendidikan */}
       <div className="pl-14 md:pl-20 w-full">
-        <div className="bg-background p-8 md:p-10 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-6 hover:shadow-lg transition-shadow">
-          {/* Kiri: sekolah, jurusan, prestasi */}
-          <div>
-            <h4 className="font-black text-2xl sm:text-3xl text-dark tracking-tight mb-2 break-words">
-              {edu.school}
-            </h4>
+        <div className="bg-background p-6 sm:p-8 md:p-10 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-6 hover:shadow-lg transition-shadow">
+          {/* Kiri: logo + sekolah, jurusan, prestasi */}
+          <div className="flex items-start gap-4 sm:gap-5 min-w-0">
+            <SchoolLogo src={edu.logo} name={edu.school} />
 
-            {/* Jurusan (hanya tampil jika ada) */}
-            {edu.major && <p className="text-xl text-primary font-bold mb-4">{edu.major}</p>}
+            <div className="min-w-0">
+              <h4 className="font-black text-2xl sm:text-3xl text-dark tracking-tight mb-2 break-words">
+                {edu.school}
+              </h4>
 
-            {/* Prestasi (hanya tampil jika ada) */}
-            {edu.achievements && (
-              <p className="text-muted font-medium bg-surface-white inline-block px-4 py-2 rounded-full border border-gray-200 text-sm">
-                {edu.achievements}
-              </p>
-            )}
+              {/* Jurusan (hanya tampil jika ada) */}
+              {edu.major && <p className="text-xl text-primary font-bold mb-4">{edu.major}</p>}
+
+              {/* Prestasi (hanya tampil jika ada) */}
+              {edu.achievements && (
+                <p className="text-muted font-medium bg-surface-white inline-block px-4 py-2 rounded-full border border-gray-200 text-sm">
+                  {edu.achievements}
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Kanan: tahun (tampil "-" jika kosong) */}
-          <div className="text-right">
+          <div className="md:text-right shrink-0">
             <div className="inline-block bg-dark text-surface-white px-5 py-2 rounded-full font-bold text-sm tracking-wider">
               {edu.year || '-'}
             </div>

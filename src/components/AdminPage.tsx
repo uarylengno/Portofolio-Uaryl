@@ -1,7 +1,7 @@
 // ============================================================
 // IMPORT
 // ============================================================
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Plus, Pencil, Trash2, ArrowUp, ArrowDown, ArrowLeft, LogOut, ExternalLink, X, Lock,
   Code2, FolderKanban, Briefcase, GraduationCap, Award, Palette, type LucideIcon,
@@ -13,6 +13,20 @@ import { APP_CONFIG_EN } from '../appConfigEn';
 type Lang = 'id' | 'en';
 type Item = Record<string, any>;
 type Field = { key: string; label: string; kind?: 'area' | 'list' };
+
+// ============================================================
+// PENYIMPANAN SESI (hilang otomatis saat tab ditutup)
+// Dipakai supaya tidak perlu login ulang setelah pindah halaman / refresh
+// ============================================================
+const PW_KEY = 'admin-password';
+const TAB_KEY = 'admin-tab';
+const LANG_KEY = 'admin-lang';
+
+const store = {
+  get: (k: string) => { try { return sessionStorage.getItem(k); } catch { return null; } },
+  set: (k: string, v: string) => { try { sessionStorage.setItem(k, v); } catch { /* abaikan */ } },
+  del: (k: string) => { try { sessionStorage.removeItem(k); } catch { /* abaikan */ } },
+};
 
 // ============================================================
 // DAFTAR BAGIAN & KOLOM
@@ -65,6 +79,8 @@ const SECTIONS: Record<
     ],
     blank: () => ({ role: '', company: '', year: '', description: '' }),
   },
+
+  // ---------- Education (dengan logo sekolah) ----------
   education: {
     label: 'Education',
     Icon: GraduationCap,
@@ -74,9 +90,11 @@ const SECTIONS: Record<
       { key: 'major', label: 'Jurusan (boleh kosong)' },
       { key: 'year', label: 'Tahun' },
       { key: 'achievements', label: 'Prestasi / organisasi (boleh kosong)' },
+      { key: 'logo', label: 'Logo sekolah (mis. /assets/images/logo-polije.png, boleh kosong)' },
     ],
-    blank: () => ({ school: '', major: '', year: '', achievements: '' }),
+    blank: () => ({ school: '', major: '', year: '', achievements: '', logo: '' }),
   },
+
   certificates: {
     label: 'Awards',
     Icon: Award,
@@ -136,17 +154,38 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
 export function AdminPage() {
   const [password, setPassword] = useState('');
   const [authed, setAuthed] = useState(false);
-  const [lang, setLang] = useState<Lang>('id');
-  const [tab, setTab] = useState('skills');
+  const [checking, setChecking] = useState(() => !!store.get(PW_KEY)); // true saat mengecek sesi tersimpan
+  const [lang, setLang] = useState<Lang>(() => (store.get(LANG_KEY) === 'en' ? 'en' : 'id'));
+  const [tab, setTab] = useState(() => {
+    const saved = store.get(TAB_KEY);
+    return saved && TABS.some((t) => t.id === saved) ? saved : 'skills';
+  });
   const [loginError, setLoginError] = useState('');
   const [toast, setToast] = useState<{ text: string; ok: boolean } | null>(null);
   const [newSkill, setNewSkill] = useState<Record<string, string>>({});
   // Item yang sedang dibuka di formulir (index null = item baru)
   const [editing, setEditing] = useState<{ index: number | null; item: Item } | null>(null);
-  // Salinan data untuk diedit
+  // Salinan data untuk diedit (diambil dari config yang sudah memuat data terbaru dari server)
   const [content, setContent] = useState<Record<Lang, any>>(() => structuredClone({ id: APP_CONFIG, en: APP_CONFIG_EN }));
 
   const headers = { 'Content-Type': 'application/json', 'x-admin-password': password };
+
+  // Ingat tab dan bahasa yang sedang dibuka
+  useEffect(() => { store.set(TAB_KEY, tab); }, [tab]);
+  useEffect(() => { store.set(LANG_KEY, lang); }, [lang]);
+
+  // ---------- Masuk otomatis jika sesi sebelumnya masih tersimpan ----------
+  useEffect(() => {
+    const saved = store.get(PW_KEY);
+    if (!saved) return;
+    fetch('/api/admin/check', { headers: { 'Content-Type': 'application/json', 'x-admin-password': saved } })
+      .then((res) => {
+        if (res.ok) { setPassword(saved); setAuthed(true); }
+        else store.del(PW_KEY); // password sudah tidak berlaku
+      })
+      .catch(() => { /* server tidak terjangkau: tampilkan layar login */ })
+      .finally(() => setChecking(false));
+  }, []);
 
   // Ambil daftar item satu bagian (aman jika bagian belum ada di config, mis. "designs")
   const listOf = (section: string): Item[] => content[lang][section] ?? [];
@@ -159,19 +198,41 @@ export function AdminPage() {
 
   // ---------- Login ----------
   const login = async () => {
-    const res = await fetch('/api/admin/check', { headers });
-    if (res.ok) { setAuthed(true); setLoginError(''); }
-    else setLoginError('Password salah, atau ADMIN_PASSWORD belum diatur di file .env');
+    try {
+      const res = await fetch('/api/admin/check', { headers });
+      if (res.ok) {
+        store.set(PW_KEY, password);
+        setAuthed(true);
+        setLoginError('');
+      } else if (res.status === 401 || res.status === 403) {
+        setLoginError('Password salah.');
+      } else {
+        setLoginError(`Server menolak login (kode ${res.status}). Cek ADMIN_PASSWORD di file .env lalu restart server.`);
+      }
+    } catch {
+      setLoginError('Tidak bisa terhubung ke server. Pastikan npm run dev masih berjalan.');
+    }
   };
 
-  const logout = () => { setAuthed(false); setPassword(''); };
+  // ---------- Keluar (menghapus sesi tersimpan) ----------
+  const logout = () => {
+    store.del(PW_KEY);
+    setAuthed(false);
+    setPassword('');
+  };
 
   // ---------- Simpan satu bagian ke server (dipakai semua aksi CRUD) ----------
   const persist = async (section: string, value: any) => {
     const data = clean(value);
     const res = await fetch(`/api/content/${lang}/${section}`, { method: 'PUT', headers, body: JSON.stringify(data) });
     if (!res.ok) { notify('Gagal menyimpan', false); return false; }
+
     setContent((c) => ({ ...c, [lang]: { ...c[lang], [section]: data } }));
+
+    // Perbarui config bersama supaya website dan admin langsung menampilkan data terbaru
+    // (tanpa ini, kembali ke admin setelah melihat website akan menampilkan data lama)
+    (lang === 'id' ? (APP_CONFIG as any) : (APP_CONFIG_EN as any))[section] = data;
+
     notify(`Tersimpan (${lang.toUpperCase()})`);
     return true;
   };
@@ -208,6 +269,13 @@ export function AdminPage() {
     id === 'skills'
       ? SKILL_GROUPS.reduce((n, g) => n + (content[lang].skills?.[g]?.length ?? 0), 0)
       : content[lang][id]?.length ?? 0;
+
+  // ============================================================
+  // LAYAR TUNGGU (mengecek sesi tersimpan, mencegah layar login berkedip)
+  // ============================================================
+  if (checking) {
+    return <div className="min-h-screen bg-dark" />;
+  }
 
   // ============================================================
   // LAYAR LOGIN
@@ -410,10 +478,13 @@ export function AdminPage() {
                 return (
                   <div key={i}
                     className="bg-surface-white rounded-3xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
-                    {/* Thumbnail gambar, atau ikon jika tidak ada gambar */}
+                    {/* Thumbnail: gambar, atau logo sekolah, atau ikon jika keduanya kosong */}
                     {item.image ? (
                       <img src={item.image} alt="" onError={(e) => (e.currentTarget.style.visibility = 'hidden')}
                         className="w-16 h-16 rounded-2xl object-cover bg-gray-100 shrink-0" />
+                    ) : item.logo ? (
+                      <img src={item.logo} alt="" onError={(e) => (e.currentTarget.style.visibility = 'hidden')}
+                        className="w-16 h-16 rounded-2xl object-contain bg-gray-50 border border-gray-100 p-1.5 shrink-0" />
                     ) : (
                       <div className="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                         <section.Icon size={24} />
@@ -478,6 +549,19 @@ export function AdminPage() {
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                   className="w-full h-40 object-cover rounded-2xl bg-gray-100" />
               )}
+
+              {/* Pratinjau logo sekolah (kotak kecil, gambar utuh tanpa terpotong) */}
+              {editing.item.logo && (
+                <div className="flex items-center gap-4 bg-background rounded-2xl p-3 border border-gray-100">
+                  <img src={editing.item.logo} alt="Pratinjau logo"
+                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                    className="w-16 h-16 object-contain bg-surface-white rounded-xl border border-gray-100 p-1.5" />
+                  <p className="text-xs text-muted font-medium">
+                    Pratinjau logo. Kalau tidak muncul, cek nama file di folder public/assets/images.
+                  </p>
+                </div>
+              )}
+
               {section.fields.map((f) => (
                 <FieldInput key={f.key} field={f} value={editing.item[f.key]}
                   onChange={(v) => setEditing({ ...editing, item: { ...editing.item, [f.key]: v } })} />
