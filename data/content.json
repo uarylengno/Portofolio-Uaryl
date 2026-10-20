@@ -128,6 +128,71 @@
         "githubLink": "#",
         "size": "medium"
       }
+    ],
+    "designs": [
+      {
+        "id": "design-1792419131722",
+        "title": "Speakpreneur HMJTI 2026",
+        "category": "Pamflet",
+        "year": "2026",
+        "image": ""
+      },
+      {
+        "id": "design-1792419187132",
+        "title": "Nganjuk Skill Clash Challenge",
+        "category": "Pamflet",
+        "year": "2026",
+        "image": ""
+      },
+      {
+        "id": "design-1792419223215",
+        "title": "Arak Arakan Wisudawan Teknologi Informasi  2026",
+        "category": "Pamflet",
+        "year": "2026",
+        "image": ""
+      },
+      {
+        "id": "design-1792419289402",
+        "title": "K3 Mental: Transformasi Keslamatan Kerja era Modern",
+        "category": "Poster",
+        "year": "2026",
+        "image": "/assets/images/k3kesehatanmental.jpg"
+      },
+      {
+        "id": "design-1792419335451",
+        "title": "KLATEN Dari mata Air mengalir Peradaban",
+        "category": "Poster",
+        "year": "2026",
+        "image": "/assets/images/klaten.jpg"
+      },
+      {
+        "id": "design-1792419371429",
+        "title": "EPIM-TI (IT Student Competition 2026)",
+        "category": "Pamflet",
+        "year": "2026",
+        "image": ""
+      },
+      {
+        "id": "design-1792419429363",
+        "title": "Satu Klik Seribu Dampak",
+        "category": "Poster",
+        "year": "2026",
+        "image": "/assets/images/satuklikseribudampak.jpg"
+      },
+      {
+        "id": "design-1792421268158",
+        "title": "Tangguh di Tengah Tekanan",
+        "category": "Poster",
+        "year": "2026",
+        "image": "/assets/images/tangguh.jpg"
+      },
+      {
+        "id": "design-1792421302296",
+        "title": "TEMPEVOLUSI (Transformasi Tempe menjadi energi Generasi Produktif)",
+        "category": "Poster",
+        "year": "2026",
+        "image": "/assets/images/tempe.jpg"
+      }
     ]
   }
 }
