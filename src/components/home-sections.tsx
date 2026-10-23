@@ -257,14 +257,12 @@ const PROJECT_STYLES = {
     arrow: 'bg-primary text-surface-white',
     divider: 'bg-primary/20',
     description: 'text-dark/80',
-    imageBg: 'bg-primary',
   },
   blue: {
     card: 'bg-primary border-primary text-surface-white',
     arrow: 'bg-accent text-primary',
     divider: 'bg-surface-white/30',
     description: 'text-surface-white/90',
-    imageBg: 'bg-accent',
   },
 };
 
@@ -331,11 +329,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       <p className={`text-base font-medium mb-8 ${style.description}`}>{project.description}</p>
 
       {/* Gambar proyek (menempel di bagian bawah kartu) */}
-      <div className={`mt-auto relative rounded-3xl overflow-hidden aspect-[4/3] ${style.imageBg}`}>
+      <div className="mt-auto relative overflow-hidden rounded-3xl bg-surface-white">
         <ImageWithFallback
           src={project.image}
           alt={project.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="block h-auto w-full"
         />
 
         {/* Label teknologi (maksimal 3) di atas gambar */}
@@ -478,7 +476,7 @@ export function Designs() {
                 <ImageWithFallback
                   src={d.image}
                   alt={d.title}
-                  className="w-full aspect-[3/4] object-cover rounded-2xl"
+                  className="w-full aspect-[3/4] rounded-2xl bg-surface-white object-contain"
                 />
               </button>
             );
@@ -653,62 +651,122 @@ function SkillCard({ group, index }: { group: SkillGroup; index: number }) {
 }
 
 // ============================================================
-// ROBOT LUCU YANG BERJALAN LEWAT
-// Gambar SVG + animasi CSS (keyframes ada di <style> komponen Skills).
-// Warna mengikuti tema: primary (badan), accent (mata & lampu), dark (layar wajah)
+// PIXEL-ART CAT SPRITE (crouch, stand, leap, and run poses)
 // ============================================================
-function CuteRobot() {
+const PIXEL_CAT_FRAMES = [
+  [
+    '....................................',
+    '......................OOO...........',
+    '.....................OTOOO..........',
+    '....................OTTTTOOO........',
+    '...................OTTTTTTTOK.......',
+    '..................KOTTTTTTTTOK......',
+    '..KKK............KOTTTCCCCCTTOK......',
+    '.KBBKKKKKKKKKKKKKBBTTTCCCCCCCK.......',
+    'KBBBOOOOBBBTTTTTTTTTTCCCECCK..........',
+    '.KBBKKKKKBBTTTTTTTTTTCCCCCCK...........',
+    '..KKK....KBBTTTTTTTTTTCCCPK.............',
+    '..........KBBK...KBBKKKK................',
+    '.........KBBK.....KBBK..................',
+    '........KKKK.......KKKK.................',
+    '....................................',
+    '....................................',
+  ],
+  [
+    '....................................',
+    '..............OOO...................',
+    '.............OTOOO..................',
+    '............OTTTTOOO................',
+    '...........OTTTTTTTOK.................',
+    '..........KOTTTTTTTTOK................',
+    '..........KTTTCCCCCTTOK................',
+    '..........KTTCCCCCCCTOK...............',
+    '..........KTTCCCECCCTOK...............',
+    '..........KTTCCCCCCCPK................',
+    '...........KTTTTTTTK..................',
+    '............KBBTTK.....................',
+    '............KBBTTK.....................',
+    '............KBBTTK.....................',
+    '............KBBTTK.....................',
+    '............KBBTTK.....................',
+    '.....KKKKKKKBBK.KBBK...................',
+    '....KBBBOOOBBK...KKK....................',
+    '.....KKKKKKKK...........................',
+  ],
+  [
+    '....................................',
+    '........................OOO..........',
+    '.......................OTOOO.........',
+    '......................OTTTTOOO.......',
+    '.....................OTTTTTTTOK......',
+    '....................KOTTTTTTTTOK.....',
+    '...................KTTTCCCCCTTOK.....',
+    '..................KTTTCCCCCCCTOK.....',
+    '.............KKK..KTTTCCCECCCTOK.....',
+    '............KBBKKKTTTTCCCCCCCPK......',
+    '...........KBBBOOOBTTTTTTTTTK.........',
+    '..........KBBK....KBBTTTTTK............',
+    '.........KBBK......KBBTTK...............',
+    '........KBBK........KBBK................',
+    '.......KKK...........KKK................',
+    '....................................',
+  ],
+  [
+    '....................................',
+    '...........................OOO.......',
+    '..........................OTOOO......',
+    '.........................OTTTTOOO....',
+    '........................OTTTTTTTOK...',
+    '.......................KOTTTTTTTTOK...',
+    '......................KTTTCCCCCTTOK...',
+    '.....................KTTTCCCCCCCTOK....',
+    '.....KKK............KTTTCCCECCCTOK.....',
+    '....KBBKKKKKKKKKKKKKTTTTCCCCCCCPK......',
+    '...KBBBOOOOBBBTTTTTTTTTTTTTTTK..........',
+    '..KBBKKKKKKKBBTTTTTTTTTTTTTK.............',
+    '...KKK......KBBTTTTTTTTTTK.................',
+    '.............KBBK....KBBK..................',
+    '............KKKK......KKKK.................',
+    '....................................',
+  ],
+] as const;
+
+const PIXEL_CAT_COLORS: Record<string, string> = {
+  K: '#21170F',
+  B: '#87512F',
+  O: '#B8793F',
+  T: '#D9A36A',
+  C: '#F0D2A0',
+  E: '#302016',
+  P: '#B96F63',
+};
+
+function PixelCatSprite() {
   return (
-    <svg viewBox="0 0 80 96" className="h-24 w-20 overflow-visible" aria-hidden="true">
-      {/* Seluruh badan robot naik-turun saat melangkah */}
-      <g className="robot-bob">
-        {/* Antena + bola lampu berkedip */}
-        <line x1="40" y1="8" x2="40" y2="17" stroke="var(--color-primary, #250BF0)" strokeWidth="3" strokeLinecap="round" />
-        <circle className="robot-glow" cx="40" cy="6" r="4.5" fill="var(--color-accent, #C8F000)" />
-
-        {/* Telinga */}
-        <rect x="12" y="27" width="6" height="13" rx="3" fill="var(--color-accent, #C8F000)" />
-        <rect x="62" y="27" width="6" height="13" rx="3" fill="var(--color-accent, #C8F000)" />
-
-        {/* Kepala */}
-        <rect x="17" y="16" width="46" height="34" rx="13" fill="var(--color-primary, #250BF0)" />
-        {/* Layar wajah */}
-        <rect x="22" y="21" width="36" height="23" rx="9" fill="var(--color-dark, #111111)" />
-
-        {/* Mata (berkedip) */}
-        <ellipse className="robot-eye" cx="33" cy="31" rx="3.6" ry="4.6" fill="var(--color-accent, #C8F000)" />
-        <ellipse className="robot-eye" cx="47" cy="31" rx="3.6" ry="4.6" fill="var(--color-accent, #C8F000)" />
-
-        {/* Pipi + senyum */}
-        <circle cx="27" cy="38" r="2.2" fill="var(--color-accent, #C8F000)" opacity="0.35" />
-        <circle cx="53" cy="38" r="2.2" fill="var(--color-accent, #C8F000)" opacity="0.35" />
-        <path d="M35 38 Q40 42 45 38" stroke="var(--color-accent, #C8F000)" strokeWidth="2" fill="none" strokeLinecap="round" />
-
-        {/* Lengan (berayun bergantian) */}
-        <g className="robot-arm robot-arm-back">
-          <rect x="15" y="54" width="8" height="19" rx="4" fill="var(--color-primary, #250BF0)" />
-          <circle cx="19" cy="74" r="4" fill="var(--color-accent, #C8F000)" />
+    <svg
+      viewBox="0 0 36 20"
+      className="h-24 w-44 overflow-visible"
+      aria-hidden="true"
+      shapeRendering="crispEdges"
+    >
+      {PIXEL_CAT_FRAMES.map((rows, frame) => (
+        <g key={frame} className={`pixel-cat-frame pixel-cat-frame-${frame}`}>
+          {rows.flatMap((row, y) =>
+            [...row].map((color, x) =>
+              color === '.' || color === ' ' ? null : (
+                <rect
+                  key={`${x}-${y}`}
+                  x={x}
+                  y={y}
+                  width="1"
+                  height="1"
+                  fill={PIXEL_CAT_COLORS[color]}
+                />
+              )
+            )
+          )}
         </g>
-        <g className="robot-arm robot-arm-front">
-          <rect x="57" y="54" width="8" height="19" rx="4" fill="var(--color-primary, #250BF0)" />
-          <circle cx="61" cy="74" r="4" fill="var(--color-accent, #C8F000)" />
-        </g>
-
-        {/* Badan + lampu dada */}
-        <rect x="23" y="52" width="34" height="26" rx="10" fill="var(--color-primary, #250BF0)" />
-        <circle className="robot-glow" cx="40" cy="65" r="5.5" fill="var(--color-accent, #C8F000)" />
-        <circle cx="40" cy="65" r="2.2" fill="var(--color-dark, #111111)" />
-      </g>
-
-      {/* Kaki (melangkah bergantian, tidak ikut naik-turun) */}
-      <g className="robot-leg robot-leg-back">
-        <rect x="28" y="76" width="9" height="14" rx="4.5" fill="var(--color-primary, #250BF0)" />
-        <rect x="25" y="87" width="15" height="7" rx="3.5" fill="var(--color-accent, #C8F000)" />
-      </g>
-      <g className="robot-leg robot-leg-front">
-        <rect x="43" y="76" width="9" height="14" rx="4.5" fill="var(--color-primary, #250BF0)" />
-        <rect x="40" y="87" width="15" height="7" rx="3.5" fill="var(--color-accent, #C8F000)" />
-      </g>
+      ))}
     </svg>
   );
 }
@@ -721,74 +779,42 @@ export function Skills() {
       id="skills"
       className="relative overflow-hidden bg-dark py-20 text-surface-white md:py-32"
     >
-      {/* Animasi robot (otomatis diam jika pengguna memilih reduced motion) */}
+      {/* Pixel-art sprite animation respects the user's reduced-motion setting. */}
       <style>{`
-        /* Robot berjalan dari kiri ke kanan layar lalu mengulang */
-        .robot-walker {
-          animation: robot-walk 16s linear infinite;
+        .pixel-cat-runner {
+          animation: pixel-cat-run 12s linear infinite;
         }
-        @keyframes robot-walk {
-          from { transform: translateX(-140px); }
-          to { transform: translateX(calc(100vw + 40px)); }
-        }
-
-        /* Badan naik-turun */
-        .robot-bob { animation: robot-bob 0.6s ease-in-out infinite; }
-        @keyframes robot-bob {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-4px); }
+        @keyframes pixel-cat-run {
+          from { transform: translateX(-180px); }
+          to { transform: translateX(calc(100vw + 180px)); }
         }
 
-        /* Kaki melangkah bergantian */
-        .robot-leg, .robot-arm {
-          transform-box: fill-box;
-          transform-origin: 50% 0%;
+        .pixel-cat-frame {
+          opacity: 0;
+          animation: pixel-cat-cycle 1.2s steps(1, end) infinite;
         }
-        .robot-leg { animation: robot-swing 0.6s ease-in-out infinite; }
-        .robot-leg-back { animation-delay: -0.3s; }
-        @keyframes robot-swing {
-          0%, 100% { transform: rotate(26deg); }
-          50% { transform: rotate(-26deg); }
-        }
-
-        /* Lengan berayun berlawanan dengan kaki */
-        .robot-arm { animation: robot-arm-swing 0.6s ease-in-out infinite; }
-        .robot-arm-front { animation-delay: -0.3s; }
-        @keyframes robot-arm-swing {
-          0%, 100% { transform: rotate(-30deg); }
-          50% { transform: rotate(30deg); }
+        .pixel-cat-frame-0 { animation-delay: 0s; }
+        .pixel-cat-frame-1 { animation-delay: -0.3s; }
+        .pixel-cat-frame-2 { animation-delay: -0.6s; }
+        .pixel-cat-frame-3 { animation-delay: -0.9s; }
+        @keyframes pixel-cat-cycle {
+          0%, 24.99% { opacity: 1; }
+          25%, 100% { opacity: 0; }
         }
 
-        /* Mata berkedip */
-        .robot-eye {
-          transform-box: fill-box;
-          transform-origin: center;
-          animation: robot-blink 4s ease-in-out infinite;
+        .pixel-cat-love {
+          animation: pixel-cat-love 2.4s ease-in-out infinite;
         }
-        @keyframes robot-blink {
-          0%, 92%, 100% { transform: scaleY(1); }
-          96% { transform: scaleY(0.1); }
-        }
-
-        /* Lampu antena & dada berkedip pelan */
-        .robot-glow { animation: robot-glow 1.2s ease-in-out infinite; }
-        @keyframes robot-glow {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
-
-        /* Balon "Beep boop!" muncul sebentar di tengah perjalanan */
-        .robot-bubble { animation: robot-bubble 16s ease-in-out infinite; }
-        @keyframes robot-bubble {
-          0%, 20% { opacity: 0; transform: translateY(6px) scale(0.8); }
-          25%, 40% { opacity: 1; transform: translateY(0) scale(1); }
-          45%, 100% { opacity: 0; transform: translateY(6px) scale(0.8); }
+        @keyframes pixel-cat-love {
+          0%, 65%, 100% { opacity: 0; transform: translateY(5px) scale(0.75); }
+          75%, 90% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .robot-walker { animation: none; transform: translateX(40px); }
-          .robot-bob, .robot-leg, .robot-arm, .robot-eye, .robot-glow { animation: none; }
-          .robot-bubble { animation: none; opacity: 0; }
+          .pixel-cat-runner, .pixel-cat-frame, .pixel-cat-love { animation: none; }
+          .pixel-cat-runner { transform: translateX(40px); }
+          .pixel-cat-frame-0 { opacity: 1; }
+          .pixel-cat-love { opacity: 1; transform: none; }
         }
       `}</style>
 
@@ -818,22 +844,16 @@ export function Skills() {
         </div>
       </div>
 
-      {/* ---------- Jalur robot: robot lucu berjalan lewat di atas garis tanah ---------- */}
+      {/* ---------- Pixel-art cat runs across the ground ---------- */}
       <div className="relative mt-16 h-36 overflow-hidden" aria-hidden="true">
-        {/* Garis tanah putus-putus */}
         <div className="absolute inset-x-0 bottom-3 border-t-2 border-dashed border-surface-white/10"></div>
 
-        {/* Robot + balon + bayangan (satu kesatuan yang bergerak) */}
-        <div className="robot-walker absolute bottom-3 left-0 w-20">
-          {/* Balon ucapan */}
-          <div className="robot-bubble absolute bottom-full left-1/2 mb-1 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-3 py-1 text-xs font-black text-dark shadow-lg">
-            Beep boop!
+        <div className="pixel-cat-runner absolute bottom-3 left-0">
+          <div className="pixel-cat-love absolute bottom-full left-1/2 mb-0 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/90 px-3 py-1 text-sm font-black text-primary shadow-lg">
+            Hi! ♥
           </div>
-
-          <CuteRobot />
-
-          {/* Bayangan di tanah */}
-          <div className="absolute -bottom-1 left-1/2 h-2 w-14 -translate-x-1/2 rounded-full bg-black/40 blur-sm"></div>
+          <PixelCatSprite />
+          <div className="absolute -bottom-1 left-1/2 h-2 w-28 -translate-x-1/2 rounded-full bg-black/40 blur-sm"></div>
         </div>
       </div>
     </section>

@@ -199,14 +199,12 @@ export function Certificates() {
                 className="group text-left bg-surface-white/5 border border-surface-white/10 rounded-[2rem] p-3 hover:bg-surface-white/10 hover:border-accent hover:-translate-y-2 transition-all duration-300 flex flex-col"
               >
                 {/* Gambar sertifikat + lencana peringkat */}
-                <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-surface-white/10">
+                <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-surface-white/10">
                   <ImageWithFallback
                     src={cert.image}
                     alt={cert.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="h-full w-full object-contain"
                   />
-                  {/* Lapisan gelap tipis supaya lencana mudah dibaca */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent"></div>
 
                   {/* Lencana peringkat (hanya tampil jika ada) */}
                   {cert.rank && (

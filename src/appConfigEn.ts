@@ -1,11 +1,11 @@
 // ============================================================
-// KONFIGURASI KONTEN WEBSITE (BAHASA INGGRIS)
-// Struktur file ini harus sama persis dengan appConfig.ts,
-// hanya isinya dalam bahasa Inggris.
+// WEBSITE CONTENT CONFIGURATION (ENGLISH)
+// This file structure must match appConfig.ts exactly,
+// with the content written in English.
 // ============================================================
 export const APP_CONFIG_EN = {
   // ----------------------------------------------------------
-  // DATA PRIBADI (tampil di Hero, About, dan Footer)
+  // PERSONAL DATA (shown in Hero, About, and Footer)
   // ----------------------------------------------------------
   personal: {
     name: "Uaryl Engno Laurenca",
@@ -17,20 +17,20 @@ export const APP_CONFIG_EN = {
   },
 
   // ----------------------------------------------------------
-  // WARNA TEMA
+  // THEME COLORS
   // ----------------------------------------------------------
   theme: {
-    primary: "#250BF0",    // biru utama
-    secondary: "#3B1CFF",  // biru pendukung
-    accent: "#C8FF00",     // hijau neon (tombol & aksen)
-    background: "#F4F7FC", // latar halaman terang
+    primary: "#250BF0",    // primary blue
+    secondary: "#3B1CFF",  // supporting blue
+    accent: "#C8FF00",     // neon green (buttons & accents)
+    background: "#F4F7FC", // light page background
     white: "#FFFFFF",
-    dark: "#111111",       // latar section gelap
-    muted: "#6B7280",      // teks abu-abu
+    dark: "#111111",       // dark section background
+    muted: "#6B7280",      // gray text
   },
 
   // ----------------------------------------------------------
-  // KONTAK & SOSIAL MEDIA
+  // CONTACT & SOCIAL MEDIA
   // ----------------------------------------------------------
   contact: {
     email: "dpa71845@gmail.com",
@@ -39,12 +39,12 @@ export const APP_CONFIG_EN = {
     linkedin:
       "https://www.linkedin.com/in/uaryl-engno-laurenca-b6a979249?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     github: "https://github.com",
-    facebook: "https://facebook.com", // TODO: ganti dengan akun Facebook kamu
-    youtube: "https://youtube.com",   // TODO: ganti dengan channel YouTube kamu
+    facebook: "https://facebook.com", // TODO: replace with your Facebook account
+    youtube: "https://youtube.com",   // TODO: replace with your YouTube channel
   },
 
   // ----------------------------------------------------------
-  // KEAHLIAN (tampil di section Skills)
+  // SKILLS (shown in the Skills section)
   // ----------------------------------------------------------
   skills: {
     programming: ["HTML", "CSS", "JavaScript", "PHP", "Python"],
@@ -54,10 +54,10 @@ export const APP_CONFIG_EN = {
   },
 
   // ----------------------------------------------------------
-  // PROYEK (tampil di section Projects)
-  // demoLink: link demo. Isi "#" jika belum ada
-  // githubLink: dipakai jika demoLink kosong ("#")
-  // Seluruh kartu proyek bisa diklik dan membuka link di tab baru
+  // PROJECTS (shown in the Projects section)
+  // demoLink: demo link. Use "#" if not available yet
+  // githubLink: used if demoLink is empty ("#")
+  // All project cards can be clicked and open links in a new tab
   // ----------------------------------------------------------
   projects: [
     {
@@ -103,7 +103,7 @@ export const APP_CONFIG_EN = {
   ],
 
   // ----------------------------------------------------------
-  // PENGALAMAN (tampil sebagai kartu folder di section Experience)
+  // EXPERIENCE (shown as folder cards in the Experience section)
   // ----------------------------------------------------------
   experience: [
     {
@@ -151,10 +151,10 @@ export const APP_CONFIG_EN = {
   ],
 
   // ----------------------------------------------------------
-  // PENDIDIKAN (tampil sebagai timeline di section Education)
-  // major dan achievements boleh dikosongkan ("")
-  // logo: file di public/assets/images/ (mis. "/assets/images/polije.png")
-  //       boleh dikosongkan (""), nanti tampil huruf awal sekolah
+  // EDUCATION (shown as a timeline in the Education section)
+  // major and achievements can be left empty ("")
+  // logo: file in public/assets/images/ (e.g. "/assets/images/polije.png")
+  //       can also be empty (""), then the school initial will be shown
   // ----------------------------------------------------------
   education: [
     {
@@ -188,8 +188,8 @@ export const APP_CONFIG_EN = {
   ],
 
   // ----------------------------------------------------------
-  // DESAIN (poster, pamflet, dll. Tampil di section Designs)
-  // category: dipakai sebagai tombol filter, mis. "Poster", "Pamphlet"
+  // DESIGNS (posters, pamphlets, etc. shown in the Designs section)
+  // category: used as a filter button, e.g. "Poster", "Pamphlet"
   // ----------------------------------------------------------
   designs: [
     {
@@ -258,8 +258,8 @@ export const APP_CONFIG_EN = {
   ],
 
   // ----------------------------------------------------------
-  // SERTIFIKAT & PENGHARGAAN (tampil di section Certificates & Awards)
-  // image: link internet, atau file di public/assets/images/
+  // CERTIFICATES & AWARDS (shown in the Certificates & Awards section)
+  // image: internet link or file in public/assets/images/
   // ----------------------------------------------------------
   certificates: [
     {
@@ -306,7 +306,7 @@ export const APP_CONFIG_EN = {
   ],
 
   // ----------------------------------------------------------
-  // LAYANAN (tampil di section Services)
+  // SERVICES (shown in the Services section)
   // ----------------------------------------------------------
   services: [
     { title: "Web Development", description: "Building responsive and dynamic websites." },
