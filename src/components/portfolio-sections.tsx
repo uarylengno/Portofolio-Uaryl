@@ -88,7 +88,7 @@ function CertificateModal({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-4xl w-full max-h-[90vh] flex flex-col bg-surface-white rounded-3xl overflow-hidden cursor-default shadow-2xl"
+            className="relative max-w-4xl w-full max-h-[90svh] flex flex-col bg-surface-white rounded-2xl sm:rounded-3xl overflow-hidden cursor-default shadow-2xl"
           >
             {/* Tombol tutup */}
             <button
@@ -100,7 +100,7 @@ function CertificateModal({
             </button>
 
             {/* Gambar sertifikat */}
-            <div className="h-[45vh] sm:h-[55vh] min-h-0 bg-gray-100 flex items-center justify-center">
+            <div className="h-[38svh] sm:h-[55vh] min-h-0 bg-gray-100 flex items-center justify-center">
               <img
                 src={cert.image}
                 alt={cert.title}
@@ -109,14 +109,14 @@ function CertificateModal({
             </div>
 
             {/* Keterangan sertifikat */}
-            <div className="p-6 md:p-8 shrink-0 bg-white border-t border-gray-100 text-left">
+            <div className="p-4 sm:p-6 md:p-8 shrink-0 bg-white border-t border-gray-100 text-left">
               {/* Badge peringkat (hanya tampil jika ada) */}
               {cert.rank && (
                 <div className="inline-block bg-accent/20 text-dark px-3 py-1 rounded-full text-sm font-bold mb-3">
                   {cert.rank}
                 </div>
               )}
-              <h3 className="text-2xl md:text-3xl font-black text-dark tracking-tight mb-2">
+              <h3 className="break-words text-xl sm:text-2xl md:text-3xl font-black text-dark tracking-tight mb-2">
                 {cert.competition || cert.title}
               </h3>
               <p className="text-muted font-medium text-lg">
@@ -175,8 +175,8 @@ export function Certificates() {
                 key={s.label}
                 className="bg-surface-white/5 border border-surface-white/10 rounded-3xl p-4 sm:p-5 text-center"
               >
-                <p className="font-black text-3xl sm:text-4xl text-accent tracking-tight">{s.value}</p>
-                <p className="text-xs sm:text-sm font-bold text-surface-white/60 mt-1">{s.label}</p>
+                <p className="font-black text-2xl sm:text-4xl text-accent tracking-tight">{s.value}</p>
+                <p className="break-words text-[0.65rem] sm:text-sm font-bold text-surface-white/60 mt-1">{s.label}</p>
               </div>
             ))}
           </div>
@@ -263,7 +263,7 @@ export function Services() {
           {config.services.map((service, i) => (
             <div
               key={i}
-              className="bg-surface-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all group"
+              className="bg-surface-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all group"
             >
               <h3 className="text-2xl font-black text-dark tracking-tight mb-4 group-hover:text-primary transition-colors">
                 {service.title}
@@ -403,7 +403,7 @@ export function ContactSection() {
           <div className="space-y-6 mb-12">
             <a
               href={`mailto:${config.contact.email}`}
-              className="flex items-center gap-4 text-surface-white hover:text-accent transition-colors font-bold text-lg"
+              className="flex min-w-0 items-center gap-3 sm:gap-4 break-all text-surface-white hover:text-accent transition-colors font-bold text-sm sm:text-lg"
             >
               <div className={ICON_CIRCLE}>
                 <Mail size={20} />
@@ -415,7 +415,7 @@ export function ContactSection() {
               href={config.contact.whatsapp}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-4 text-surface-white hover:text-accent transition-colors font-bold text-lg"
+              className="flex items-center gap-3 sm:gap-4 text-surface-white hover:text-accent transition-colors font-bold text-sm sm:text-lg"
             >
               <div className={ICON_CIRCLE}>
                 <Phone size={20} />

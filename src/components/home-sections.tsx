@@ -40,13 +40,9 @@ const SMOOTH_EASE = [0.16, 1, 0.3, 1] as const;
 // JUDUL "Porto*folio*"
 // Bagian depan: sans-serif tebal. Huruf "f" dan sisanya: serif italic.
 // Berlaku untuk "Portofolio" (ID) maupun "Portfolio" (EN).
-// Gaya .title-bold dan .title-serif ada di src/index.css
 // ============================================================
 function PortfolioTitle({ text }: { text: string }) {
-  // Cari huruf "f" pertama sebagai titik pemisah
   const i = text.toLowerCase().indexOf('f');
-
-  // Kalau tidak ada huruf "f", tampilkan seluruhnya dengan gaya tebal
   if (i === -1) return <span className="title-bold">{text}</span>;
 
   return (
@@ -89,7 +85,7 @@ export function Hero() {
             {config.personal.role}
           </div>
 
-          {/* Judul besar: Portofolio + nama (ukuran huruf menyesuaikan lebar layar) */}
+          {/* Judul besar: Portofolio + nama */}
           <h1 className="font-black tracking-tighter mb-6 flex flex-col items-start gap-1">
             <span
               className="max-w-full leading-[0.9] text-surface-white break-words"
@@ -138,18 +134,16 @@ export function Hero() {
           <div className="absolute -top-10 -right-10 w-48 h-48 bg-accent/40 rounded-full blur-3xl opacity-60 animate-pulse z-0"></div>
           <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-400/30 rounded-full blur-3xl opacity-60 animate-pulse delay-700 z-0"></div>
 
-          {/* Foto utama (hitam putih, zoom saat di-hover) */}
+          {/* Foto utama */}
           <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden group border-4 border-surface-white/10 shadow-2xl z-10">
             <ImageWithFallback
               src={HERO_IMAGE}
               alt="Uaryl Engno Laurenca"
               className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105"
             />
-            {/* Lapisan warna biru tipis di atas foto */}
             <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
           </div>
 
-          {/* Badge melayang: Web Developer (kiri atas, naik-turun) */}
           <motion.div
             animate={{ y: [0, -12, 0] }}
             transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
@@ -161,7 +155,6 @@ export function Hero() {
             Web Developer
           </motion.div>
 
-          {/* Badge melayang: UI/UX Designer (kanan bawah, turun-naik) */}
           <motion.div
             animate={{ y: [0, 12, 0] }}
             transition={{ repeat: Infinity, duration: 4.2, ease: 'easeInOut', delay: 1 }}
@@ -170,7 +163,6 @@ export function Hero() {
             <Palette size={18} /> UI/UX Designer
           </motion.div>
 
-          {/* Bintang berputar (tengah kiri) */}
           <motion.div
             animate={{ rotate: -360, scale: [1, 1.3, 1] }}
             transition={{ repeat: Infinity, duration: 7, ease: 'linear', delay: 0.5 }}
@@ -179,7 +171,6 @@ export function Hero() {
             <Sparkles size={36} strokeWidth={1.5} />
           </motion.div>
 
-          {/* Bintang berputar (kanan atas) */}
           <motion.div
             animate={{ rotate: 360, scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 6, ease: 'linear' }}
@@ -202,7 +193,7 @@ export function About() {
 
   return (
     <section id="about" className="py-20 md:py-32 px-6 bg-background">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-center">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         {/* ---------- Kolom kiri: foto bulat + lingkaran dekoratif ---------- */}
         <div className="lg:col-span-5 relative">
           <div className="aspect-square rounded-full overflow-hidden border-8 border-surface-white shadow-2xl relative z-10 w-3/4 mx-auto lg:w-full">
@@ -312,7 +303,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       {/* Header: judul + ikon panah (hanya hiasan, karena seluruh kartu sudah jadi link) */}
       <div className="flex justify-between items-start mb-6 gap-4">
         {/* Kata pertama judul dipisah ke baris sendiri */}
-        <h3 className="text-3xl font-black tracking-tight leading-[1.1] pr-4 whitespace-pre-wrap">
+        <h3 className="break-words text-2xl sm:text-3xl font-black tracking-tight leading-[1.1] pr-2 sm:pr-4 whitespace-pre-wrap">
           {project.title.replace(' ', '\n')}
         </h3>
         <div
@@ -397,7 +388,7 @@ export function Designs() {
   const all: Design[] = config.designs ?? [];
 
   const [filter, setFilter] = useState('all');     // kategori yang dipilih
-  const [active, setActive] = useState(0);         // kartu yang sedang di tengah
+  const [active, setActive] = useState(Math.floor((all.length - 1) / 2)); // kartu yang sedang di tengah
   const [preview, setPreview] = useState<Design | null>(null); // gambar yang dibuka penuh
 
   // Kategori dibuat otomatis dari data (Poster, Pamflet, dst.)
@@ -414,8 +405,8 @@ export function Designs() {
   return (
     <section id="designs" className="relative py-20 md:py-32 px-6 bg-dark text-surface-white overflow-hidden">
       {/* Cahaya warna di latar belakang */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-primary rounded-full blur-3xl opacity-40"></div>
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-accent rounded-full blur-3xl opacity-20"></div>
+      <div className="designs-glow-blue absolute -top-32 -left-32 w-96 h-96 bg-primary rounded-full blur-3xl opacity-40"></div>
+      <div className="designs-glow-neon absolute -bottom-32 -right-32 w-96 h-96 bg-accent rounded-full blur-3xl opacity-20"></div>
 
       <div className="relative max-w-7xl mx-auto">
         {/* ---------- Judul & deskripsi ---------- */}
@@ -436,7 +427,11 @@ export function Designs() {
           {['all', ...categories].map((c) => (
             <button
               key={c}
-              onClick={() => { setFilter(c); setActive(0); }}
+              onClick={() => {
+                const filteredDesigns = c === 'all' ? all : all.filter((design) => design.category === c);
+                setFilter(c);
+                setActive(Math.floor((filteredDesigns.length - 1) / 2));
+              }}
               className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
                 filter === c
                   ? 'bg-accent text-dark'
@@ -449,7 +444,7 @@ export function Designs() {
         </div>
 
         {/* ---------- Galeri 3D ---------- */}
-        <div className="relative h-[350px] sm:h-[440px]" style={{ perspective: '1400px' }}>
+        <div className="relative h-[330px] min-[360px]:h-[350px] sm:h-[440px]" style={{ perspective: '1400px' }}>
           {list.map((d, i) => {
             const offset = i - current;   // 0 = tengah, negatif = kiri, positif = kanan
             const abs = Math.abs(offset);
@@ -459,7 +454,7 @@ export function Designs() {
                 // Kartu tengah: buka gambar penuh. Kartu samping: pindah ke tengah
                 onClick={() => (offset === 0 ? setPreview(d) : setActive(i))}
                 aria-label={d.title}
-                className="absolute top-0 left-1/2 w-56 sm:w-72 rounded-3xl bg-surface-white/10 border border-surface-white/20 backdrop-blur-md p-2 pt-7 shadow-2xl transition-all duration-500 ease-out"
+                className="absolute top-0 left-1/2 w-[min(72vw,14rem)] sm:w-72 rounded-3xl bg-surface-white/10 border border-surface-white/20 backdrop-blur-md p-2 pt-7 shadow-2xl transition-all duration-500 ease-out"
                 style={{
                   transform: `translateX(${-50 + offset * 78}%) rotateY(${offset * -30}deg) scale(${offset === 0 ? 1 : 0.86})`,
                   zIndex: 10 - abs,
@@ -476,7 +471,7 @@ export function Designs() {
                 <ImageWithFallback
                   src={d.image}
                   alt={d.title}
-                  className="w-full aspect-[3/4] rounded-2xl bg-surface-white object-contain"
+                  className="block h-auto w-full rounded-2xl"
                 />
               </button>
             );
@@ -488,16 +483,16 @@ export function Designs() {
 
         {/* ---------- Keterangan karya + tombol panah ---------- */}
         {list[current] && (
-          <div className="mt-16 flex items-center justify-center gap-6">
+          <div className="mx-auto mt-16 grid h-32 w-full max-w-2xl grid-cols-[3rem_minmax(0,1fr)_3rem] items-center gap-4">
             <button
               onClick={() => go(-1)} disabled={current === 0} aria-label="Previous"
-              className="w-12 h-12 rounded-full bg-surface-white/10 flex items-center justify-center hover:bg-accent hover:text-dark transition-colors disabled:opacity-30 disabled:hover:bg-surface-white/10 disabled:hover:text-surface-white"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-white/10 transition-colors hover:bg-accent hover:text-dark disabled:opacity-30 disabled:hover:bg-surface-white/10 disabled:hover:text-surface-white"
             >
               <ChevronLeft size={22} />
             </button>
 
-            <div className="text-center min-w-0 max-w-xs sm:max-w-md">
-              <p className="font-black text-xl sm:text-2xl tracking-tight">{list[current].title}</p>
+            <div className="min-w-0 text-center">
+              <p className="break-words font-black text-base sm:text-2xl tracking-tight">{list[current].title}</p>
               <p className="text-surface-white/60 font-medium mt-1">
                 {list[current].category} · {list[current].year}
               </p>
@@ -505,7 +500,7 @@ export function Designs() {
 
             <button
               onClick={() => go(1)} disabled={current === list.length - 1} aria-label="Next"
-              className="w-12 h-12 rounded-full bg-surface-white/10 flex items-center justify-center hover:bg-accent hover:text-dark transition-colors disabled:opacity-30 disabled:hover:bg-surface-white/10 disabled:hover:text-surface-white"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-white/10 transition-colors hover:bg-accent hover:text-dark disabled:opacity-30 disabled:hover:bg-surface-white/10 disabled:hover:text-surface-white"
             >
               <ChevronRight size={22} />
             </button>
@@ -534,7 +529,7 @@ export function Designs() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-3xl w-full cursor-default text-center"
+              className="max-w-3xl w-full max-h-[90svh] overflow-y-auto cursor-default text-center"
             >
               <img
                 src={preview.image} alt={preview.title}
@@ -650,127 +645,6 @@ function SkillCard({ group, index }: { group: SkillGroup; index: number }) {
   );
 }
 
-// ============================================================
-// PIXEL-ART CAT SPRITE (crouch, stand, leap, and run poses)
-// ============================================================
-const PIXEL_CAT_FRAMES = [
-  [
-    '....................................',
-    '......................OOO...........',
-    '.....................OTOOO..........',
-    '....................OTTTTOOO........',
-    '...................OTTTTTTTOK.......',
-    '..................KOTTTTTTTTOK......',
-    '..KKK............KOTTTCCCCCTTOK......',
-    '.KBBKKKKKKKKKKKKKBBTTTCCCCCCCK.......',
-    'KBBBOOOOBBBTTTTTTTTTTCCCECCK..........',
-    '.KBBKKKKKBBTTTTTTTTTTCCCCCCK...........',
-    '..KKK....KBBTTTTTTTTTTCCCPK.............',
-    '..........KBBK...KBBKKKK................',
-    '.........KBBK.....KBBK..................',
-    '........KKKK.......KKKK.................',
-    '....................................',
-    '....................................',
-  ],
-  [
-    '....................................',
-    '..............OOO...................',
-    '.............OTOOO..................',
-    '............OTTTTOOO................',
-    '...........OTTTTTTTOK.................',
-    '..........KOTTTTTTTTOK................',
-    '..........KTTTCCCCCTTOK................',
-    '..........KTTCCCCCCCTOK...............',
-    '..........KTTCCCECCCTOK...............',
-    '..........KTTCCCCCCCPK................',
-    '...........KTTTTTTTK..................',
-    '............KBBTTK.....................',
-    '............KBBTTK.....................',
-    '............KBBTTK.....................',
-    '............KBBTTK.....................',
-    '............KBBTTK.....................',
-    '.....KKKKKKKBBK.KBBK...................',
-    '....KBBBOOOBBK...KKK....................',
-    '.....KKKKKKKK...........................',
-  ],
-  [
-    '....................................',
-    '........................OOO..........',
-    '.......................OTOOO.........',
-    '......................OTTTTOOO.......',
-    '.....................OTTTTTTTOK......',
-    '....................KOTTTTTTTTOK.....',
-    '...................KTTTCCCCCTTOK.....',
-    '..................KTTTCCCCCCCTOK.....',
-    '.............KKK..KTTTCCCECCCTOK.....',
-    '............KBBKKKTTTTCCCCCCCPK......',
-    '...........KBBBOOOBTTTTTTTTTK.........',
-    '..........KBBK....KBBTTTTTK............',
-    '.........KBBK......KBBTTK...............',
-    '........KBBK........KBBK................',
-    '.......KKK...........KKK................',
-    '....................................',
-  ],
-  [
-    '....................................',
-    '...........................OOO.......',
-    '..........................OTOOO......',
-    '.........................OTTTTOOO....',
-    '........................OTTTTTTTOK...',
-    '.......................KOTTTTTTTTOK...',
-    '......................KTTTCCCCCTTOK...',
-    '.....................KTTTCCCCCCCTOK....',
-    '.....KKK............KTTTCCCECCCTOK.....',
-    '....KBBKKKKKKKKKKKKKTTTTCCCCCCCPK......',
-    '...KBBBOOOOBBBTTTTTTTTTTTTTTTK..........',
-    '..KBBKKKKKKKBBTTTTTTTTTTTTTK.............',
-    '...KKK......KBBTTTTTTTTTTK.................',
-    '.............KBBK....KBBK..................',
-    '............KKKK......KKKK.................',
-    '....................................',
-  ],
-] as const;
-
-const PIXEL_CAT_COLORS: Record<string, string> = {
-  K: '#21170F',
-  B: '#87512F',
-  O: '#B8793F',
-  T: '#D9A36A',
-  C: '#F0D2A0',
-  E: '#302016',
-  P: '#B96F63',
-};
-
-function PixelCatSprite() {
-  return (
-    <svg
-      viewBox="0 0 36 20"
-      className="h-24 w-44 overflow-visible"
-      aria-hidden="true"
-      shapeRendering="crispEdges"
-    >
-      {PIXEL_CAT_FRAMES.map((rows, frame) => (
-        <g key={frame} className={`pixel-cat-frame pixel-cat-frame-${frame}`}>
-          {rows.flatMap((row, y) =>
-            [...row].map((color, x) =>
-              color === '.' || color === ' ' ? null : (
-                <rect
-                  key={`${x}-${y}`}
-                  x={x}
-                  y={y}
-                  width="1"
-                  height="1"
-                  fill={PIXEL_CAT_COLORS[color]}
-                />
-              )
-            )
-          )}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 export function Skills() {
   const { t } = useLanguage();
 
@@ -779,45 +653,6 @@ export function Skills() {
       id="skills"
       className="relative overflow-hidden bg-dark py-20 text-surface-white md:py-32"
     >
-      {/* Pixel-art sprite animation respects the user's reduced-motion setting. */}
-      <style>{`
-        .pixel-cat-runner {
-          animation: pixel-cat-run 12s linear infinite;
-        }
-        @keyframes pixel-cat-run {
-          from { transform: translateX(-180px); }
-          to { transform: translateX(calc(100vw + 180px)); }
-        }
-
-        .pixel-cat-frame {
-          opacity: 0;
-          animation: pixel-cat-cycle 1.2s steps(1, end) infinite;
-        }
-        .pixel-cat-frame-0 { animation-delay: 0s; }
-        .pixel-cat-frame-1 { animation-delay: -0.3s; }
-        .pixel-cat-frame-2 { animation-delay: -0.6s; }
-        .pixel-cat-frame-3 { animation-delay: -0.9s; }
-        @keyframes pixel-cat-cycle {
-          0%, 24.99% { opacity: 1; }
-          25%, 100% { opacity: 0; }
-        }
-
-        .pixel-cat-love {
-          animation: pixel-cat-love 2.4s ease-in-out infinite;
-        }
-        @keyframes pixel-cat-love {
-          0%, 65%, 100% { opacity: 0; transform: translateY(5px) scale(0.75); }
-          75%, 90% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .pixel-cat-runner, .pixel-cat-frame, .pixel-cat-love { animation: none; }
-          .pixel-cat-runner { transform: translateX(40px); }
-          .pixel-cat-frame-0 { opacity: 1; }
-          .pixel-cat-love { opacity: 1; transform: none; }
-        }
-      `}</style>
-
       {/* Cahaya warna di latar belakang */}
       <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary opacity-40 blur-3xl"></div>
       <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-accent opacity-10 blur-3xl"></div>
@@ -844,18 +679,6 @@ export function Skills() {
         </div>
       </div>
 
-      {/* ---------- Pixel-art cat runs across the ground ---------- */}
-      <div className="relative mt-16 h-36 overflow-hidden" aria-hidden="true">
-        <div className="absolute inset-x-0 bottom-3 border-t-2 border-dashed border-surface-white/10"></div>
-
-        <div className="pixel-cat-runner absolute bottom-3 left-0">
-          <div className="pixel-cat-love absolute bottom-full left-1/2 mb-0 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/90 px-3 py-1 text-sm font-black text-primary shadow-lg">
-            Hi! ♥
-          </div>
-          <PixelCatSprite />
-          <div className="absolute -bottom-1 left-1/2 h-2 w-28 -translate-x-1/2 rounded-full bg-black/40 blur-sm"></div>
-        </div>
-      </div>
     </section>
   );
 }

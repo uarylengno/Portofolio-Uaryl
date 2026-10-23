@@ -41,7 +41,7 @@ export const APP_CONFIG = {
       "https://www.linkedin.com/in/uaryl-engno-laurenca-b6a979249?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     github: "https://github.com",
     facebook: "https://facebook.com", // TODO: ganti dengan akun Facebook kamu
-    youtube: "https://youtube.com",   // TODO: ganti dengan channel YouTube kamu
+    youtube: "https://youtube.com/@uarylengnolaurenca849?si=PL3sAyYv7Lv-YIWR",
   },
 
   // ----------------------------------------------------------

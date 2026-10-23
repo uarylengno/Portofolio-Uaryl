@@ -161,7 +161,7 @@ function ExperienceCard({
               <p className={`font-bold mt-1 ${theme.company}`}>{exp.company}</p>
             </div>
             <div
-              className={`${theme.pill} px-4 py-1.5 rounded-full text-sm font-bold border inline-block shadow-sm whitespace-nowrap`}
+              className={`${theme.pill} max-w-full px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold border inline-block shadow-sm whitespace-nowrap`}
             >
               {exp.year}
             </div>
@@ -240,22 +240,22 @@ function EducationItem({
 
       {/* Kartu isi pendidikan */}
       <div className="pl-14 md:pl-20 w-full">
-        <div className="bg-background p-6 sm:p-8 md:p-10 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-6 hover:shadow-lg transition-shadow">
+        <div className="bg-background p-5 sm:p-8 md:p-10 rounded-[1.5rem] sm:rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-5 sm:gap-6 hover:shadow-lg transition-shadow">
           {/* Kiri: logo + sekolah, jurusan, prestasi */}
           <div className="flex items-start gap-4 sm:gap-5 min-w-0">
             <SchoolLogo src={edu.logo} name={edu.school} />
 
             <div className="min-w-0">
-              <h4 className="font-black text-2xl sm:text-3xl text-dark tracking-tight mb-2 break-words">
+              <h4 className="font-black text-xl sm:text-2xl md:text-3xl text-dark tracking-tight mb-2 break-words">
                 {edu.school}
               </h4>
 
               {/* Jurusan (hanya tampil jika ada) */}
-              {edu.major && <p className="text-xl text-primary font-bold mb-4">{edu.major}</p>}
+              {edu.major && <p className="text-lg sm:text-xl text-primary font-bold mb-4 break-words">{edu.major}</p>}
 
               {/* Prestasi (hanya tampil jika ada) */}
               {edu.achievements && (
-                <p className="text-muted font-medium bg-surface-white inline-block px-4 py-2 rounded-full border border-gray-200 text-sm">
+                <p className="text-muted font-medium bg-surface-white inline-block max-w-full break-words px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full border border-gray-200 text-xs sm:text-sm">
                   {edu.achievements}
                 </p>
               )}

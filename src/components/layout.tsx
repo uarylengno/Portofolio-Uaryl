@@ -132,7 +132,7 @@ export function Navbar() {
         </a>
 
         {/* ---------- Menu Desktop ---------- */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden xl:flex items-center space-x-8">
           {navLinks.map((item) => (
             <a
               key={item.label}
@@ -148,7 +148,7 @@ export function Navbar() {
             href="#contact"
             className="bg-accent text-dark px-6 py-2 rounded-full font-bold text-sm tracking-wider hover:bg-white hover:scale-105 transition-all"
           >
-            {t('KONTAK', 'CONTACT')} &rarr;
+            {t('KONTAK', 'CONTACT')}
           </a>
 
           {/* Ikon tiga garis: bahasa & admin */}
@@ -156,7 +156,7 @@ export function Navbar() {
         </div>
 
         {/* ---------- Tombol Mobile (hanya hamburger) ---------- */}
-        <div className="md:hidden flex items-center z-50 relative">
+        <div className="xl:hidden flex items-center z-50 relative">
           <button onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
             {isOpen ? (
               <X size={28} className="text-dark" />
@@ -182,7 +182,7 @@ export function Navbar() {
                 key={item.label}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="text-3xl sm:text-4xl font-black text-dark hover:text-primary transition-colors tracking-tighter"
+                className="text-2xl sm:text-4xl font-black text-dark hover:text-primary transition-colors tracking-tighter"
               >
                 {item.label}
               </a>
@@ -194,7 +194,7 @@ export function Navbar() {
               onClick={() => setIsOpen(false)}
               className="bg-primary text-surface-white px-8 py-4 rounded-full font-bold text-xl tracking-wider hover:bg-accent hover:text-dark transition-all mt-4"
             >
-              {t('KONTAK', 'CONTACT')} &rarr;
+              {t('KONTAK', 'CONTACT')}
             </a>
 
             {/* Ganti bahasa & masuk admin */}

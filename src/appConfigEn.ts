@@ -40,7 +40,7 @@ export const APP_CONFIG_EN = {
       "https://www.linkedin.com/in/uaryl-engno-laurenca-b6a979249?utm_source=share_via&utm_content=profile&utm_medium=member_android",
     github: "https://github.com",
     facebook: "https://facebook.com", // TODO: replace with your Facebook account
-    youtube: "https://youtube.com",   // TODO: replace with your YouTube channel
+    youtube: "https://youtube.com/@uarylengnolaurenca849?si=PL3sAyYv7Lv-YIWR",
   },
 
   // ----------------------------------------------------------
