@@ -12,7 +12,6 @@ import {
   X,
   Trophy,
   Medal,
-  MapPin,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -473,17 +472,6 @@ export function ContactSection() {
               WhatsApp Message
             </a>
 
-            <a
-              href="https://maps.app.goo.gl/ZvPoehmBKUjc3XzJ9"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-3 sm:gap-4 text-surface-white hover:text-accent transition-colors font-bold text-sm sm:text-lg"
-            >
-              <div className={ICON_CIRCLE}>
-                <MapPin size={20} />
-              </div>
-              {t('Lihat lokasi di Google Maps', 'View location on Google Maps')}
-            </a>
           </div>
 
           {/* Ikon sosial media (dibuat otomatis dari daftar socialLinks) */}
