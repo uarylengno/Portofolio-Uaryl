@@ -203,8 +203,9 @@ export function Navbar() {
         <audio
           ref={audioRef}
           src="/assets/audio/Merajut_Asa.mp3"
+          autoPlay
           loop
-          preload="none"
+          preload="auto"
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onError={() => {
