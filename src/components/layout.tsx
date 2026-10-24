@@ -133,11 +133,45 @@ export function Navbar() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    let attemptInProgress = false;
+
+    const removeGestureListeners = () => {
+      document.removeEventListener('pointerdown', startMusic);
+      document.removeEventListener('touchstart', startMusic);
+      document.removeEventListener('keydown', startMusic);
+    };
+
+    const startMusic = () => {
+      if (attemptInProgress) return;
+      if (!audio.paused) {
+        removeGestureListeners();
+        return;
+      }
+
+      attemptInProgress = true;
+      audio.play().then(
+        () => {
+          removeGestureListeners();
+        },
+        (error: unknown) => {
+          attemptInProgress = false;
+          if (error instanceof DOMException && error.name === 'NotAllowedError') return;
+          setMusicError(true);
+          removeGestureListeners();
+        }
+      );
+    };
+
+    document.addEventListener('pointerdown', startMusic);
+    document.addEventListener('touchstart', startMusic);
+    document.addEventListener('keydown', startMusic);
 
     audio.play().catch((error: unknown) => {
       if (error instanceof DOMException && error.name === 'NotAllowedError') return;
       setMusicError(true);
     });
+
+    return removeGestureListeners;
   }, []);
 
   // Pantau scroll: setelah 50px, navbar berubah jadi putih
