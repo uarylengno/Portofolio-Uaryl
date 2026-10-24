@@ -136,39 +136,64 @@ function ExperienceCard({
   return (
     // Animasi muncul dari kiri saat kartu masuk layar (sekali saja)
     <motion.div
-      initial={{ opacity: 0, x: -30 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      initial={{ opacity: 0, y: 48, x: index % 2 === 0 ? -28 : 28, rotate: index % 2 === 0 ? -3 : 3, scale: 0.94 }}
+      whileInView={{ opacity: 1, y: 0, x: 0, rotate: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.75, delay: index * 0.13, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -9, scale: 1.025, rotate: index % 2 === 0 ? 0.6 : -0.6 }}
       className="relative flex items-start group"
     >
       <div className="w-full h-full relative">
         {/* Tab folder (bagian kecil di atas kartu) */}
-        <div
-          className={`absolute -top-4 left-4 h-6 w-32 ${theme.bg} rounded-t-lg border-t border-l border-r border-white/10 z-0`}
-        ></div>
+        <motion.div
+          className={`absolute -top-4 left-4 h-6 w-32 ${theme.bg} rounded-t-lg border-t border-l border-r border-white/10 z-0 origin-left`}
+          whileHover={{ scaleX: 1.14, x: 4 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+        />
 
         {/* Badan folder */}
         <div
-          className={`relative z-10 ${theme.bg} p-8 rounded-3xl rounded-tl-none shadow-md border border-white/10 transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-xl h-full flex flex-col`}
+          className={`relative z-10 ${theme.bg} p-8 rounded-3xl rounded-tl-none shadow-md border border-white/10 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-black/20 h-full flex flex-col overflow-hidden`}
         >
+          <motion.div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-white/20 blur-2xl"
+            initial={{ opacity: 0, scale: 0.6 }}
+            whileHover={{ opacity: 1, scale: 1.3, x: -10, y: 10 }}
+            transition={{ duration: 0.55 }}
+          />
           {/* Baris atas: jabatan, perusahaan, tahun */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+          <div className="relative z-10 flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
             <div>
-              <h4 className={`font-black text-xl sm:text-2xl tracking-tight break-words ${theme.title}`}>
+              <motion.h4
+                className={`font-black text-xl sm:text-2xl tracking-tight break-words ${theme.title}`}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: index * 0.13 + 0.18 }}
+              >
                 {exp.role}
-              </h4>
+              </motion.h4>
               <p className={`font-bold mt-1 ${theme.company}`}>{exp.company}</p>
             </div>
-            <div
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: 2 }}
               className={`${theme.pill} max-w-full px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold border inline-block shadow-sm whitespace-nowrap`}
             >
               {exp.year}
-            </div>
+            </motion.div>
           </div>
 
           {/* Deskripsi pekerjaan */}
-          <p className={`font-medium leading-relaxed mt-auto ${theme.desc}`}>{exp.description}</p>
+          <motion.p
+            className={`relative z-10 font-medium leading-relaxed mt-auto ${theme.desc}`}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: index * 0.13 + 0.28 }}
+          >
+            {exp.description}
+          </motion.p>
         </div>
       </div>
     </motion.div>
@@ -180,8 +205,20 @@ export function Experience() {
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
   return (
-    <section id="experience" className="py-20 md:py-32 px-6 bg-primary">
-      <div className="max-w-4xl mx-auto">
+    <section id="experience" className="relative isolate overflow-hidden py-20 md:py-32 px-6 bg-primary">
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-32 top-1/4 h-80 w-80 rounded-full bg-accent/20 blur-3xl"
+        animate={{ x: [0, 50, 0], y: [0, -28, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-white/10 blur-3xl"
+        animate={{ x: [0, -42, 0], y: [0, 32, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <div className="relative mx-auto max-w-4xl">
         <SectionTitle className="text-surface-white">EXPERIENCE</SectionTitle>
 
         {/* Grid kartu pengalaman: 1 kolom di HP, 2 kolom di layar lebar */}

@@ -12,6 +12,12 @@ import {
   X,
   Trophy,
   Medal,
+  Code,
+  Globe,
+  Sparkles,
+  Palette,
+  Smartphone,
+  Monitor,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -298,29 +304,81 @@ export function Certificates() {
 export function Services() {
   const { language } = useLanguage();
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
+  const serviceIcons = [Code, Globe, Sparkles, Palette, Smartphone, Monitor];
 
   return (
-    <section className="py-20 md:py-32 px-6 bg-background">
+    <section className="relative overflow-hidden py-20 md:py-32 px-6 bg-background">
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        animate={{ x: [0, 42, 0], y: [0, 28, 0], scale: [1, 1.18, 1] }}
+        transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-accent/20 blur-3xl"
+        animate={{ x: [0, -38, 0], y: [0, -32, 0], scale: [1, 1.16, 1] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+      />
       <div className="max-w-7xl mx-auto">
         {/* Judul section */}
         <div className="text-center mb-20">
-          <h2 className="font-black text-4xl md:text-5xl lg:text-7xl text-dark tracking-tighter leading-none">
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.7 }}
+            transition={{ duration: 0.65, ease: 'easeOut' }}
+            className="font-black text-4xl md:text-5xl lg:text-7xl text-dark tracking-tighter leading-none"
+          >
             SERVICES
-          </h2>
+          </motion.h2>
         </div>
 
         {/* Grid kartu layanan */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {config.services.map((service, i) => (
-            <div
+            <motion.div
               key={i}
-              className="bg-surface-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all group"
+              initial={{ opacity: 0, y: 42, scale: 0.94, rotate: i % 2 === 0 ? -2 : 2 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                duration: 0.65,
+                delay: (i % 3) * 0.12,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              whileHover={{ y: -10, scale: 1.025, rotate: i % 2 === 0 ? 1 : -1 }}
+              className="group relative overflow-hidden rounded-3xl border border-gray-100 bg-surface-white p-6 shadow-sm transition-shadow hover:border-primary/30 hover:shadow-2xl sm:p-8"
             >
-              <h3 className="text-2xl font-black text-dark tracking-tight mb-4 group-hover:text-primary transition-colors">
+              <motion.div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-12 -top-12 h-36 w-36 rounded-full bg-primary/5"
+                whileHover={{ scale: 1.8, opacity: 0.9 }}
+                transition={{ duration: 0.6 }}
+              />
+              <motion.div
+                className="relative mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20"
+                whileHover={{ rotate: [0, -12, 12, 0], scale: 1.12 }}
+                transition={{ duration: 0.55 }}
+              >
+                {(() => {
+                  const Icon = serviceIcons[i % serviceIcons.length];
+                  return <Icon size={26} strokeWidth={2.2} aria-hidden="true" />;
+                })()}
+              </motion.div>
+              <h3 className="relative mb-4 text-2xl font-black tracking-tight text-dark transition-colors group-hover:text-primary">
                 {service.title}
               </h3>
-              <p className="text-muted font-medium">{service.description}</p>
-            </div>
+              <p className="relative text-muted font-medium leading-relaxed">{service.description}</p>
+              <motion.div
+                aria-hidden="true"
+                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary via-accent to-primary"
+                initial={{ width: '0%' }}
+                whileInView={{ width: '100%' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 + (i % 3) * 0.12 }}
+              />
+            </motion.div>
           ))}
         </div>
       </div>

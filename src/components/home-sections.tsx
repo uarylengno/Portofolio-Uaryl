@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowUpRight,
   Code2,
+  Heart,
   Sparkles,
   Palette,
   ChevronLeft,
@@ -188,46 +189,115 @@ export function About() {
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
   return (
-    <section id="about" className="py-20 md:py-32 px-6 bg-background">
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+    <section id="about" className="relative isolate overflow-hidden py-20 md:py-32 px-6 bg-background">
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-28 top-12 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+        animate={{ x: [0, 42, 0], y: [0, 34, 0], scale: [1, 1.2, 1] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-accent/20 blur-3xl"
+        animate={{ x: [0, -36, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         {/* ---------- Kolom kiri: foto bulat + lingkaran dekoratif ---------- */}
-        <div className="lg:col-span-5 relative">
-          <div className="aspect-square rounded-full overflow-hidden border-8 border-surface-white shadow-2xl relative z-10 w-3/4 mx-auto lg:w-full">
+        <motion.div
+          className="lg:col-span-5 relative"
+          initial={{ opacity: 0, x: -60, rotate: -7, scale: 0.88 }}
+          whileInView={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <motion.div
+            aria-hidden="true"
+            className="absolute top-0 right-0 z-0 h-32 w-32 rounded-full bg-accent"
+            animate={{ x: [0, 10, 0], y: [0, -16, 0], scale: [1, 1.08, 1] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            aria-hidden="true"
+            className="absolute bottom-0 left-0 z-0 h-48 w-48 rounded-full bg-primary"
+            animate={{ x: [0, -10, 0], y: [0, 14, 0], scale: [1, 1.06, 1] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="relative z-10 mx-auto aspect-square w-3/4 overflow-hidden rounded-full border-8 border-surface-white bg-surface-white shadow-2xl lg:w-full"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            whileHover={{ scale: 1.035, rotate: 2 }}
+          >
             <ImageWithFallback
               src={ABOUT_IMAGE}
               alt="Logo Aril Engno Creative"
               className="w-full h-full object-contain p-6"
             />
-          </div>
-          {/* Lingkaran hijau (kanan atas) dan biru (kiri bawah) */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-accent rounded-full -z-0 translate-x-4 -translate-y-4"></div>
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary rounded-full -z-0 -translate-x-8 translate-y-8"></div>
-        </div>
+            <motion.div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent"
+              animate={{ x: ['-100%', '200%'] }}
+              transition={{ duration: 1.1, repeat: Infinity, repeatDelay: 4.5, ease: 'easeInOut' }}
+            />
+          </motion.div>
+        </motion.div>
 
         {/* ---------- Kolom kanan: teks ---------- */}
-        <div className="lg:col-span-7">
+        <motion.div
+          className="lg:col-span-7"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.14, delayChildren: 0.12 } },
+          }}
+        >
           {/* Label kecil */}
-          <div className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6">
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 18 }, visible: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+            className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase mb-6"
+          >
             {t('TENTANG SAYA', 'ABOUT ME')}
-          </div>
+          </motion.div>
 
           {/* Judul (kata terakhir berwarna biru) */}
-          <h2 className="font-black text-dark text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[1] mb-8">
+          <motion.h2
+            variants={{ hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.65, ease: 'easeOut' }}
+            className="font-black text-dark text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[1] mb-8"
+          >
             {t('Lebih dari sekadar ', 'More than just a ')}
-            <span className="text-primary">{t('Kreator.', 'Creator.')}</span>
-          </h2>
+            <motion.span
+              className="inline-block text-primary"
+              animate={{ color: ['#250BF0', '#7C3AED', '#250BF0'] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'linear' }}
+            >
+              {t('Kreator.', 'Creator.')}
+            </motion.span>
+          </motion.h2>
 
           {/* Deskripsi: paragraf pertama dari config, kedua ditulis langsung */}
           <div className="space-y-6 text-lg text-dark/80 font-medium">
-            <p>{config.personal.description}</p>
-            <p>
+            <motion.p
+              variants={{ hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            >
+              {config.personal.description}
+            </motion.p>
+            <motion.p
+              variants={{ hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+            >
               {t(
                 'Saya meraih Juara 2 Aplikasi Dapur Kuliner Pak Ndut di Java Tech Exhibition 4.0, Juara 1 lomba poster Think Before You Post dan Java Tech Exhibition 3.0, serta Juara 3 Java Tech Exhibition 2.0. Saya juga aktif sebagai peserta dan panitia di berbagai kegiatan kampus.',
                 'My achievements include 2nd Place for the Pak Ndut Culinary Kitchen app at Java Tech Exhibition 4.0, 1st Place in the Think Before You Post and Java Tech Exhibition 3.0 poster competitions, and 3rd Place at Java Tech Exhibition 2.0. I have also taken part as a participant and committee member in campus events.'
               )}
-            </p>
+            </motion.p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -253,6 +323,21 @@ const PROJECT_STYLES = {
   },
 };
 
+const LOVE_PARTICLES = [
+  { x: -78, y: -62, size: 18, rotate: -24 },
+  { x: -60, y: -108, size: 14, rotate: 18 },
+  { x: -38, y: -78, size: 22, rotate: -12 },
+  { x: -16, y: -126, size: 13, rotate: 26 },
+  { x: 8, y: -88, size: 19, rotate: -20 },
+  { x: 29, y: -120, size: 15, rotate: 14 },
+  { x: 52, y: -76, size: 22, rotate: 24 },
+  { x: 76, y: -106, size: 14, rotate: -18 },
+  { x: -92, y: -24, size: 13, rotate: 12 },
+  { x: 94, y: -36, size: 16, rotate: -28 },
+  { x: -49, y: -31, size: 12, rotate: 22 },
+  { x: 48, y: -28, size: 13, rotate: -14 },
+];
+
 // Bentuk data satu proyek (diambil dari appConfig)
 type Project = {
   id: string;
@@ -266,9 +351,21 @@ type Project = {
   comingSoon?: boolean;
 };
 
+function readProjectLike(projectId: string) {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.localStorage.getItem(`portfolio-project-like-${projectId}`) === 'true';
+  } catch (error) {
+    console.error('Could not read saved project like:', error);
+    return false;
+  }
+}
+
 // Satu kartu proyek
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   const { t } = useLanguage();
+  const [liked, setLiked] = useState(() => readProjectLike(project.id));
+  const [loveBurst, setLoveBurst] = useState(0);
   // Setiap kartu ke-2, 5, 8, ... memakai gaya biru
   const style = index % 3 === 1 ? PROJECT_STYLES.blue : PROJECT_STYLES.white;
 
@@ -283,26 +380,19 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     ? project.githubLink
     : undefined;
 
-  // Seluruh kartu menjadi link (buka di tab baru) jika link tersedia
-  const Card: any = projectLink ? motion.a : motion.div;
-  const linkProps = projectLink
-    ? { href: projectLink, target: '_blank', rel: 'noreferrer', 'aria-label': project.title }
-    : {};
+  const toggleLike = () => {
+    const nextLiked = !liked;
+    setLiked(nextLiked);
+    if (nextLiked) setLoveBurst((current) => current + 1);
+    try {
+      window.localStorage.setItem(`portfolio-project-like-${project.id}`, String(nextLiked));
+    } catch (error) {
+      console.error('Could not save project like:', error);
+    }
+  };
 
-  return (
-    // Animasi muncul dari bawah saat kartu masuk layar (sekali saja)
-    <Card
-      {...linkProps}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className={`group rounded-[2.5rem] p-6 lg:p-8 flex flex-col h-full border-[3px] transition-transform ${
-        projectLink ? 'hover:-translate-y-2' : ''
-      } ${
-        projectLink ? 'cursor-pointer' : ''
-      } ${style.card}`}
-    >
+  const projectContent = (
+    <>
       {/* Header: judul + ikon panah (hanya hiasan, karena seluruh kartu sudah jadi link) */}
       <div className="flex justify-between items-start mb-6 gap-4">
         {/* Kata pertama judul dipisah ke baris sendiri */}
@@ -356,7 +446,100 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
         </div>
       )}
-    </Card>
+    </>
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className={`group relative flex h-full flex-col rounded-[2.5rem] border-[3px] p-6 transition-transform lg:p-8 ${
+        projectLink ? 'hover:-translate-y-2' : ''
+      } ${style.card}`}
+    >
+      {projectLink ? (
+        <a
+          href={projectLink}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={project.title}
+          className="flex flex-1 flex-col"
+        >
+          {projectContent}
+        </a>
+      ) : (
+        <div className="flex flex-1 flex-col">{projectContent}</div>
+      )}
+
+      <div className="relative z-10 mt-4 flex justify-end">
+        <motion.button
+          type="button"
+          onClick={toggleLike}
+          whileTap={{ scale: 0.78, rotate: -5 }}
+          animate={liked ? { scale: [1, 1.16, 0.96, 1], rotate: [0, -7, 6, 0] } : { scale: 1, rotate: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          aria-pressed={liked}
+          aria-label={
+            liked
+              ? t(`Hapus suka untuk ${project.title}`, `Unlike ${project.title}`)
+              : t(`Sukai ${project.title}`, `Like ${project.title}`)
+          }
+          className={`relative inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-colors ${
+            liked
+              ? 'bg-rose-100 text-rose-600'
+              : 'bg-white/70 text-muted hover:bg-rose-50 hover:text-rose-500'
+          }`}
+        >
+          <AnimatePresence>
+            {loveBurst > 0 && liked && (
+              <span key={loveBurst} className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.2, rotate: -25 }}
+                  animate={{ opacity: [0, 1, 1, 0], scale: [0.2, 1.55, 1.15, 0.6], rotate: [-25, 12, -8, 0] }}
+                  transition={{ duration: 0.85, times: [0, 0.28, 0.62, 1], ease: 'easeOut' }}
+                  className="absolute text-rose-500 drop-shadow-lg"
+                >
+                  <Heart size={58} fill="currentColor" strokeWidth={1.5} />
+                </motion.span>
+                {LOVE_PARTICLES.map((particle, index) => (
+                  <motion.span
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.1, x: 0, y: 0, rotate: 0 }}
+                    animate={{
+                      opacity: [0, 1, 1, 0],
+                      scale: [0.1, 1.25, 0.9, 0.2],
+                      x: [0, particle.x * 0.65, particle.x],
+                      y: [0, particle.y * 0.55, particle.y],
+                      rotate: [0, particle.rotate, particle.rotate * 1.7],
+                    }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1.05, delay: index * 0.025, ease: 'easeOut' }}
+                    className="absolute left-1/2 top-1/2 text-rose-500 drop-shadow-sm"
+                  >
+                    <Heart size={particle.size} fill="currentColor" />
+                  </motion.span>
+                ))}
+                <motion.span
+                  initial={{ opacity: 0.8, scale: 0.2 }}
+                  animate={{ opacity: 0, scale: 2.8 }}
+                  transition={{ duration: 0.65, ease: 'easeOut' }}
+                  className="absolute h-14 w-14 rounded-full border-[3px] border-rose-400"
+                />
+              </span>
+            )}
+          </AnimatePresence>
+          <motion.span
+            animate={liked ? { scale: [1, 1.65, 0.85, 1.2, 1] } : { scale: 1 }}
+            transition={{ duration: 0.55, times: [0, 0.25, 0.55, 0.78, 1] }}
+          >
+            <Heart size={18} fill={liked ? 'currentColor' : 'none'} />
+          </motion.span>
+          {liked ? t('Disukai', 'Liked') : t('Suka', 'Like')}
+        </motion.button>
+      </div>
+    </motion.div>
   );
 }
 
