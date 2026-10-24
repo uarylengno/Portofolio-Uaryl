@@ -243,7 +243,6 @@ export function Footer() {
     { label: 'Instagram', href: config.contact.instagram },
     { label: 'LinkedIn', href: config.contact.linkedin },
     { label: 'GitHub', href: config.contact.github },
-    { label: 'Facebook', href: config.contact.facebook },
     { label: 'YouTube', href: config.contact.youtube },
   ];
 

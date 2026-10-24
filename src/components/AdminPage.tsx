@@ -12,7 +12,12 @@ import { APP_CONFIG_EN } from '../appConfigEn';
 
 type Lang = 'id' | 'en';
 type Item = Record<string, any>;
-type Field = { key: string; label: string; kind?: 'area' | 'list' };
+type Field = {
+  key: string;
+  label: string;
+  kind?: 'area' | 'list' | 'select';
+  options?: { value: string; label: string }[];
+};
 
 // ============================================================
 // PENYIMPANAN SESI (hilang otomatis saat tab ditutup)
@@ -105,10 +110,20 @@ const SECTIONS: Record<
       { key: 'issuer', label: 'Penyelenggara' },
       { key: 'year', label: 'Tahun' },
       { key: 'image', label: 'Link gambar (atau /assets/images/nama.jpg)' },
-      { key: 'rank', label: 'Peringkat (mis. Juara 1)' },
+      {
+        key: 'category',
+        label: 'Kategori sertifikat',
+        kind: 'select',
+        options: [
+          { value: 'achievement', label: 'Sertifikat Prestasi' },
+          { value: 'non-achievement', label: 'Sertifikat Non-Prestasi' },
+          { value: 'committee', label: 'Sertifikat Kepanitiaan' },
+        ],
+      },
+      { key: 'rank', label: 'Peringkat (isi untuk prestasi; kosong untuk non-prestasi)' },
       { key: 'competition', label: 'Nama lomba' },
     ],
-    blank: () => ({ title: '', issuer: '', year: '', image: '', rank: '', competition: '' }),
+    blank: () => ({ title: '', issuer: '', year: '', image: '', category: 'non-achievement', rank: '', competition: '' }),
   },
 };
 
@@ -122,7 +137,7 @@ const SHARED: Record<string, string[]> = {
   designs: ['id', 'image', 'year'],
   experience: [],
   education: ['logo'],
-  certificates: ['image', 'year'],
+  certificates: ['image', 'year', 'category'],
 };
 
 // Ambil sebagian kolom dari satu item
@@ -166,7 +181,15 @@ function FieldInput({ field, value, onChange }: { field: Field; value: any; onCh
   return (
     <label className="block">
       <span className="text-xs font-bold text-muted">{field.label}</span>
-      {field.kind === 'area'
+      {field.kind === 'select'
+        ? (
+          <select value={value ?? ''} onChange={(e) => onChange(e.target.value)} className={INPUT}>
+            {field.options?.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+        )
+        : field.kind === 'area'
         ? <textarea rows={3} value={text} onChange={(e) => change(e.target.value)} className={`${INPUT} resize-none`} />
         : <input value={text} onChange={(e) => change(e.target.value)} className={INPUT} />}
     </label>
@@ -666,7 +689,14 @@ export function AdminPage() {
               )}
 
               {section.fields.map((f) => (
-                <FieldInput key={f.key} field={f} value={editing.item[f.key]}
+                <FieldInput
+                  key={f.key}
+                  field={f}
+                  value={
+                    f.key === 'category' && !editing.item.category
+                      ? editing.item.rank?.trim() ? 'achievement' : 'non-achievement'
+                      : editing.item[f.key]
+                  }
                   onChange={(v) => setEditing({ ...editing, item: { ...editing.item, [f.key]: v } })} />
               ))}
             </div>

@@ -9,7 +9,6 @@ import {
   Instagram,
   Linkedin,
   Github,
-  Facebook,
   Youtube,
   X,
   Trophy,
@@ -27,11 +26,14 @@ import { ImageWithFallback } from './ImageWithFallback';
 // ============================================================
 
 // Bentuk data satu sertifikat (diambil dari appConfig)
+type CertificateCategory = 'achievement' | 'non-achievement' | 'committee';
+
 type Certificate = {
   title: string;
   issuer: string;
   year: string;
   image: string;
+  category?: CertificateCategory;
   rank?: string;        // opsional: peringkat, mis. "Juara 1"
   competition?: string; // opsional: nama lomba
 };
@@ -134,15 +136,25 @@ export function Certificates() {
   const { language, t } = useLanguage();
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
   const certs: Certificate[] = config.certificates;
+  const certificateCategories: { id: CertificateCategory; label: string }[] = [
+    { id: 'achievement', label: t('Sertifikat Prestasi', 'Achievement Certificates') },
+    { id: 'non-achievement', label: t('Sertifikat Non-Prestasi', 'Non-Achievement Certificates') },
+    { id: 'committee', label: t('Sertifikat Kepanitiaan', 'Committee Certificates') },
+  ];
 
   // Sertifikat yang sedang dibuka di popup (null = popup tertutup)
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
+  const [activeCategory, setActiveCategory] = useState<CertificateCategory>('achievement');
 
   // Angka ringkasan (dihitung otomatis dari data)
   const firstPlaces = certs.filter((c) => getRankNumber(c.rank) === 1).length;
   const latestYear = certs.length ? Math.max(...certs.map((c) => Number(c.year) || 0)) : '-';
+  const activeCertificates = certs.filter((cert) => {
+    const category = cert.category ?? (cert.rank?.trim() ? 'achievement' : 'non-achievement');
+    return category === activeCategory;
+  });
   const stats = [
-    { value: certs.length, label: t('Penghargaan', 'Awards') },
+    { value: certs.length, label: t('Sertifikat', 'Certificates') },
     { value: firstPlaces, label: t('Juara 1', '1st Places') },
     { value: latestYear, label: t('Terbaru', 'Latest') },
   ];
@@ -158,7 +170,7 @@ export function Certificates() {
         <div className="grid lg:grid-cols-12 gap-10 items-end mb-16">
           <div className="lg:col-span-7">
             <h2 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
-              CERTIFICATES<br />& AWARDS
+              CERTIFICATES
             </h2>
             <p className="text-surface-white/60 text-lg font-medium max-w-xl">
               {t(
@@ -182,57 +194,87 @@ export function Certificates() {
           </div>
         </div>
 
-        {/* ---------- Galeri kartu sertifikat ---------- */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {certs.map((cert, i) => {
-            const rankNumber = getRankNumber(cert.rank);
-            const medal = MEDAL_STYLE[rankNumber] ?? 'bg-surface-white/20 text-surface-white';
+        {/* ---------- Pilihan kategori sertifikat ---------- */}
+        <div className="flex flex-wrap gap-3 mb-8" role="tablist" aria-label={t('Kategori sertifikat', 'Certificate categories')}>
+          {certificateCategories.map((category) => {
+            const count = certs.filter((cert) => {
+              const itemCategory = cert.category ?? (cert.rank?.trim() ? 'achievement' : 'non-achievement');
+              return itemCategory === category.id;
+            }).length;
+            const isActive = activeCategory === category.id;
 
             return (
-              <motion.button
-                key={i}
-                onClick={() => setSelectedCert(cert)}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
-                className="group text-left bg-surface-white/5 border border-surface-white/10 rounded-[2rem] p-3 hover:bg-surface-white/10 hover:border-accent hover:-translate-y-2 transition-all duration-300 flex flex-col"
+              <button
+                key={category.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveCategory(category.id)}
+                className={`rounded-full px-5 py-2.5 text-sm font-bold transition-colors ${
+                  isActive
+                    ? 'bg-accent text-dark'
+                    : 'bg-surface-white/10 text-surface-white/80 hover:bg-surface-white/20'
+                }`}
               >
-                {/* Gambar sertifikat + lencana peringkat */}
-                <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-surface-white/10">
-                  <ImageWithFallback
-                    src={cert.image}
-                    alt={cert.title}
-                    className="h-full w-full object-contain"
-                  />
-
-                  {/* Lencana peringkat (hanya tampil jika ada) */}
-                  {cert.rank && (
-                    <div
-                      className={`absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black shadow-lg ${medal}`}
-                    >
-                      {rankNumber > 0 && rankNumber <= 3 ? <Medal size={14} /> : <Trophy size={14} />}
-                      {cert.rank}
-                    </div>
-                  )}
-
-                  {/* Tahun */}
-                  <div className="absolute bottom-3 right-3 bg-dark/70 backdrop-blur-md text-surface-white text-xs font-bold px-3 py-1.5 rounded-full">
-                    {cert.year}
-                  </div>
-                </div>
-
-                {/* Judul & penyelenggara */}
-                <div className="p-4 pb-3">
-                  <h4 className="font-black text-lg leading-snug mb-2 group-hover:text-accent transition-colors">
-                    {cert.title}
-                  </h4>
-                  <p className="text-surface-white/60 text-sm font-medium">{cert.issuer}</p>
-                </div>
-              </motion.button>
+                {category.label} ({count})
+              </button>
             );
           })}
         </div>
+
+        {/* ---------- Galeri sertifikat kategori aktif ---------- */}
+        {activeCertificates.length ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" role="tabpanel">
+            {activeCertificates.map((cert, i) => {
+                    const rankNumber = getRankNumber(cert.rank);
+                    const medal = MEDAL_STYLE[rankNumber] ?? 'bg-surface-white/20 text-surface-white';
+
+                    return (
+                      <motion.button
+                        key={`${cert.title}-${i}`}
+                        onClick={() => setSelectedCert(cert)}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: '-80px' }}
+                        transition={{ duration: 0.5, delay: (i % 3) * 0.1 }}
+                        className="group text-left bg-surface-white/5 border border-surface-white/10 rounded-[2rem] p-3 hover:bg-surface-white/10 hover:border-accent hover:-translate-y-2 transition-all duration-300 flex flex-col"
+                      >
+                        <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-surface-white/10">
+                          <ImageWithFallback
+                            src={cert.image}
+                            alt={cert.title}
+                            className="h-full w-full object-contain"
+                          />
+
+                          {cert.rank && (
+                            <div
+                              className={`absolute top-3 left-3 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black shadow-lg ${medal}`}
+                            >
+                              {rankNumber > 0 && rankNumber <= 3 ? <Medal size={14} /> : <Trophy size={14} />}
+                              {cert.rank}
+                            </div>
+                          )}
+
+                          <div className="absolute bottom-3 right-3 bg-dark/70 backdrop-blur-md text-surface-white text-xs font-bold px-3 py-1.5 rounded-full">
+                            {cert.year}
+                          </div>
+                        </div>
+
+                        <div className="p-4 pb-3">
+                          <h4 className="font-black text-lg leading-snug mb-2 group-hover:text-accent transition-colors">
+                            {cert.title}
+                          </h4>
+                          <p className="text-surface-white/60 text-sm font-medium">{cert.issuer}</p>
+                        </div>
+                      </motion.button>
+                    );
+            })}
+          </div>
+        ) : (
+          <p className="text-surface-white/50 text-sm" role="tabpanel">
+            {t('Belum ada sertifikat di kategori ini.', 'No certificates in this category yet.')}
+          </p>
+        )}
       </div>
 
       {/* Popup detail sertifikat */}
@@ -377,7 +419,6 @@ export function ContactSection() {
     { label: 'Instagram', href: config.contact.instagram, Icon: Instagram },
     { label: 'LinkedIn', href: config.contact.linkedin, Icon: Linkedin },
     { label: 'GitHub', href: config.contact.github, Icon: Github },
-    { label: 'Facebook', href: config.contact.facebook, Icon: Facebook },
     { label: 'YouTube', href: config.contact.youtube, Icon: Youtube },
   ];
 
