@@ -26,12 +26,8 @@ import { ImageWithFallback } from './ImageWithFallback';
 // KONSTANTA
 // ============================================================
 
-// Foto sementara dari Unsplash. Ganti dengan fotomu sendiri,
-// misalnya "/assets/images/fotoku.jpg" (file ada di folder public)
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1555212697-194d092e3b8f?q=80&w=1600&auto=format&fit=crop';
-const ABOUT_IMAGE =
-  'https://images.unsplash.com/photo-1600132806370-bf17e65e942f?q=80&w=800&auto=format&fit=crop';
+const HERO_IMAGE = '/assets/images/dapurkuliner.webp';
+const ABOUT_IMAGE = '/assets/images/logoaril.webp';
 
 // Kurva animasi halus yang dipakai di Hero
 const SMOOTH_EASE = [0.16, 1, 0.3, 1] as const;
@@ -138,8 +134,8 @@ export function Hero() {
           <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden group border-4 border-surface-white/10 shadow-2xl z-10">
             <ImageWithFallback
               src={HERO_IMAGE}
-              alt="Uaryl Engno Laurenca"
-              className="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105"
+              alt="Poster aplikasi Dapur Kuliner Pak Ndut"
+              className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
           </div>
@@ -152,7 +148,7 @@ export function Hero() {
             <div className="bg-primary/10 p-2 rounded-full">
               <Code2 size={18} className="text-primary" />
             </div>
-            Web Developer
+            {t('Pengembangan Aplikasi & Web', 'App & Web Development')}
           </motion.div>
 
           <motion.div
@@ -160,7 +156,7 @@ export function Hero() {
             transition={{ repeat: Infinity, duration: 4.2, ease: 'easeInOut', delay: 1 }}
             className="absolute -bottom-6 -right-4 md:-right-8 bg-accent text-dark py-3 px-6 rounded-full font-bold text-sm shadow-xl flex items-center gap-3 z-20"
           >
-            <Palette size={18} /> UI/UX Designer
+            <Palette size={18} /> {t('Desain Visual & UI/UX', 'Visual & UI/UX Design')}
           </motion.div>
 
           <motion.div
@@ -199,8 +195,8 @@ export function About() {
           <div className="aspect-square rounded-full overflow-hidden border-8 border-surface-white shadow-2xl relative z-10 w-3/4 mx-auto lg:w-full">
             <ImageWithFallback
               src={ABOUT_IMAGE}
-              alt="About Aril Engno"
-              className="w-full h-full object-cover"
+              alt="Logo Aril Engno Creative"
+              className="w-full h-full object-contain p-6"
             />
           </div>
           {/* Lingkaran hijau (kanan atas) dan biru (kiri bawah) */}
@@ -226,8 +222,8 @@ export function About() {
             <p>{config.personal.description}</p>
             <p>
               {t(
-                'Saya selalu antusias mengeksplorasi teknologi terbaru, mulai dari pengembangan web modern hingga desain grafis dan UI/UX. Saya percaya bahwa produk digital yang baik harus menyeimbangkan antara estetika, performa, dan kegunaan.',
-                'I am always enthusiastic about exploring the latest technologies, from modern web development to graphic design and UI/UX. I believe that a good digital product must balance aesthetics, performance, and usability.'
+                'Saya meraih Juara 2 Aplikasi Dapur Kuliner Pak Ndut di Java Tech Exhibition 4.0, Juara 1 lomba poster Think Before You Post dan Java Tech Exhibition 3.0, serta Juara 3 Java Tech Exhibition 2.0. Saya juga aktif sebagai peserta dan panitia di berbagai kegiatan kampus.',
+                'My achievements include 2nd Place for the Pak Ndut Culinary Kitchen app at Java Tech Exhibition 4.0, 1st Place in the Think Before You Post and Java Tech Exhibition 3.0 poster competitions, and 3rd Place at Java Tech Exhibition 2.0. I have also taken part as a participant and committee member in campus events.'
               )}
             </p>
           </div>
@@ -264,19 +260,24 @@ type Project = {
   description: string;
   image: string;
   techStack: string[];
+  role?: string;
   demoLink?: string;
   githubLink?: string;
+  comingSoon?: boolean;
 };
 
 // Satu kartu proyek
 function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const { t } = useLanguage();
   // Setiap kartu ke-2, 5, 8, ... memakai gaya biru
   const style = index % 3 === 1 ? PROJECT_STYLES.blue : PROJECT_STYLES.white;
 
   // Link kartu: pakai link demo; kalau kosong ("#"), pakai link GitHub.
   // Kalau dua-duanya kosong, kartu tidak bisa diklik.
   const isReal = (l?: string) => !!l && l !== '#';
-  const projectLink = isReal(project.demoLink)
+  const projectLink = project.comingSoon
+    ? undefined
+    : isReal(project.demoLink)
     ? project.demoLink
     : isReal(project.githubLink)
     ? project.githubLink
@@ -296,7 +297,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className={`group rounded-[2.5rem] p-6 lg:p-8 flex flex-col h-full border-[3px] transition-transform hover:-translate-y-2 ${
+      className={`group rounded-[2.5rem] p-6 lg:p-8 flex flex-col h-full border-[3px] transition-transform ${
+        projectLink ? 'hover:-translate-y-2' : ''
+      } ${
         projectLink ? 'cursor-pointer' : ''
       } ${style.card}`}
     >
@@ -306,11 +309,17 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <h3 className="break-words text-2xl sm:text-3xl font-black tracking-tight leading-[1.1] pr-2 sm:pr-4 whitespace-pre-wrap">
           {project.title.replace(' ', '\n')}
         </h3>
-        <div
-          className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 ${style.arrow}`}
-        >
-          <ArrowUpRight size={28} strokeWidth={3} />
-        </div>
+        {project.comingSoon ? (
+          <span className="flex-shrink-0 rounded-full bg-accent px-3 py-2 text-center text-xs font-black tracking-wide text-dark">
+            {t('SEGERA HADIR', 'COMING SOON')}
+          </span>
+        ) : (
+          <div
+            className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 ${style.arrow}`}
+          >
+            <ArrowUpRight size={28} strokeWidth={3} />
+          </div>
+        )}
       </div>
 
       {/* Garis pemisah */}
@@ -320,25 +329,33 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       <p className={`text-base font-medium mb-8 ${style.description}`}>{project.description}</p>
 
       {/* Gambar proyek (menempel di bagian bawah kartu) */}
-      <div className="mt-auto relative overflow-hidden rounded-3xl bg-surface-white">
-        <ImageWithFallback
-          src={project.image}
-          alt={project.title}
-          className="block h-auto w-full"
-        />
-
-        {/* Label teknologi (maksimal 3) di atas gambar */}
-        <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
-          {project.techStack.slice(0, 3).map((tech) => (
-            <span
-              key={tech}
-              className="px-3 py-1.5 bg-white/90 backdrop-blur-md text-primary text-xs font-bold rounded-full shadow-sm"
-            >
-              {tech}
-            </span>
-          ))}
+      {project.comingSoon ? (
+        <div className="mt-auto flex min-h-48 flex-col items-center justify-center gap-3 rounded-3xl bg-primary/5 px-6 py-10 text-center text-primary">
+          <Sparkles size={32} aria-hidden="true" />
+          <p className="font-black text-lg">{t('Sedang disiapkan', 'Work in progress')}</p>
+          <p className="text-sm font-medium text-muted">{project.role}</p>
         </div>
-      </div>
+      ) : (
+        <div className="mt-auto relative overflow-hidden rounded-3xl bg-surface-white">
+          <ImageWithFallback
+            src={project.image}
+            alt={project.title}
+            className="block h-auto w-full"
+          />
+
+          {/* Label teknologi (maksimal 3) di atas gambar */}
+          <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
+            {project.techStack.slice(0, 3).map((tech) => (
+              <span
+                key={tech}
+                className="px-3 py-1.5 bg-white/90 backdrop-blur-md text-primary text-xs font-bold rounded-full shadow-sm"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
@@ -357,8 +374,8 @@ export function SelectedWorks() {
           </h2>
           <p className="text-lg md:text-xl text-muted font-medium">
             {t(
-              'Koleksi karya terbaik yang mencakup pengembangan web, desain UI/UX, dan eksplorasi digital lainnya.',
-              'A collection of my best works covering web development, UI/UX design, and other digital explorations.'
+              'Kumpulan proyek aplikasi dan website, termasuk Dapur Kuliner Pak Ndut serta proyek SMP Negeri 1 Loceret yang sedang disiapkan.',
+              'A collection of app and website projects, including Pak Ndut Culinary Kitchen and the upcoming SMP Negeri 1 Loceret project.'
             )}
           </p>
         </div>

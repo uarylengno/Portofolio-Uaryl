@@ -3,7 +3,7 @@
 // ============================================================
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Globe, UserCog } from 'lucide-react';
+import { Menu, X, Globe, UserCog, Pause, Play } from 'lucide-react';
 
 import { APP_CONFIG } from '../appConfig';
 import { APP_CONFIG_EN } from '../appConfigEn';
@@ -13,7 +13,17 @@ import { useLanguage } from '../contexts/LanguageContext';
 // KOMPONEN KECIL: MENU TAMBAHAN DI NAVBAR DESKTOP
 // Ikon tiga garis -> dropdown berisi ganti bahasa & masuk admin
 // ============================================================
-function MoreMenu({ textColor }: { textColor: string }) {
+function MoreMenu({
+  textColor,
+  isPlaying,
+  musicError,
+  onToggleMusic,
+}: {
+  textColor: string;
+  isPlaying: boolean;
+  musicError: boolean;
+  onToggleMusic: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { language, setLanguage } = useLanguage();
@@ -66,6 +76,19 @@ function MoreMenu({ textColor }: { textColor: string }) {
               {language === 'id' ? 'English' : 'Bahasa Indonesia'}
             </button>
 
+            <button onClick={onToggleMusic} className={itemClass}>
+              {isPlaying ? (
+                <Pause size={18} className="text-primary" />
+              ) : (
+                <Play size={18} className="text-primary" />
+              )}
+              {musicError
+                ? language === 'id' ? 'Musik gagal diputar' : 'Music could not play'
+                : isPlaying
+                  ? language === 'id' ? 'Jeda Musik' : 'Pause Music'
+                  : language === 'id' ? 'Putar Musik' : 'Play Music'}
+            </button>
+
             {/* Masuk admin (#admin ditangani di main.tsx) */}
             <a href="#admin" onClick={() => setOpen(false)} className={itemClass}>
               <UserCog size={18} className="text-primary" />
@@ -84,7 +107,38 @@ function MoreMenu({ textColor }: { textColor: string }) {
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);       // menu mobile terbuka/tertutup
   const [isScrolled, setIsScrolled] = useState(false); // true jika halaman sudah di-scroll
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [musicError, setMusicError] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
   const { language, setLanguage, t } = useLanguage();
+
+  const toggleMusic = async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (!audio.paused) {
+      audio.pause();
+      return;
+    }
+
+    setMusicError(false);
+    try {
+      await audio.play();
+    } catch {
+      setMusicError(true);
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.play().catch((error: unknown) => {
+      if (error instanceof DOMException && error.name === 'NotAllowedError') return;
+      setMusicError(true);
+    });
+  }, []);
 
   // Pantau scroll: setelah 50px, navbar berubah jadi putih
   useEffect(() => {
@@ -112,7 +166,19 @@ export function Navbar() {
         isScrolled ? 'bg-surface-white/90 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <audio
+          ref={audioRef}
+          src="/assets/audio/Merajut_Asa.mp3"
+          loop
+          preload="none"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onError={() => {
+            setMusicError(true);
+            setIsPlaying(false);
+          }}
+        />
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* ---------- Logo ---------- */}
         <a href="#" className="flex flex-col z-50">
           <span
@@ -152,7 +218,12 @@ export function Navbar() {
           </a>
 
           {/* Ikon tiga garis: bahasa & admin */}
-          <MoreMenu textColor={textColor} />
+          <MoreMenu
+            textColor={textColor}
+            isPlaying={isPlaying}
+            musicError={musicError}
+            onToggleMusic={toggleMusic}
+          />
         </div>
 
         {/* ---------- Tombol Mobile (hanya hamburger) ---------- */}
@@ -198,7 +269,7 @@ export function Navbar() {
             </a>
 
             {/* Ganti bahasa & masuk admin */}
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button
                 onClick={() => setLanguage(language === 'id' ? 'en' : 'id')}
                 className="flex items-center gap-2 px-5 py-3 rounded-full bg-background text-dark font-bold text-sm"
@@ -214,6 +285,21 @@ export function Navbar() {
                 <UserCog size={18} className="text-primary" />
                 Admin
               </a>
+              <button
+                onClick={toggleMusic}
+                className="flex items-center gap-2 px-5 py-3 rounded-full bg-background text-dark font-bold text-sm"
+              >
+                {isPlaying ? (
+                  <Pause size={18} className="text-primary" />
+                ) : (
+                  <Play size={18} className="text-primary" />
+                )}
+                {musicError
+                  ? language === 'id' ? 'Musik gagal diputar' : 'Music could not play'
+                  : isPlaying
+                    ? language === 'id' ? 'Jeda Musik' : 'Pause Music'
+                    : language === 'id' ? 'Putar Musik' : 'Play Music'}
+              </button>
             </div>
           </motion.div>
         )}
@@ -242,7 +328,6 @@ export function Footer() {
     { label: 'WhatsApp', href: config.contact.whatsapp },
     { label: 'Instagram', href: config.contact.instagram },
     { label: 'LinkedIn', href: config.contact.linkedin },
-    { label: 'GitHub', href: config.contact.github },
     { label: 'YouTube', href: config.contact.youtube },
   ];
 

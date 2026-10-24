@@ -8,11 +8,11 @@ import {
   Phone,
   Instagram,
   Linkedin,
-  Github,
   Youtube,
   X,
   Trophy,
   Medal,
+  MapPin,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -102,13 +102,19 @@ function CertificateModal({
             </button>
 
             {/* Gambar sertifikat */}
-            <div className="h-[38svh] sm:h-[55vh] min-h-0 bg-gray-100 flex items-center justify-center">
-              <img
-                src={cert.image}
-                alt={cert.title}
-                className="max-w-full max-h-full object-contain"
-              />
-            </div>
+            {cert.image ? (
+              <div className="h-[38svh] sm:h-[55vh] min-h-0 bg-gray-100 flex items-center justify-center">
+                <img
+                  src={cert.image}
+                  alt={cert.title}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+            ) : (
+              <div className="h-[20svh] min-h-32 bg-gray-100 flex items-center justify-center text-primary">
+                <Trophy size={48} aria-hidden="true" />
+              </div>
+            )}
 
             {/* Keterangan sertifikat */}
             <div className="p-4 sm:p-6 md:p-8 shrink-0 bg-white border-t border-gray-100 text-left">
@@ -240,11 +246,15 @@ export function Certificates() {
                         className="group text-left bg-surface-white/5 border border-surface-white/10 rounded-[2rem] p-3 hover:bg-surface-white/10 hover:border-accent hover:-translate-y-2 transition-all duration-300 flex flex-col"
                       >
                         <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-3xl bg-surface-white/10">
-                          <ImageWithFallback
-                            src={cert.image}
-                            alt={cert.title}
-                            className="h-full w-full object-contain"
-                          />
+                          {cert.image ? (
+                            <ImageWithFallback
+                              src={cert.image}
+                              alt={cert.title}
+                              className="h-full w-full object-contain"
+                            />
+                          ) : (
+                            <Trophy size={48} className="text-accent/70" aria-hidden="true" />
+                          )}
 
                           {cert.rank && (
                             <div
@@ -418,7 +428,6 @@ export function ContactSection() {
   const socialLinks: { label: string; href: string; Icon: LucideIcon }[] = [
     { label: 'Instagram', href: config.contact.instagram, Icon: Instagram },
     { label: 'LinkedIn', href: config.contact.linkedin, Icon: Linkedin },
-    { label: 'GitHub', href: config.contact.github, Icon: Github },
     { label: 'YouTube', href: config.contact.youtube, Icon: Youtube },
   ];
 
@@ -429,7 +438,7 @@ export function ContactSection() {
         <div>
           {/* Judul */}
           <h2 className="font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tighter leading-[0.9] mb-8">
-            CONTACT <span className="text-accent">US.</span>
+            CONTACT <span className="text-accent">ME.</span>
           </h2>
 
           {/* Deskripsi */}
@@ -462,6 +471,18 @@ export function ContactSection() {
                 <Phone size={20} />
               </div>
               WhatsApp Message
+            </a>
+
+            <a
+              href="https://maps.app.goo.gl/ZvPoehmBKUjc3XzJ9"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-3 sm:gap-4 text-surface-white hover:text-accent transition-colors font-bold text-sm sm:text-lg"
+            >
+              <div className={ICON_CIRCLE}>
+                <MapPin size={20} />
+              </div>
+              {t('Lihat lokasi di Google Maps', 'View location on Google Maps')}
             </a>
           </div>
 

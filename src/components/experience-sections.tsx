@@ -50,8 +50,8 @@ export function Skills() {
           </h2>
           <p className="text-xl text-surface-white/60 font-medium max-w-2xl mx-auto">
             {t(
-              'Teknologi, perangkat lunak, dan disiplin ilmu yang saya kuasai untuk membangun solusi digital.',
-              'Technologies, software, and disciplines I have mastered to build digital solutions.'
+              'Bidang dan perangkat yang saya gunakan atau pelajari melalui proyek aplikasi, website, dan desain.',
+              'Areas and tools I use or study through app, website, and design projects.'
             )}
           </p>
         </div>

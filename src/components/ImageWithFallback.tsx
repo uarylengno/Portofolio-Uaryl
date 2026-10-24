@@ -7,10 +7,7 @@ import { useState } from 'react';
 // KONSTANTA & TIPE
 // ============================================================
 
-// Gambar cadangan default. Dipakai jika gambar utama gagal dimuat
-// dan tidak ada fallbackSrc khusus yang diberikan
-const DEFAULT_FALLBACK =
-  'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1600&auto=format&fit=crop';
+const DEFAULT_FALLBACK = '/assets/images/logoaril.webp';
 
 type Props = {
   src: string;           // alamat gambar utama
