@@ -1,5 +1,6 @@
 // ===== Layout =====
 import { Navbar, Footer } from './components/layout';
+import { PortfolioChatbot } from './components/PortfolioChatbot';
 
 // ===== Sections: Home =====
 import { Hero, About, SelectedWorks, Designs, Skills } from './components/home-sections';
@@ -53,6 +54,8 @@ function App() {
 
         {/* 11. Footer */}
         <Footer />
+
+        <PortfolioChatbot />
       </main>
     </LanguageProvider>
   );
