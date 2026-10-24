@@ -8,7 +8,6 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 
 import { contentRouter } from "./contentApi"; // API untuk data & admin
-import { aiChatRouter } from "./aiChatApi";
 
 // ============================================================
 // SERVER
@@ -21,7 +20,6 @@ async function startServer() {
 
   // API konten & admin (harus dipasang SEBELUM Vite / file statis)
   app.use("/api", contentRouter);
-  app.use("/api/ai", aiChatRouter);
 
   // Mode development: Vite menyajikan halaman
   if (process.env.NODE_ENV !== "production") {
