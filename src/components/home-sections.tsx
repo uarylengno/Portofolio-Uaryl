@@ -22,6 +22,7 @@ import { APP_CONFIG } from '../appConfig';
 import { APP_CONFIG_EN } from '../appConfigEn';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ImageWithFallback } from './ImageWithFallback';
+import InteractivePixelCat from './InteractivePixelCat';
 
 // ============================================================
 // KONSTANTA
@@ -876,6 +877,11 @@ export function Skills() {
           {SKILL_GROUPS.map((group, index) => (
             <SkillCard key={group.skills[0]} group={group} index={index} />
           ))}
+        </div>
+
+        {/* Kucing pixel: hidup di strip ini, di bawah kartu skill */}
+        <div className="mt-10 md:mt-14">
+          <InteractivePixelCat />
         </div>
       </div>
 

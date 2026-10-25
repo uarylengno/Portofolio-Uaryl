@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo Kucing Pixel</title>
+<style>
+  body{margin:0;font:16px/1.6 system-ui,sans-serif;background:#1d1712;color:#f1e4d0}
+  main{max-width:720px;margin:0 auto;padding:32px 20px 220px}
+  h1{margin:0 0 8px} a{color:#ffb35c}
+  .card{background:#2a2018;border:1px solid #4a3827;border-radius:8px;padding:16px;margin:16px 0}
+  .controls{display:flex;flex-wrap:wrap;gap:8px}
+  button.t{background:#ffb35c;color:#1d1712;border:0;border-radius:6px;padding:8px 12px;font-weight:600;cursor:pointer}
+  #log{font:12px ui-monospace,monospace;white-space:pre;color:#c9b89f}
+</style>
+</head>
+<body>
+<main>
+  <h1>Portofolio Saya</h1>
+  <p>Halaman contoh untuk menguji kucing pixel. Gerakkan kursor ke dekat kucing, arahkan tepat ke kucing, klik, atau seret.</p>
+  <div class="card">
+    <strong>Pemicu manual</strong>
+    <div class="controls" id="controls"></div>
+  </div>
+  <div class="card"><a href="#a">Tautan penting</a> · <a href="#b">Kontak</a> · <button class="t" type="button">Tombol</button></div>
+  <div class="card"><pre id="log"></pre></div>
+  <p>Gulir halaman untuk memastikan kucing tetap di sudut bawah dan tidak menutupi konten.</p>
+  <div style="height:900px"></div>
+</main>
+<script src="../dist/pixel-cat.js"></script>
+<script>
+  const cat = PixelCat.mountPixelCat({ side: 'right' });
+  window.cat = cat;
+  const names = ['walk','run','jump','hop','flip','sleep','wake','stretch','chase','dizzy','meow','wag','pet','blink','sit','look'];
+  const box = document.getElementById('controls');
+  names.forEach(n => { const b = document.createElement('button'); b.className='t'; b.type='button'; b.textContent=n; b.onclick=()=>cat.trigger(n); box.appendChild(b); });
+  const log = document.getElementById('log');
+  setInterval(() => { const s = cat.getState(); if (s) log.textContent = JSON.stringify(s, null, 1); }, 300);
+</script>
+</body>
+</html>
