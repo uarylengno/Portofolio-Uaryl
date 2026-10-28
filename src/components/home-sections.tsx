@@ -74,7 +74,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: SMOOTH_EASE }}
-          className="lg:col-span-7 max-w-4xl"
+          className="relative z-20 lg:z-auto lg:col-span-7 max-w-4xl"
         >
           {/* Label peran/profesi */}
           <div className="mb-4 inline-block px-4 py-2 bg-surface-white/10 text-accent font-bold text-sm rounded-full tracking-wider">
@@ -122,7 +122,7 @@ export function Hero() {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: SMOOTH_EASE }}
-          className="lg:col-span-5"
+          className="relative z-0 lg:z-auto lg:col-span-5"
         >
           <DigitalIdCard />
         </motion.div>
