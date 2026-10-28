@@ -3,7 +3,7 @@
 // ============================================================
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Code, PenTool, Server, Zap } from 'lucide-react';
+import { Code, PenTool, Server, Zap, Sparkles } from 'lucide-react';
 
 import { APP_CONFIG } from '../appConfig';
 import { APP_CONFIG_EN } from '../appConfigEn';
@@ -233,79 +233,150 @@ export function Experience() {
 }
 
 // ============================================================
+// ============================================================
 // SECTION 3: EDUCATION
 // ============================================================
 
-// Logo sekolah. Jika logo kosong / gagal dimuat, tampil huruf awal nama sekolah
-function SchoolLogo({ src, name }: { src?: string; name: string }) {
+// Logo sekolah dengan animasi hover interaktif
+function SchoolLogo({ src, name, index }: { src?: string; name: string; index: number }) {
   const [failed, setFailed] = useState(false);
 
   // Cadangan: kotak biru dengan huruf awal sekolah
   if (!src || failed) {
     return (
-      <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary text-surface-white font-black text-2xl md:text-3xl flex items-center justify-center shrink-0">
+      <motion.div
+        whileHover={{ scale: 1.1, rotate: index % 2 === 0 ? 3 : -3 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 16 }}
+        className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-primary text-surface-white font-black text-2xl md:text-3xl flex items-center justify-center shrink-0 shadow-sm"
+      >
         {name.trim().charAt(0).toUpperCase()}
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-surface-white border border-gray-200 shadow-sm p-2 flex items-center justify-center shrink-0">
+    <motion.div
+      whileHover={{ scale: 1.1, rotate: index % 2 === 0 ? 3 : -3 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 16 }}
+      className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-surface-white border border-gray-200/80 shadow-xs group-hover:border-primary/40 group-hover:shadow-md p-2.5 flex items-center justify-center shrink-0 transition-all duration-300 relative overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/40 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       <img
         src={src}
         alt={`Logo ${name}`}
         onError={() => setFailed(true)}
         loading="lazy"
-        className="max-w-full max-h-full object-contain"
+        className="max-w-full max-h-full object-contain relative z-10"
       />
-    </div>
+    </motion.div>
   );
 }
 
-// Satu item pendidikan di timeline
+// Satu item pendidikan di timeline dengan animasi stagger & interaktif
 function EducationItem({
   edu,
+  index,
 }: {
   edu: { school: string; major?: string; achievements?: string; year?: string; logo?: string };
+  index: number;
 }) {
+  const isCurrent =
+    index === 0 ||
+    edu.year?.toLowerCase().includes('sekarang') ||
+    edu.year?.toLowerCase().includes('present');
+
   return (
     <div className="relative flex items-start group">
-      {/* Titik penanda di garis timeline */}
-      <div className="absolute left-5 md:left-8 -translate-x-1/2 mt-1.5 w-10 h-10 rounded-full bg-surface-white border-4 border-background flex items-center justify-center shadow-md group-hover:border-primary transition-colors z-10">
-        <div className="w-3 h-3 bg-dark rounded-full group-hover:bg-primary transition-colors"></div>
-      </div>
+      {/* Titik penanda (Node) di garis timeline dengan animasi entry & pulse */}
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: index * 0.13 + 0.1 }}
+        whileHover={{ scale: 1.25 }}
+        className="absolute left-5 md:left-8 -translate-x-1/2 mt-2 w-10 h-10 rounded-full bg-surface-white border-4 border-background flex items-center justify-center shadow-md group-hover:border-primary group-hover:shadow-primary/30 transition-all duration-300 z-10"
+      >
+        {/* Efek halo berdenyut untuk pendidikan saat ini */}
+        {isCurrent && (
+          <motion.span
+            className="absolute inset-0 rounded-full bg-primary/30 pointer-events-none"
+            animate={{ scale: [1, 1.55, 1], opacity: [0.75, 0, 0.75] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        )}
+        <div
+          className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
+            isCurrent
+              ? 'bg-primary ring-4 ring-primary/20 scale-110'
+              : 'bg-dark group-hover:bg-primary group-hover:scale-125'
+          }`}
+        />
+      </motion.div>
 
-      {/* Kartu isi pendidikan */}
+      {/* Kartu isi pendidikan dengan stagger reveal & hover elevation */}
       <div className="pl-14 md:pl-20 w-full">
-        <div className="bg-background p-5 sm:p-8 md:p-10 rounded-[1.5rem] sm:rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-5 sm:gap-6 hover:shadow-lg transition-shadow">
+        <motion.div
+          initial={{ opacity: 0, x: 45, y: 18, scale: 0.96 }}
+          whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7, delay: index * 0.13, ease: [0.16, 1, 0.3, 1] }}
+          whileHover={{ y: -6, scale: 1.012 }}
+          className="bg-background p-5 sm:p-8 md:p-10 rounded-[1.5rem] sm:rounded-[2rem] border border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-5 sm:gap-6 shadow-xs hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30 transition-all duration-400 relative overflow-hidden"
+        >
+          {/* Efek glowing ambient di sudut kartu saat di-hover */}
+          <div className="pointer-events-none absolute -right-20 -top-20 w-52 h-52 rounded-full bg-primary/5 blur-3xl group-hover:bg-primary/15 transition-all duration-500" />
+
           {/* Kiri: logo + sekolah, jurusan, prestasi */}
-          <div className="flex items-start gap-4 sm:gap-5 min-w-0">
-            <SchoolLogo src={edu.logo} name={edu.school} />
+          <div className="flex items-start gap-4 sm:gap-5 min-w-0 relative z-10">
+            <SchoolLogo src={edu.logo} name={edu.school} index={index} />
 
             <div className="min-w-0">
-              <h4 className="font-black text-xl sm:text-2xl md:text-3xl text-dark tracking-tight mb-2 break-words">
+              <h4 className="font-black text-xl sm:text-2xl md:text-3xl text-dark tracking-tight mb-2 break-words group-hover:text-primary transition-colors duration-300">
                 {edu.school}
               </h4>
 
               {/* Jurusan (hanya tampil jika ada) */}
-              {edu.major && <p className="text-lg sm:text-xl text-primary font-bold mb-4 break-words">{edu.major}</p>}
-
-              {/* Prestasi (hanya tampil jika ada) */}
-              {edu.achievements && (
-                <p className="text-muted font-medium bg-surface-white inline-block max-w-full break-words px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full border border-gray-200 text-xs sm:text-sm">
-                  {edu.achievements}
+              {edu.major && (
+                <p className="text-lg sm:text-xl text-primary font-bold mb-4 break-words">
+                  {edu.major}
                 </p>
+              )}
+
+              {/* Prestasi / Organisasi dengan animasi hover halus */}
+              {edu.achievements && (
+                <motion.p
+                  whileHover={{ scale: 1.02, x: 3 }}
+                  className="text-muted font-medium bg-surface-white inline-flex items-center gap-2 max-w-full break-words px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full border border-gray-200 text-xs sm:text-sm shadow-xs group-hover:border-primary/20 transition-all duration-300"
+                >
+                  <Sparkles size={13} className="text-primary shrink-0" />
+                  <span>{edu.achievements}</span>
+                </motion.p>
               )}
             </div>
           </div>
 
-          {/* Kanan: tahun (tampil "-" jika kosong) */}
-          <div className="md:text-right shrink-0">
-            <div className="inline-block bg-dark text-surface-white px-5 py-2 rounded-full font-bold text-sm tracking-wider">
-              {edu.year || '-'}
+          {/* Kanan: tag tahun dengan animasi scale & status aktif */}
+          <motion.div
+            whileHover={{ scale: 1.08 }}
+            className="md:text-right shrink-0 relative z-10"
+          >
+            <div
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full font-bold text-xs sm:text-sm tracking-wider shadow-sm transition-all duration-300 ${
+                isCurrent
+                  ? 'bg-dark text-surface-white group-hover:bg-primary'
+                  : 'bg-dark text-surface-white group-hover:bg-primary/90'
+              }`}
+            >
+              {isCurrent && (
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+              )}
+              <span>{edu.year || '-'}</span>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
@@ -316,14 +387,65 @@ export function Education() {
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
   return (
-    <section id="education" className="py-20 md:py-32 px-6 bg-surface-white border-t border-gray-100">
-      <div className="max-w-4xl mx-auto">
-        <SectionTitle className="text-dark">EDUCATION</SectionTitle>
+    <section id="education" className="relative isolate overflow-hidden py-20 md:py-32 px-6 bg-surface-white border-t border-gray-100">
+      {/* Background ambient orbs beranimasi */}
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -left-28 top-16 h-80 w-80 rounded-full bg-primary/5 blur-3xl"
+        animate={{ x: [0, 40, 0], y: [0, 30, 0], scale: [1, 1.15, 1] }}
+        transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-28 bottom-12 h-96 w-96 rounded-full bg-accent/10 blur-3xl"
+        animate={{ x: [0, -35, 0], y: [0, -25, 0], scale: [1, 1.1, 1] }}
+        transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
+      />
 
-        {/* Timeline: garis vertikal dibuat lewat before: */}
-        <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:ml-8 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-transparent">
+      <div className="relative max-w-4xl mx-auto z-10">
+        {/* Header section dengan animasi reveal & badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-16 md:mb-20"
+        >
+          <h2 className="font-black text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none text-dark">
+            EDUCATION
+          </h2>
+          <motion.div
+            className="h-1.5 w-20 bg-accent mx-auto mt-4 rounded-full"
+            initial={{ width: 0 }}
+            whileInView={{ width: 80 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+        </motion.div>
+
+        {/* Timeline dengan garis vertikal beranimasi & runner cahaya */}
+        <div className="space-y-8 relative">
+          {/* Garis background statis */}
+          <div className="absolute left-5 md:left-8 top-4 bottom-4 w-1 -translate-x-1/2 bg-gray-200/70 rounded-full" />
+
+          {/* Garis progres bergradasi yang menggambar saat scroll masuk */}
+          <motion.div
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute left-5 md:left-8 top-4 bottom-4 w-1 -translate-x-1/2 bg-gradient-to-b from-primary via-accent to-primary/30 rounded-full origin-top"
+          />
+
+          {/* Cahaya runner halus yang meluncur menyusuri garis timeline */}
+          <motion.div
+            animate={{ y: ['0%', '750%'] }}
+            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute left-5 md:left-8 top-4 w-1.5 h-24 -translate-x-1/2 bg-gradient-to-b from-transparent via-accent to-transparent rounded-full blur-[1px] pointer-events-none"
+          />
+
           {config.education.map((edu, i) => (
-            <EducationItem key={i} edu={edu} />
+            <EducationItem key={i} edu={edu} index={i} />
           ))}
         </div>
       </div>
