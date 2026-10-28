@@ -8,7 +8,6 @@ import {
   Code2,
   Heart,
   Sparkles,
-  Palette,
   ChevronLeft,
   ChevronRight,
   X,
@@ -23,12 +22,12 @@ import { APP_CONFIG_EN } from '../appConfigEn';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ImageWithFallback } from './ImageWithFallback';
 import InteractivePixelCat from './InteractivePixelCat';
+import DigitalIdCard from './DigitalIdCard';
 
 // ============================================================
 // KONSTANTA
 // ============================================================
 
-const HERO_IMAGE = '/assets/images/dapurkuliner.webp';
 const ABOUT_IMAGE = '/assets/images/logoaril.webp';
 
 // Kurva animasi halus yang dipakai di Hero
@@ -71,12 +70,11 @@ export function Hero() {
       ></div>
 
       <div className="max-w-7xl mx-auto w-full px-6 grid lg:grid-cols-12 gap-12 items-center relative z-10">
-        {/* ---------- Kolom kiri: teks ---------- */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: SMOOTH_EASE }}
-          className="lg:col-span-7 pt-12 lg:pt-0"
+          className="lg:col-span-7 max-w-4xl"
         >
           {/* Label peran/profesi */}
           <div className="mb-4 inline-block px-4 py-2 bg-surface-white/10 text-accent font-bold text-sm rounded-full tracking-wider">
@@ -120,62 +118,13 @@ export function Hero() {
             </a>
           </div>
         </motion.div>
-
-        {/* ---------- Kolom kanan: foto + elemen melayang ---------- */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2, ease: SMOOTH_EASE }}
-          className="lg:col-span-5 relative mt-8 lg:mt-0"
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: SMOOTH_EASE }}
+          className="lg:col-span-5"
         >
-          {/* Cahaya blur dekoratif di belakang foto */}
-          <div className="absolute -top-10 -right-10 w-48 h-48 bg-accent/40 rounded-full blur-3xl opacity-60 animate-pulse z-0"></div>
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-blue-400/30 rounded-full blur-3xl opacity-60 animate-pulse delay-700 z-0"></div>
-
-          {/* Foto utama */}
-          <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden group border-4 border-surface-white/10 shadow-2xl z-10">
-            <ImageWithFallback
-              src={HERO_IMAGE}
-              alt="Poster aplikasi Dapur Kuliner Pak Ndut"
-              className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
-          </div>
-
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
-            className="absolute top-4 -left-6 md:-left-12 bg-surface-white text-dark py-3 px-6 rounded-full font-bold text-sm shadow-xl flex items-center gap-3 border border-gray-100 z-20"
-          >
-            <div className="bg-primary/10 p-2 rounded-full">
-              <Code2 size={18} className="text-primary" />
-            </div>
-            {t('Pengembangan Aplikasi & Web', 'App & Web Development')}
-          </motion.div>
-
-          <motion.div
-            animate={{ y: [0, 12, 0] }}
-            transition={{ repeat: Infinity, duration: 4.2, ease: 'easeInOut', delay: 1 }}
-            className="absolute -bottom-6 -right-4 md:-right-8 bg-accent text-dark py-3 px-6 rounded-full font-bold text-sm shadow-xl flex items-center gap-3 z-20"
-          >
-            <Palette size={18} /> {t('Desain Visual & UI/UX', 'Visual & UI/UX Design')}
-          </motion.div>
-
-          <motion.div
-            animate={{ rotate: -360, scale: [1, 1.3, 1] }}
-            transition={{ repeat: Infinity, duration: 7, ease: 'linear', delay: 0.5 }}
-            className="absolute top-1/2 -left-8 md:-left-12 -translate-y-1/2 text-surface-white/80 z-20 drop-shadow-lg"
-          >
-            <Sparkles size={36} strokeWidth={1.5} />
-          </motion.div>
-
-          <motion.div
-            animate={{ rotate: 360, scale: [1, 1.2, 1] }}
-            transition={{ repeat: Infinity, duration: 6, ease: 'linear' }}
-            className="absolute top-12 -right-6 md:-right-12 text-accent z-20 drop-shadow-lg"
-          >
-            <Sparkles size={48} strokeWidth={1.5} />
-          </motion.div>
+          <DigitalIdCard />
         </motion.div>
       </div>
     </section>
