@@ -287,28 +287,20 @@ function EducationItem({
 
   return (
     <div className="relative flex items-start group">
-      {/* Titik penanda (Node) di garis timeline dengan animasi entry & pulse */}
+      {/* Titik penanda di garis timeline */}
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, delay: index * 0.13 + 0.1 }}
         whileHover={{ scale: 1.25 }}
-        className="absolute left-5 md:left-8 -translate-x-1/2 mt-2 w-10 h-10 rounded-full bg-surface-white border-4 border-background flex items-center justify-center shadow-md group-hover:border-primary group-hover:shadow-primary/30 transition-all duration-300 z-10"
+        className="absolute left-5 md:left-8 -translate-x-1/2 mt-2 w-10 h-10 rounded-full bg-surface-white border-4 border-background flex items-center justify-center shadow-md group-hover:border-gray-300 transition-all duration-300 z-10"
       >
-        {/* Efek halo berdenyut untuk pendidikan saat ini */}
-        {isCurrent && (
-          <motion.span
-            className="absolute inset-0 rounded-full bg-primary/30 pointer-events-none"
-            animate={{ scale: [1, 1.55, 1], opacity: [0.75, 0, 0.75] }}
-            transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          />
-        )}
         <div
           className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
             isCurrent
-              ? 'bg-primary ring-4 ring-primary/20 scale-110'
-              : 'bg-dark group-hover:bg-primary group-hover:scale-125'
+              ? 'bg-dark ring-4 ring-gray-200 scale-110'
+              : 'bg-gray-400 group-hover:bg-gray-600 group-hover:scale-125'
           }`}
         />
       </motion.div>
@@ -414,35 +406,11 @@ export function Education() {
           <h2 className="font-black text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none text-dark">
             EDUCATION
           </h2>
-          <motion.div
-            className="h-1.5 w-20 bg-accent mx-auto mt-4 rounded-full"
-            initial={{ width: 0 }}
-            whileInView={{ width: 80 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          />
         </motion.div>
 
-        {/* Timeline dengan garis vertikal beranimasi & runner cahaya */}
+        {/* Timeline dengan garis vertikal netral */}
         <div className="space-y-8 relative">
-          {/* Garis background statis */}
           <div className="absolute left-5 md:left-8 top-4 bottom-4 w-1 -translate-x-1/2 bg-gray-200/70 rounded-full" />
-
-          {/* Garis progres bergradasi yang menggambar saat scroll masuk */}
-          <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-5 md:left-8 top-4 bottom-4 w-1 -translate-x-1/2 bg-gradient-to-b from-primary via-accent to-primary/30 rounded-full origin-top"
-          />
-
-          {/* Cahaya runner halus yang meluncur menyusuri garis timeline */}
-          <motion.div
-            animate={{ y: ['0%', '750%'] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute left-5 md:left-8 top-4 w-1.5 h-24 -translate-x-1/2 bg-gradient-to-b from-transparent via-accent to-transparent rounded-full blur-[1px] pointer-events-none"
-          />
 
           {config.education.map((edu, i) => (
             <EducationItem key={i} edu={edu} index={i} />

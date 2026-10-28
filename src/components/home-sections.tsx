@@ -1,7 +1,7 @@
 // ============================================================
 // IMPORT
 // ============================================================
-import { useState, useRef, type MouseEvent } from 'react';
+import { useState, useRef, useEffect, type MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowUpRight,
@@ -548,6 +548,16 @@ export function Designs() {
   // Pastikan posisi aktif tidak melewati jumlah data
   const current = Math.min(active, Math.max(list.length - 1, 0));
   const go = (dir: -1 | 1) => setActive(Math.min(Math.max(current + dir, 0), list.length - 1));
+
+  useEffect(() => {
+    if (list.length < 2 || preview) return;
+
+    const interval = window.setInterval(() => {
+      setActive((index) => (Math.min(index, list.length - 1) + 1) % list.length);
+    }, 10000);
+
+    return () => window.clearInterval(interval);
+  }, [list.length, preview]);
 
   // Section disembunyikan jika belum ada data desain
   if (all.length === 0) return null;
