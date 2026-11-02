@@ -157,18 +157,10 @@ export function Certificates() {
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
   const [activeCategory, setActiveCategory] = useState<CertificateCategory>('achievement');
 
-  // Angka ringkasan (dihitung otomatis dari data)
-  const firstPlaces = certs.filter((c) => getRankNumber(c.rank) === 1).length;
-  const latestYear = certs.length ? Math.max(...certs.map((c) => Number(c.year) || 0)) : '-';
   const activeCertificates = certs.filter((cert) => {
     const category = cert.category ?? (cert.rank?.trim() ? 'achievement' : 'non-achievement');
     return category === activeCategory;
   });
-  const stats = [
-    { value: certs.length, label: t('Sertifikat', 'Certificates') },
-    { value: firstPlaces, label: t('Juara 1', '1st Places') },
-    { value: latestYear, label: t('Terbaru', 'Latest') },
-  ];
 
   return (
     <section id="awards" className="relative py-20 md:py-32 px-6 bg-dark text-surface-white overflow-hidden">
@@ -177,32 +169,17 @@ export function Certificates() {
       <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-accent rounded-full blur-3xl opacity-10"></div>
 
       <div className="relative max-w-7xl mx-auto">
-        {/* ---------- Judul, deskripsi, dan angka ringkasan ---------- */}
-        <div className="grid lg:grid-cols-12 gap-10 items-end mb-16">
-          <div className="lg:col-span-7">
-            <h2 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
-              CERTIFICATES
-            </h2>
-            <p className="text-surface-white/60 text-lg font-medium max-w-xl">
-              {t(
-                'Bukti dedikasi dan pengembangan diri berkelanjutan di bidang teknologi dan desain. Klik sertifikat untuk melihat detail.',
-                'Proof of dedication and continuous self-development in technology and design. Click on a certificate to view details.'
-              )}
-            </p>
-          </div>
-
-          {/* Tiga angka ringkasan */}
-          <div className="lg:col-span-5 grid grid-cols-3 gap-3">
-            {stats.map((s) => (
-              <div
-                key={s.label}
-                className="bg-surface-white/5 border border-surface-white/10 rounded-3xl p-4 sm:p-5 text-center"
-              >
-                <p className="font-black text-2xl sm:text-4xl text-accent tracking-tight">{s.value}</p>
-                <p className="break-words text-[0.65rem] sm:text-sm font-bold text-surface-white/60 mt-1">{s.label}</p>
-              </div>
-            ))}
-          </div>
+        {/* ---------- Judul dan deskripsi ---------- */}
+        <div className="mb-16 max-w-3xl">
+          <h2 className="font-black text-3xl sm:text-4xl md:text-5xl lg:text-7xl tracking-tighter leading-none mb-6">
+            CERTIFICATES
+          </h2>
+          <p className="text-surface-white/60 text-lg font-medium max-w-xl">
+            {t(
+              'Bukti dedikasi dan pengembangan diri berkelanjutan di bidang teknologi dan desain. Klik sertifikat untuk melihat detail.',
+              'Proof of dedication and continuous self-development in technology and design. Click on a certificate to view details.'
+            )}
+          </p>
         </div>
 
         {/* ---------- Pilihan kategori sertifikat ---------- */}

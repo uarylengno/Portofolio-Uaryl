@@ -1,137 +1,162 @@
+/* ============================================================
+   DIGITAL ID CARD WITH ARTICULATED LANYARD & 3D FLIP
+   ============================================================ */
+
 .idc-gallery {
   position: relative;
-  width: min(100%, 460px);
-  aspect-ratio: 0.82 / 1;
-  margin-inline: auto;
-  isolation: isolate;
-}
-
-.idc-hanging-group {
-  position: absolute;
-  inset: 0;
-  cursor: grab;
-  touch-action: none;
-  transform-origin: 52% 8%;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.idc-hanging-group:active {
-  cursor: grabbing;
-}
-
-.idc-lanyard {
-  position: absolute;
-  top: 0;
-  left: 52%;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(-50%);
-  filter: drop-shadow(0 5px 5px rgba(5, 3, 42, 0.35));
+  justify-content: flex-start;
+  width: 100%;
+  margin-inline: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  padding-top: 10px;
 }
 
-.idc-strap {
-  display: grid;
-  width: 30px;
-  height: 72px;
-  place-items: center;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  border-radius: 7px 7px 3px 3px;
-  background: linear-gradient(90deg, #15152d, #4330c9 48%, #15152d);
-}
-
-.idc-strap span {
-  color: #fff;
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-  writing-mode: vertical-rl;
-}
-
-.idc-clip {
-  width: 38px;
-  height: 44px;
-  margin-top: -1px;
+/* ============================================================
+   SVG LAYER FOR LANYARD & HARDWARE (Anchors behind navbar)
+   1000x1500px physical layer prevents GPU culling/flickering
+   ============================================================ */
+.idc-svg-layer {
+  position: absolute;
+  top: -700px;
+  left: calc(50% - 500px);
+  width: 1000px;
+  height: 1500px;
+  pointer-events: none;
   overflow: visible;
+  z-index: 5; /* Lower than card (10) and way lower than navbar (50) */
+  filter: drop-shadow(0 6px 12px rgba(5, 3, 40, 0.45));
 }
 
-.idc-clip rect,
-.idc-clip path {
-  fill: #cfd3da;
-  stroke: #777e8a;
-  stroke-width: 2;
+.idc-strap-crimp {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
 }
 
-.idc-clip path {
-  fill: none;
-  stroke-width: 4;
-  stroke-linecap: round;
+.idc-clip-hook {
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
 }
 
-.idc-image {
+/* ============================================================
+   3D CARD CONTAINER & ARTICULATION
+   ============================================================ */
+.idc-card-container {
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  /* Pivot around the slot hole near the top edge for authentic pendulum swinging */
+  transform-origin: 50% 12px;
+  will-change: transform;
+  z-index: 10;
+  transition: filter 0.2s ease;
+}
+
+.idc-card-container:hover {
+  filter: brightness(1.03);
+}
+
+.idc-card-container.is-dragging {
+  cursor: grabbing !important;
+}
+
+/* 3D Box containing front and back faces */
+.idc-card-3d-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  border-radius: 18px;
+  box-shadow: 0 28px 65px rgba(6, 4, 60, 0.48), 0 12px 25px rgba(0, 0, 0, 0.32);
+  transition: box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.idc-card-container.is-dragging .idc-card-3d-box {
+  box-shadow: 0 38px 80px rgba(6, 4, 60, 0.6), 0 16px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Face common styling */
+.idc-card-face {
   position: absolute;
-  top: 92px;
-  width: 55%;
-  height: auto;
-  border: 2px solid rgba(255, 255, 255, 0.88);
-  border-radius: 10px;
-  box-shadow: 0 24px 60px rgba(8, 4, 76, 0.42);
-  object-fit: contain;
+  inset: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-color: #0d1117;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+
+.idc-card-front {
+  transform: rotateY(0deg);
+}
+
+.idc-card-back {
+  transform: rotateY(180deg);
+}
+
+.idc-face-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  display: block;
+}
+
+/* Top slot hole punch cutout (where the metal hook latches) */
+.idc-slot-hole {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(10, 10, 20, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.85);
+  z-index: 5;
   pointer-events: none;
 }
 
-.idc-image-back {
-  left: 5%;
-  z-index: 0;
-  transform: rotate(-8deg);
-}
-
-.idc-image-front {
-  left: 36%;
-  z-index: 1;
-  transform: rotate(6deg);
-}
-
-.idc-caption {
+/* Dynamic specular sheen / glass gloss reflection */
+.idc-glare-overlay {
   position: absolute;
-  right: 2%;
-  bottom: 1%;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 13px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 999px;
-  background: rgba(37, 11, 240, 0.78);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  backdrop-filter: blur(8px);
+  inset: 0;
   pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    transparent 80%
+  );
+  mix-blend-mode: overlay;
+  transition: opacity 0.15s ease-out;
+  border-radius: 18px;
 }
 
-.idc-caption span {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--color-accent);
-}
-
+/* ============================================================
+   RESPONSIVE DESIGN (TABLET & MOBILE)
+   ============================================================ */
 @media (max-width: 1023px) {
   .idc-gallery {
-    width: min(100%, 380px);
-    margin-top: 20px;
+    margin-top: 36px;
+  }
+}
+
+@media (max-width: 640px) {
+  .idc-card-container {
+    transform-origin: 50% 12px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .idc-hanging-group {
-    transition: none;
+  .idc-card-container,
+  .idc-card-3d-box {
+    transition: none !important;
   }
 }

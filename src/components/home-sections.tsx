@@ -1,7 +1,7 @@
 // ============================================================
 // IMPORT
 // ============================================================
-import { useState, useRef, type MouseEvent } from 'react';
+import { useState, useRef, useEffect, type MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowUpRight,
@@ -74,7 +74,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: SMOOTH_EASE }}
-          className="lg:col-span-7 max-w-4xl"
+          className="relative z-20 lg:z-auto lg:col-span-7 max-w-4xl"
         >
           {/* Label peran/profesi */}
           <div className="mb-4 inline-block px-4 py-2 bg-surface-white/10 text-accent font-bold text-sm rounded-full tracking-wider">
@@ -122,7 +122,7 @@ export function Hero() {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: SMOOTH_EASE }}
-          className="lg:col-span-5"
+          className="relative z-0 lg:z-auto lg:col-span-5"
         >
           <DigitalIdCard />
         </motion.div>
@@ -548,6 +548,16 @@ export function Designs() {
   // Pastikan posisi aktif tidak melewati jumlah data
   const current = Math.min(active, Math.max(list.length - 1, 0));
   const go = (dir: -1 | 1) => setActive(Math.min(Math.max(current + dir, 0), list.length - 1));
+
+  useEffect(() => {
+    if (list.length < 2 || preview) return;
+
+    const interval = window.setInterval(() => {
+      setActive((index) => (Math.min(index, list.length - 1) + 1) % list.length);
+    }, 10000);
+
+    return () => window.clearInterval(interval);
+  }, [list.length, preview]);
 
   // Section disembunyikan jika belum ada data desain
   if (all.length === 0) return null;
