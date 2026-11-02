@@ -149,7 +149,7 @@ export function Certificates() {
   const certs: Certificate[] = config.certificates;
   const certificateCategories: { id: CertificateCategory; label: string }[] = [
     { id: 'achievement', label: t('Sertifikat Prestasi', 'Achievement Certificates') },
-    { id: 'non-achievement', label: t('Sertifikat Non-Prestasi', 'Non-Achievement Certificates') },
+    { id: 'non-achievement', label: t('Sertifikat Partisipasi', 'Participation Certificates') },
     { id: 'committee', label: t('Sertifikat Kepanitiaan', 'Committee Certificates') },
   ];
 

@@ -116,11 +116,11 @@ const SECTIONS: Record<
         kind: 'select',
         options: [
           { value: 'achievement', label: 'Sertifikat Prestasi' },
-          { value: 'non-achievement', label: 'Sertifikat Non-Prestasi' },
+          { value: 'non-achievement', label: 'Sertifikat Partisipasi' },
           { value: 'committee', label: 'Sertifikat Kepanitiaan' },
         ],
       },
-      { key: 'rank', label: 'Peringkat (isi untuk prestasi; kosong untuk non-prestasi)' },
+      { key: 'rank', label: 'Peringkat (isi untuk prestasi; kosong untuk partisipasi)' },
       { key: 'competition', label: 'Nama lomba' },
     ],
     blank: () => ({ title: '', issuer: '', year: '', image: '', category: 'non-achievement', rank: '', competition: '' }),
