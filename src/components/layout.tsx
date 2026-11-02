@@ -192,12 +192,12 @@ export function Navbar() {
   ];
 
   // Warna teks mengikuti posisi scroll (putih di atas, gelap setelah scroll)
-  const textColor = isScrolled ? 'text-dark' : 'text-surface-white';
+  const textColor = isScrolled ? 'text-dark' : 'text-surface-white drop-shadow-[0_2px_4px_rgba(0,18,48,0.5)]';
 
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-surface-white/90 backdrop-blur-md py-4 shadow-sm' : 'bg-transparent py-6'
+        isScrolled ? 'bg-surface-white/90 backdrop-blur-md py-4 shadow-sm' : 'bg-gradient-to-b from-blue-950/40 via-blue-950/15 to-transparent py-6'
       }`}
     >
         <audio

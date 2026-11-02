@@ -2,7 +2,7 @@ export interface PixelCatOptions {
   container?: HTMLElement | null;
   parent?: HTMLElement | null;
   scale?: 'auto' | number;
-  bottom?: number;
+  bottom?: number | ((boxH: number) => number);
   side?: 'left' | 'right' | number;
   zIndex?: number;
   messages?: string[] | null;

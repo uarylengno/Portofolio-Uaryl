@@ -23,6 +23,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { ImageWithFallback } from './ImageWithFallback';
 import InteractivePixelCat from './InteractivePixelCat';
 import DigitalIdCard from './DigitalIdCard';
+import BeachBackground from './BeachBackground';
 
 // ============================================================
 // KONSTANTA
@@ -59,15 +60,28 @@ export function Hero() {
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
   return (
-    <section className="relative min-h-[100svh] bg-primary overflow-hidden flex items-center pt-20">
-      {/* Tekstur titik-titik di latar belakang */}
+    <section className="relative min-h-[100svh] bg-[#43baf2] overflow-hidden flex items-center pt-20">
+      {/* Background Animasi Pantai Tropis */}
+      <BeachBackground />
+
+      {/* Transisi menyatu mulus ke halaman/section berikutnya (About) */}
       <div
-        className="absolute inset-0 opacity-10"
+        className="absolute bottom-0 left-0 right-0 pointer-events-none z-[2]"
         style={{
-          backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
+          height: 'clamp(120px, 18vh, 220px)',
+          background:
+            'linear-gradient(to bottom, rgba(244, 247, 252, 0) 0%, rgba(244, 247, 252, 0.15) 25%, rgba(244, 247, 252, 0.55) 60%, rgba(244, 247, 252, 0.92) 88%, #F4F7FC 100%)',
         }}
-      ></div>
+      />
+
+      {/* Atmospheric subtle readability overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none z-[1]"
+        style={{
+          background:
+            'radial-gradient(ellipse at 25% 45%, rgba(6, 28, 64, 0.35) 0%, rgba(6, 28, 64, 0.12) 55%, transparent 80%)',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto w-full px-6 grid lg:grid-cols-12 gap-12 items-center relative z-10">
         <motion.div
@@ -77,20 +91,20 @@ export function Hero() {
           className="relative z-20 lg:z-auto lg:col-span-7 max-w-4xl"
         >
           {/* Label peran/profesi */}
-          <div className="mb-4 inline-block px-4 py-2 bg-surface-white/10 text-accent font-bold text-sm rounded-full tracking-wider">
+          <div className="mb-4 inline-block px-4 py-2 bg-blue-950/40 backdrop-blur-md text-accent font-bold text-sm rounded-full tracking-wider border border-accent/25 shadow-sm">
             {config.personal.role}
           </div>
 
           {/* Judul besar: Portofolio + nama */}
           <h1 className="font-black tracking-tighter mb-6 flex flex-col items-start gap-1">
             <span
-              className="max-w-full leading-[0.9] text-surface-white break-words"
+              className="max-w-full leading-[0.9] text-surface-white break-words drop-shadow-[0_4px_16px_rgba(2,20,50,0.55)]"
               style={{ fontSize: 'clamp(2.75rem, 13vw, 6.5rem)' }}
             >
               <PortfolioTitle text={t('Portofolio', 'Portfolio')} />
             </span>
             <span
-              className="max-w-full leading-tight text-dark bg-accent px-3 py-1 mt-1 inline-block break-words"
+              className="max-w-full leading-tight text-dark bg-accent px-3 py-1 mt-1 inline-block break-words shadow-lg shadow-accent/25"
               style={{ fontSize: 'clamp(1rem, 5vw, 3rem)' }}
             >
               {config.personal.name.toUpperCase()}
@@ -98,7 +112,7 @@ export function Hero() {
           </h1>
 
           {/* Tagline singkat */}
-          <p className="text-surface-white/80 text-lg md:text-xl font-medium max-w-xl mb-12 leading-relaxed">
+          <p className="text-surface-white text-lg md:text-xl font-medium max-w-xl mb-12 leading-relaxed drop-shadow-[0_2px_8px_rgba(2,20,50,0.65)]">
             {config.personal.tagline}
           </p>
 
@@ -106,13 +120,13 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row flex-wrap gap-4">
             <a
               href="#projects"
-              className="w-full sm:w-auto text-center bg-accent text-dark px-6 sm:px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-white hover:scale-105 transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto text-center bg-accent text-dark px-6 sm:px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-white hover:scale-105 transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/20"
             >
               {t('LIHAT PORTOFOLIO', 'VIEW PORTFOLIO')}
             </a>
             <a
               href="#contact"
-              className="w-full sm:w-auto text-center border-2 border-surface-white/30 text-surface-white px-6 sm:px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-surface-white hover:text-dark transition-all"
+              className="w-full sm:w-auto text-center bg-blue-950/30 backdrop-blur-md border-2 border-white/60 text-surface-white px-6 sm:px-8 py-4 rounded-full font-bold text-sm tracking-wider hover:bg-surface-white hover:text-dark hover:scale-105 transition-all shadow-lg"
             >
               {t('HUBUNGI SAYA', 'CONTACT ME')}
             </a>
@@ -811,13 +825,13 @@ export function Skills() {
   return (
     <section
       id="skills"
-      className="relative overflow-hidden bg-dark py-20 text-surface-white md:py-32"
+      className="relative overflow-hidden bg-dark pt-20 text-surface-white md:pt-32"
     >
       {/* Cahaya warna di latar belakang */}
       <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary opacity-40 blur-3xl"></div>
       <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-accent opacity-10 blur-3xl"></div>
 
-      <div className="relative mx-auto max-w-7xl px-6">
+      <div className="relative mx-auto max-w-7xl px-6 z-10">
         {/* ---------- Judul & deskripsi ---------- */}
         <div className="mx-auto mb-16 max-w-2xl text-center">
           <h2 className="mb-6 text-4xl font-black leading-none tracking-tighter md:text-5xl lg:text-7xl">
@@ -837,13 +851,12 @@ export function Skills() {
             <SkillCard key={group.skills[0]} group={group} index={index} />
           ))}
         </div>
-
-        {/* Kucing pixel: hidup di strip ini, di bawah kartu skill */}
-        <div className="mt-10 md:mt-14">
-          <InteractivePixelCat />
-        </div>
       </div>
 
+      {/* Panggung Padang Rumput Kucing: Full-Bleed bebas dari tepi ke tepi layar (seperti Beranda) */}
+      <div className="relative w-full mt-10 md:mt-16 z-10">
+        <InteractivePixelCat />
+      </div>
     </section>
   );
 }

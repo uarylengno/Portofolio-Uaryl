@@ -1515,6 +1515,7 @@ const STYLE_ID = 'pxcat-style';
 const CSS = `
 .pxcat-wrap{position:fixed;left:0;top:0;z-index:var(--pxcat-z,9999);pointer-events:none;will-change:transform;contain:layout style;}
 .pxcat-wrap.pxcat-in{position:absolute;}
+.pxcat-wrap.pxcat-in::after{content:"";position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:28px;height:6px;border-radius:50%;background:radial-gradient(ellipse at center, rgba(30,45,15,0.5) 0%, rgba(30,45,15,0.18) 60%, transparent 100%);pointer-events:none;z-index:-1;filter:blur(0.5px);}
 .pxcat-canvas{display:block;image-rendering:-moz-crisp-edges;image-rendering:crisp-edges;image-rendering:pixelated;pointer-events:auto;touch-action:none;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;-webkit-user-select:none;user-select:none;}
 .pxcat-canvas.pxcat-grabbing{cursor:grabbing;}
 .pxcat-canvas:focus-visible{clip-path:none!important;outline:2px solid #ffcc00;outline-offset:-2px;}
@@ -1719,7 +1720,8 @@ function mountPixelCat(userOpts = {}) {
     wrap.style.height = h + 'px';
     world.viewW = boxW / cs;
     world.viewH = boxH / cs;
-    world.ground = (boxH - opts.bottom) / cs;
+    const btm = typeof opts.bottom === "function" ? opts.bottom(boxH) : (Number(opts.bottom) || 0);
+    world.ground = (boxH - btm) / cs;
     world.xMin = TUNE.edgeMargin;
     world.xMax = Math.max(world.xMin + 1, world.viewW - TUNE.edgeMargin);
     world.x = clamp(world.x, world.xMin, world.xMax);

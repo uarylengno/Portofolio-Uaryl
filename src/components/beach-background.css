@@ -1,0 +1,488 @@
+/* ============================================================
+   TROPICAL BEACH ANIMATIONS
+   Water waves, swaying palms, flying seagulls, and sun corona
+   ============================================================ */
+
+.beach-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Base high-res image */
+.beach-base-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* SVG overlay aligning pixel-for-pixel with object-cover object-center */
+.beach-svg-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------
+   1. WATER ANIMATIONS (AIR BERGERAK)
+   ------------------------------------------------------------ */
+
+/* Wave drift back and forth */
+.beach-wave-drift-1 {
+  animation: beachWaterDrift1 8s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.beach-wave-drift-2 {
+  animation: beachWaterDrift2 11s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.beach-wave-drift-3 {
+  animation: beachWaterDrift3 9s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes beachWaterDrift1 {
+  0% { transform: translate3d(-35px, 0, 0); }
+  100% { transform: translate3d(35px, 0, 0); }
+}
+
+@keyframes beachWaterDrift2 {
+  0% { transform: translate3d(40px, 0, 0); }
+  100% { transform: translate3d(-40px, 0, 0); }
+}
+
+@keyframes beachWaterDrift3 {
+  0% { transform: translate3d(-25px, 0, 0); }
+  100% { transform: translate3d(30px, 0, 0); }
+}
+
+/* Wave shimmer / light reflection on water surface */
+.beach-wave-shimmer-fast {
+  animation: beachShimmer 3.2s ease-in-out infinite alternate;
+}
+
+.beach-wave-shimmer-mid {
+  animation: beachShimmer 4.6s ease-in-out infinite alternate;
+}
+
+.beach-wave-shimmer-slow {
+  animation: beachShimmer 6s ease-in-out infinite alternate;
+}
+
+@keyframes beachShimmer {
+  0% { opacity: 0.35; transform: scaleY(0.9); }
+  50% { opacity: 0.95; transform: scaleY(1.15); }
+  100% { opacity: 0.45; transform: scaleY(0.95); }
+}
+
+/* Shoreline wave surge onto the golden beach sand */
+.beach-shore-wash-main {
+  animation: beachShoreWash 5.8s ease-in-out infinite;
+  transform-origin: 512px 650px;
+  will-change: transform, opacity;
+}
+
+.beach-shore-wash-sub {
+  animation: beachShoreWash 5.8s ease-in-out infinite 0.7s;
+  transform-origin: 512px 645px;
+  will-change: transform, opacity;
+}
+
+@keyframes beachShoreWash {
+  0%, 100% {
+    transform: translate3d(0, 16px, 0) scaleY(0.65);
+    opacity: 0.3;
+  }
+  45% {
+    transform: translate3d(0, -10px, 0) scaleY(1.2);
+    opacity: 0.95;
+  }
+  65% {
+    transform: translate3d(0, -3px, 0) scaleY(0.95);
+    opacity: 0.7;
+  }
+}
+
+/* Spit shoreline wave pulse */
+.beach-spit-lap {
+  animation: beachSpitLap 4.5s ease-in-out infinite alternate;
+  transform-origin: 180px 495px;
+  will-change: transform, opacity;
+}
+
+@keyframes beachSpitLap {
+  0% {
+    transform: translate3d(-6px, 3px, 0) scaleY(0.8);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate3d(6px, -2px, 0) scaleY(1.2);
+    opacity: 0.95;
+  }
+}
+
+/* Sunlight sparkles / caustics glistening on water */
+.beach-sparkle {
+  transform-origin: center center;
+  animation: beachSparkleGlint 2.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.beach-sparkle-d1 { animation-delay: 0.4s; }
+.beach-sparkle-d2 { animation-delay: 0.9s; }
+.beach-sparkle-d3 { animation-delay: 1.5s; }
+.beach-sparkle-d4 { animation-delay: 2.1s; }
+.beach-sparkle-d5 { animation-delay: 1.1s; }
+
+@keyframes beachSparkleGlint {
+  0%, 100% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 0.05;
+  }
+  50% {
+    transform: scale(1.15) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------
+   2. PALM LEAF ANIMATIONS (DAUN POHON BERGERAK)
+   ------------------------------------------------------------ */
+
+/* Left Palm Tree 1 (Tall) - anchored at crown (60px, 310px) */
+.beach-palm-left-1 {
+  transform-origin: 60px 310px;
+  animation: palmSwayL1 5.2s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes palmSwayL1 {
+  0% { transform: rotate(-1.5deg) skewX(-0.5deg); }
+  50% { transform: rotate(1deg) skewX(0.5deg); }
+  100% { transform: rotate(3.2deg) skewX(1deg); }
+}
+
+/* Left Palm Tree 2 (Short) - anchored at crown (80px, 355px) */
+.beach-palm-left-2 {
+  transform-origin: 80px 355px;
+  animation: palmSwayL2 6.1s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes palmSwayL2 {
+  0% { transform: rotate(2.8deg) skewX(0.8deg); }
+  50% { transform: rotate(-0.5deg) skewX(-0.3deg); }
+  100% { transform: rotate(-2.2deg) skewX(-0.8deg); }
+}
+
+/* Right Palm Tree A - anchored at crown (890px, 330px) */
+.beach-palm-right-a {
+  transform-origin: 890px 330px;
+  animation: palmSwayRA 4.6s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes palmSwayRA {
+  0% { transform: rotate(-2deg); }
+  50% { transform: rotate(0.8deg); }
+  100% { transform: rotate(2.8deg); }
+}
+
+/* Right Palm Tree B (Tall) - anchored at crown (920px, 310px) */
+.beach-palm-right-b {
+  transform-origin: 920px 310px;
+  animation: palmSwayRB 5.5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes palmSwayRB {
+  0% { transform: rotate(2.5deg); }
+  50% { transform: rotate(-1deg); }
+  100% { transform: rotate(-2.6deg); }
+}
+
+/* Right Palm Tree C (Leaning) - anchored at crown (980px, 360px) */
+.beach-palm-right-c {
+  transform-origin: 980px 360px;
+  animation: palmSwayRC 4.2s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes palmSwayRC {
+  0% { transform: rotate(-1.8deg); }
+  50% { transform: rotate(1.2deg); }
+  100% { transform: rotate(3.5deg); }
+}
+
+/* Individual palm frond secondary flutter / flex */
+.beach-frond-flutter-1 {
+  transform-origin: center top;
+  animation: frondFlutter1 3.2s ease-in-out infinite alternate;
+}
+
+.beach-frond-flutter-2 {
+  transform-origin: center top;
+  animation: frondFlutter2 3.9s ease-in-out infinite alternate;
+}
+
+.beach-frond-flutter-3 {
+  transform-origin: center top;
+  animation: frondFlutter1 2.7s ease-in-out infinite alternate 0.5s;
+}
+
+@keyframes frondFlutter1 {
+  0% { transform: rotate(0deg) scaleY(1); }
+  50% { transform: rotate(2.2deg) scaleY(1.05); }
+  100% { transform: rotate(-1.5deg) scaleY(0.96); }
+}
+
+@keyframes frondFlutter2 {
+  0% { transform: rotate(0deg) scaleY(1); }
+  50% { transform: rotate(-2.5deg) scaleY(0.95); }
+  100% { transform: rotate(1.8deg) scaleY(1.04); }
+}
+
+/* Foreground tropical foliage (bottom right) */
+.beach-foreground-foliage {
+  transform-origin: 960px 680px;
+  animation: foregroundSway 5.4s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes foregroundSway {
+  0% { transform: rotate(-1.8deg) skewX(-0.5deg); }
+  50% { transform: rotate(0.6deg) skewX(0.3deg); }
+  100% { transform: rotate(2.2deg) skewX(0.8deg); }
+}
+
+/* ------------------------------------------------------------
+   3. FLYING BIRDS ANIMATIONS (BURUNG KECIL BERTERBANGAN)
+   ------------------------------------------------------------ */
+
+/* Flapping wings (left & right) */
+.beach-bird-wing-l {
+  transform-origin: 100% 50%;
+  animation: wingBeatL 0.42s ease-in-out infinite alternate;
+}
+
+.beach-bird-wing-r {
+  transform-origin: 0% 50%;
+  animation: wingBeatR 0.42s ease-in-out infinite alternate;
+}
+
+/* Slower wingbeat for gliding birds */
+.beach-bird-wing-l-slow {
+  transform-origin: 100% 50%;
+  animation: wingBeatL 0.58s ease-in-out infinite alternate;
+}
+
+.beach-bird-wing-r-slow {
+  transform-origin: 0% 50%;
+  animation: wingBeatR 0.58s ease-in-out infinite alternate;
+}
+
+/* Faster wingbeat for smaller distant birds */
+.beach-bird-wing-l-fast {
+  transform-origin: 100% 50%;
+  animation: wingBeatL 0.34s ease-in-out infinite alternate;
+}
+
+.beach-bird-wing-r-fast {
+  transform-origin: 0% 50%;
+  animation: wingBeatR 0.34s ease-in-out infinite alternate;
+}
+
+@keyframes wingBeatL {
+  0% { transform: rotate(-26deg) scaleY(0.85); }
+  100% { transform: rotate(24deg) scaleY(1.15); }
+}
+
+@keyframes wingBeatR {
+  0% { transform: rotate(26deg) scaleY(0.85); }
+  100% { transform: rotate(-24deg) scaleY(1.15); }
+}
+
+/* Flight trajectories across the sky */
+
+/* Bird 1: flies from right to left across upper sky */
+.beach-flight-path-1 {
+  animation: birdFlight1 26s linear infinite;
+  will-change: transform;
+}
+
+@keyframes birdFlight1 {
+  0% {
+    transform: translate3d(1120px, 120px, 0) scale(0.9) rotate(-4deg);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  25% {
+    transform: translate3d(820px, 145px, 0) scale(0.92) rotate(-2deg);
+  }
+  50% {
+    transform: translate3d(520px, 115px, 0) scale(0.95) rotate(-6deg);
+  }
+  75% {
+    transform: translate3d(240px, 150px, 0) scale(0.9) rotate(-3deg);
+  }
+  97% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-100px, 130px, 0) scale(0.88) rotate(-4deg);
+    opacity: 0;
+  }
+}
+
+/* Bird 2: flies from left to right passing beneath the sun */
+.beach-flight-path-2 {
+  animation: birdFlight2 22s linear infinite;
+  animation-delay: -9s;
+  will-change: transform;
+}
+
+@keyframes birdFlight2 {
+  0% {
+    transform: translate3d(-80px, 210px, 0) scale(0.85) rotate(5deg);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  30% {
+    transform: translate3d(280px, 175px, 0) scale(0.9) rotate(3deg);
+  }
+  55% {
+    transform: translate3d(580px, 220px, 0) scale(0.88) rotate(6deg);
+  }
+  80% {
+    transform: translate3d(860px, 185px, 0) scale(0.85) rotate(4deg);
+  }
+  96% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(1120px, 230px, 0) scale(0.8) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+/* Bird 3: Distant gull gently circling above the sea */
+.beach-flight-path-3 {
+  animation: birdFlight3 18s ease-in-out infinite alternate;
+  animation-delay: -4s;
+  will-change: transform;
+}
+
+@keyframes birdFlight3 {
+  0% {
+    transform: translate3d(360px, 280px, 0) scale(0.55) rotate(-5deg);
+  }
+  50% {
+    transform: translate3d(430px, 260px, 0) scale(0.58) rotate(3deg);
+  }
+  100% {
+    transform: translate3d(500px, 290px, 0) scale(0.52) rotate(-4deg);
+  }
+}
+
+/* Bird 4: Another distant gull near horizon */
+.beach-flight-path-4 {
+  animation: birdFlight4 21s ease-in-out infinite alternate;
+  animation-delay: -11s;
+  will-change: transform;
+}
+
+@keyframes birdFlight4 {
+  0% {
+    transform: translate3d(620px, 320px, 0) scale(0.48) rotate(4deg);
+  }
+  50% {
+    transform: translate3d(540px, 345px, 0) scale(0.5) rotate(-2deg);
+  }
+  100% {
+    transform: translate3d(470px, 315px, 0) scale(0.46) rotate(5deg);
+  }
+}
+
+/* Bird 5: Swooping gull from upper right dipping towards palms */
+.beach-flight-path-5 {
+  animation: birdFlight5 28s linear infinite;
+  animation-delay: -16s;
+  will-change: transform;
+}
+
+@keyframes birdFlight5 {
+  0% {
+    transform: translate3d(1100px, 80px, 0) scale(0.75) rotate(-8deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  35% {
+    transform: translate3d(750px, 160px, 0) scale(0.82) rotate(-5deg);
+  }
+  65% {
+    transform: translate3d(380px, 130px, 0) scale(0.8) rotate(-7deg);
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(-90px, 180px, 0) scale(0.75) rotate(-6deg);
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------
+   4. SUN & ATMOSPHERE ANIMATIONS
+   ------------------------------------------------------------ */
+
+/* Soft corona breathing pulse */
+.beach-sun-glow {
+  transform-origin: 295px 190px;
+  animation: sunCoronaPulse 5s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes sunCoronaPulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+/* Cloud drift */
+.beach-clouds-drift {
+  animation: cloudDriftSlow 24s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes cloudDriftSlow {
+  0% { transform: translate3d(-20px, 0, 0); }
+  100% { transform: translate3d(20px, 0, 0); }
+}
+
