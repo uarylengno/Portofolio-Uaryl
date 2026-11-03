@@ -1,14 +1,8 @@
 // ============================================================
 // IMPORT
 // ============================================================
-import { useState, useRef, useEffect, type MouseEvent } from 'react';
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  type MotionValue,
-} from 'motion/react';
+import { useState, useRef, useEffect, type MouseEvent, type CSSProperties } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowUpRight,
   Code2,
@@ -152,393 +146,134 @@ export function Hero() {
 }
 
 // ============================================================
-// STORM DIVIDER: AWAN + HUJAN + PETIR (pembatas About -> Skills)
+// LATAR PANTAI UNTUK ABOUT & SKILLS
 //
-// Siklus 30 detik, berulang terus:
-//   0-5 dtk    tenang: awan putih kebiruan melayang kiri-kanan
-//   5-10 dtk   langit mulai menggelap
-//   10-21 dtk  badai: awan gelap, hujan turun, petir menyambar tiap 3-7 dtk
-//   21-26 dtk  badai reda, awan kembali cerah
-//   26-30 dtk  tenang lagi (jeda)
-//
-// - Awan bergerak bolak-balik ke kanan dan ke kiri (arah tiap awan berbeda)
-// - Hujan & petir digambar di canvas (ringan, berhenti saat tidak terlihat)
-// - Atas dan bawah pembatas memudar (mask) sehingga menyatu mulus
-//   dengan About dan Skills, tanpa garis tepi
-// - "Reduce motion": hanya awan statis, tanpa hujan, petir, dan gerak
+// AboutBeachBackdrop
+//    Melanjutkan suasana pantai dari Hero. Atas & bawahnya memakai
+//    warna #F4F7FC (sama dengan ujung Hero dan awal Skills), jadi
+//    tidak ada garis sambungan. Isinya: air dangkal kebiruan lembut,
+//    gelombang pelan, dan kilau air. Murni SVG + CSS.
 // ============================================================
 
-const STORM_CYCLE = 30; // detik
+const BEACH_W = 1440;
 
-const smoothstep = (x: number) => x * x * (3 - 2 * x);
-
-// 0 = tenang, 1 = badai penuh
-function stormIntensity(sec: number) {
-  const p = sec % STORM_CYCLE;
-  if (p < 5) return 0;
-  if (p < 10) return smoothstep((p - 5) / 5);
-  if (p < 21) return 1;
-  if (p < 26) return 1 - smoothstep((p - 21) / 5);
-  return 0;
+// Path gelombang yang bisa di-loop mulus (digeser sebesar 1 panjang gelombang)
+function waveShape(y: number, amp: number, wl: number, bottom: number): string {
+  const n = Math.ceil((BEACH_W + wl * 2) / (wl / 2)) + 2;
+  let d = `M0 ${y} q ${wl / 4} ${-amp} ${wl / 2} 0`;
+  for (let i = 0; i < n; i++) d += ` t ${wl / 2} 0`;
+  d += ` V ${bottom} H 0 Z`;
+  return d;
 }
 
-type Cluster = {
-  left: string;
-  top: string;
-  width: string;
-  dur: number;   // detik untuk satu kali bergeser kiri -> kanan
-  delay: number; // negatif: awan sudah di tengah jalan saat halaman dibuka
-  rev: boolean;  // true: mulai bergerak ke arah sebaliknya
-};
+// Variabel CSS untuk animasi gelombang
+const waveVars = (wl: number, dur: number, reverse = false): CSSProperties =>
+  ({
+    ['--wl' as string]: `${-wl}px`,
+    animationDuration: `${dur}s`,
+    animationDirection: reverse ? 'reverse' : 'normal',
+  }) as CSSProperties;
 
-const CW = 'clamp(260px, 40vw, 620px)';
-const CLUSTERS: Cluster[] = [
-  { left: '-10%', top: '4%',  width: CW, dur: 46, delay: -12, rev: false },
-  { left: '28%',  top: '0%',  width: CW, dur: 38, delay: -22, rev: true },
-  { left: '62%',  top: '6%',  width: CW, dur: 52, delay: -30, rev: false },
-  { left: '8%',   top: '22%', width: CW, dur: 42, delay: -6,  rev: true },
-  { left: '46%',  top: '24%', width: CW, dur: 34, delay: -18, rev: false },
-  { left: '78%',  top: '20%', width: CW, dur: 48, delay: -26, rev: true },
-  { left: '-4%',  top: '38%', width: CW, dur: 40, delay: -14, rev: false },
-  { left: '38%',  top: '40%', width: CW, dur: 44, delay: -34, rev: true },
-  { left: '70%',  top: '38%', width: CW, dur: 36, delay: -9,  rev: false },
+const BEACH_CSS = `
+  .shore-wave { animation: shore-wave linear infinite; }
+  @keyframes shore-wave { to { transform: translateX(var(--wl)); } }
+  .shore-bob { animation: shore-bob 5.5s ease-in-out infinite alternate; }
+  @keyframes shore-bob {
+    0%   { transform: translateY(-4px); }
+    100% { transform: translateY(6px); }
+  }
+  .shore-foam { animation: shore-foam 7s ease-in-out infinite; }
+  @keyframes shore-foam {
+    0%, 100% { transform: translateY(10px); opacity: .55; }
+    50%      { transform: translateY(-9px); opacity: .95; }
+  }
+  .shore-spark { animation: shore-spark 3.6s ease-in-out infinite; }
+  @keyframes shore-spark {
+    0%, 100% { opacity: 0; }
+    50%      { opacity: .85; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shore-wave, .shore-bob, .shore-foam, .shore-spark { animation: none !important; }
+  }
+`;
+
+// Kilau air: [left %, top %, delay detik, lebar px]
+const ABOUT_SPARKLES: [number, number, number, number][] = [
+  [8, 58, 0, 46],
+  [24, 72, 1.1, 38],
+  [41, 64, 2.2, 52],
+  [57, 78, 0.6, 40],
+  [72, 62, 1.7, 48],
+  [86, 74, 2.8, 36],
+  [15, 86, 2.0, 42],
+  [64, 90, 0.3, 50],
 ];
 
-// Bentuk satu awan = gabungan beberapa elips lembut (dalam persen)
-const BLOBS = [
-  { l: 0,  t: 34, w: 44, h: 56 },
-  { l: 20, t: 4,  w: 48, h: 72 },
-  { l: 46, t: 12, w: 44, h: 68 },
-  { l: 30, t: 40, w: 62, h: 56 },
-];
-
-const TONE_COLORS = {
-  light: [
-    'rgba(255,255,255,0.95)',
-    'rgba(206,234,248,0.9)',
-    'rgba(255,255,255,0.9)',
-    'rgba(176,215,240,0.85)',
-  ],
-  dark: [
-    'rgba(88,104,150,0.92)',
-    'rgba(58,72,115,0.95)',
-    'rgba(76,92,138,0.9)',
-    'rgba(44,56,96,0.95)',
-  ],
-};
-
-function CloudGroup({ tone }: { tone: 'light' | 'dark' }) {
-  const colors = TONE_COLORS[tone];
+function AboutBeachBackdrop() {
   return (
-    <>
-      {CLUSTERS.map((c, i) => (
-        <div
-          key={i}
-          className="storm-cluster absolute"
-          style={{
-            left: c.left,
-            top: c.top,
-            width: c.width,
-            aspectRatio: '2 / 1',
-            filter: 'blur(9px)',
-            willChange: 'transform',
-            animation: `storm-sway ${c.dur}s ease-in-out ${c.delay}s infinite ${
-              c.rev ? 'alternate-reverse' : 'alternate'
-            }`,
-          }}
-        >
-          {BLOBS.map((b, j) => (
-            <span
-              key={j}
-              className="absolute rounded-full"
-              style={{
-                left: `${b.l}%`,
-                top: `${b.t}%`,
-                width: `${b.w}%`,
-                height: `${b.h}%`,
-                background: `radial-gradient(closest-side, ${colors[j % colors.length]} 35%, transparent)`,
-              }}
-            />
-          ))}
-        </div>
-      ))}
-    </>
-  );
-}
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+      <style>{BEACH_CSS}</style>
 
-type Drop = { x: number; y: number; len: number; speed: number; alpha: number };
-type Pt = { x: number; y: number };
-type Bolt = { pts: Pt[]; branches: Pt[][]; born: number };
-
-const RAIN_SLANT = 0.22; // kemiringan hujan (miring ke kanan)
-
-// Kilatan petir: berkedip beberapa kali lalu padam (ms sejak petir muncul)
-function boltAlpha(age: number) {
-  if (age < 0 || age > 560) return 0;
-  if (age < 70) return 1;
-  if (age < 120) return 0.25;
-  if (age < 210) return 1;
-  if (age < 260) return 0.35;
-  if (age < 330) return 0.8;
-  return Math.max(0, 1 - (age - 330) / 230) * 0.8;
-}
-
-function StormDivider({ progress }: { progress: MotionValue<number> }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const lightRef = useRef<HTMLDivElement>(null);
-  const darkRef = useRef<HTMLDivElement>(null);
-  const hazeRef = useRef<HTMLDivElement>(null);
-  const flashRef = useRef<HTMLDivElement>(null);
-
-  // Awan bergeser sedikit saat di-scroll
-  const y = useTransform(progress, [0, 1], [26, -26]);
-
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    const canvas = canvasRef.current;
-    const light = lightRef.current;
-    const dark = darkRef.current;
-    const haze = hazeRef.current;
-    const flash = flashRef.current;
-    if (!wrap || !canvas || !light || !dark || !haze || !flash) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let w = 0;
-    let h = 0;
-    let drops: Drop[] = [];
-    let bolt: Bolt | null = null;
-    let nextStrike = 0;
-    let raf = 0;
-    let last = 0;
-    let visible = false;
-    const t0 = performance.now();
-
-    const rand = (a: number, b: number) => a + Math.random() * (b - a);
-
-    const spawnDrop = (initial: boolean): Drop => ({
-      x: rand(-40, w + 40),
-      y: initial ? rand(h * 0.2, h) : h * 0.2 + rand(-60, 0),
-      len: rand(12, 26),
-      speed: rand(650, 1050),
-      alpha: rand(0.25, 0.6),
-    });
-
-    const resize = () => {
-      const rect = wrap.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = rect.width;
-      h = rect.height;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.min(240, Math.round(w / 5));
-      drops = Array.from({ length: count }, () => spawnDrop(true));
-    };
-
-    const makeBolt = (now: number): Bolt => {
-      const x0 = w * rand(0.12, 0.88);
-      const y0 = h * 0.3;
-      const y1 = h * rand(0.62, 0.82);
-      const pts: Pt[] = [{ x: x0, y: y0 }];
-      const branches: Pt[][] = [];
-      let x = x0;
-      let yy = y0;
-      while (yy < y1) {
-        yy += rand(14, 36);
-        x += rand(-19, 19);
-        pts.push({ x, y: yy });
-        if (Math.random() < 0.16 && yy < y1 - 30) {
-          const dir = Math.random() < 0.5 ? -1 : 1;
-          const n = 3 + Math.floor(Math.random() * 4);
-          const b: Pt[] = [{ x, y: yy }];
-          let bx = x;
-          let by = yy;
-          for (let i = 0; i < n; i++) {
-            by += rand(10, 26);
-            bx += dir * rand(8, 26);
-            b.push({ x: bx, y: by });
-          }
-          branches.push(b);
-        }
-      }
-      // Cahaya kilat di awan, tepat di atas posisi petir
-      flash.style.background = `radial-gradient(ellipse 55% 75% at ${(x0 / w) * 100}% 38%, rgba(255,255,255,0.95), rgba(196,181,253,0.45) 38%, transparent 72%)`;
-      return { pts, branches, born: now };
-    };
-
-    const strokePath = (pts: Pt[]) => {
-      ctx.beginPath();
-      ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
-      ctx.stroke();
-    };
-
-    const drawBolt = (b: Bolt, a: number) => {
-      ctx.lineJoin = 'round';
-      ctx.lineCap = 'round';
-      const paths: { pts: Pt[]; k: number }[] = [
-        { pts: b.pts, k: 1 },
-        ...b.branches.map((pts) => ({ pts, k: 0.55 })),
-      ];
-      for (const { pts, k } of paths) {
-        ctx.shadowBlur = 0;
-        ctx.strokeStyle = `rgba(167,139,250,${0.35 * a})`;
-        ctx.lineWidth = 10 * k;
-        strokePath(pts);
-        ctx.strokeStyle = `rgba(125,211,252,${0.6 * a})`;
-        ctx.lineWidth = 4 * k;
-        strokePath(pts);
-        ctx.shadowColor = 'rgba(147,197,253,1)';
-        ctx.shadowBlur = 18 * k;
-        ctx.strokeStyle = `rgba(255,255,255,${a})`;
-        ctx.lineWidth = 1.8 * k;
-        strokePath(pts);
-      }
-      ctx.shadowBlur = 0;
-    };
-
-    const update = (now: number, dt: number) => {
-      if (!w || !h) return;
-      const I = stormIntensity((now - t0) / 1000);
-      const rain = Math.min(1, Math.max(0, (I - 0.4) / 0.6));
-
-      // Jadwal petir: hanya saat badai penuh, dengan jeda acak
-      if (I > 0.85) {
-        if (nextStrike === 0) nextStrike = now + rand(1200, 2600);
-        else if (now >= nextStrike) {
-          bolt = makeBolt(now);
-          nextStrike = now + rand(3200, 7500);
-        }
-      } else {
-        nextStrike = 0;
-      }
-
-      let fa = 0;
-      if (bolt) {
-        const age = now - bolt.born;
-        if (age > 560) bolt = null;
-        else fa = boltAlpha(age);
-      }
-
-      // Awan cerah memudar, awan gelap menguat, kilat membuat awan berkedip
-      light.style.opacity = String(1 - 0.65 * I);
-      dark.style.opacity = String(Math.min(1, I * (0.95 - 0.4 * fa)));
-      haze.style.opacity = String(I);
-      flash.style.opacity = String(fa * 0.85);
-
-      ctx.clearRect(0, 0, w, h);
-
-      if (rain > 0.01) {
-        ctx.lineWidth = 1.2;
-        ctx.lineCap = 'round';
-        for (const d of drops) {
-          d.y += d.speed * dt;
-          d.x += d.speed * RAIN_SLANT * dt;
-          if (d.y > h || d.x > w + 60) Object.assign(d, spawnDrop(false));
-          ctx.strokeStyle = `rgba(80,120,185,${d.alpha * rain})`;
-          ctx.beginPath();
-          ctx.moveTo(d.x, d.y);
-          ctx.lineTo(d.x - d.len * RAIN_SLANT, d.y - d.len);
-          ctx.stroke();
-        }
-      }
-
-      if (bolt && fa > 0) drawBolt(bolt, fa);
-    };
-
-    const frame = (now: number) => {
-      raf = requestAnimationFrame(frame);
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      update(now, dt);
-    };
-    const start = () => {
-      if (!raf && visible && !document.hidden) {
-        last = performance.now();
-        raf = requestAnimationFrame(frame);
-      }
-    };
-    const stop = () => {
-      if (raf) {
-        cancelAnimationFrame(raf);
-        raf = 0;
-      }
-    };
-
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(wrap);
-    const io = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible) start();
-      else stop();
-    });
-    io.observe(wrap);
-    const onVisibility = () => (document.hidden ? stop() : start());
-    document.addEventListener('visibilitychange', onVisibility);
-
-    return () => {
-      stop();
-      ro.disconnect();
-      io.disconnect();
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, []);
-
-  return (
-    <div
-      ref={wrapRef}
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 -bottom-px z-0 overflow-hidden"
-      style={{
-        height: 'clamp(280px, 40vw, 520px)',
-        // Atas & bawah memudar: menyatu dengan About dan Skills tanpa garis tepi
-        WebkitMaskImage:
-          'linear-gradient(to bottom, transparent 0%, #000 26%, #000 60%, transparent 100%)',
-        maskImage:
-          'linear-gradient(to bottom, transparent 0%, #000 26%, #000 60%, transparent 100%)',
-      }}
-    >
-      <style>{`
-        @keyframes storm-sway {
-          from { transform: translate3d(-11vw, 0, 0); }
-          to   { transform: translate3d(11vw, 0, 0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .storm-cluster { animation: none !important; }
-        }
-      `}</style>
-
-      {/* Kabut langit yang menggelap saat badai */}
+      {/* Dasar: #F4F7FC -> air dangkal tosca lembut -> #F4F7FC */}
       <div
-        ref={hazeRef}
         className="absolute inset-0"
         style={{
-          opacity: 0,
           background:
-            'linear-gradient(to bottom, rgba(66,82,128,0) 0%, rgba(66,82,128,0.38) 45%, rgba(66,82,128,0) 100%)',
+            'linear-gradient(to bottom, #F4F7FC 0%, #ebf9fc 30%, #d8f4f9 62%, #e9f8fb 84%, #F4F7FC 100%)',
         }}
       />
 
-      <motion.div className="absolute inset-0" style={{ y }}>
-        {/* Awan cerah (tenang) */}
-        <div ref={lightRef} className="absolute inset-0">
-          <CloudGroup tone="light" />
-        </div>
-        {/* Awan gelap (badai), posisinya sama dengan awan cerah */}
-        <div ref={darkRef} className="absolute inset-0" style={{ opacity: 0 }}>
-          <CloudGroup tone="dark" />
-        </div>
-      </motion.div>
+      {/* Gelombang pelan di sepertiga bawah, atas & bawahnya memudar */}
+      <div
+        className="absolute inset-x-0 bottom-0"
+        style={{
+          height: 'clamp(320px, 46vw, 620px)',
+          WebkitMaskImage:
+            'linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)',
+          maskImage:
+            'linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)',
+        }}
+      >
+        <svg
+          viewBox={`0 0 ${BEACH_W} 500`}
+          preserveAspectRatio="none"
+          width="100%"
+          height="100%"
+          style={{ display: 'block' }}
+        >
+          <g className="shore-bob">
+            <g className="shore-wave" style={waveVars(520, 24)}>
+              <path d={waveShape(150, 12, 520, 500)} fill="#25c6e2" opacity="0.16" />
+            </g>
+          </g>
+          <g className="shore-bob" style={{ animationDelay: '-2s' }}>
+            <g className="shore-wave" style={waveVars(420, 18, true)}>
+              <path d={waveShape(230, 14, 420, 500)} fill="#1fb7dc" opacity="0.14" />
+            </g>
+          </g>
+          <g className="shore-bob" style={{ animationDelay: '-3.5s' }}>
+            <g className="shore-wave" style={waveVars(600, 14)}>
+              <path d={waveShape(320, 16, 600, 500)} fill="#5ff0fa" opacity="0.2" />
+            </g>
+          </g>
+        </svg>
+      </div>
 
-      {/* Cahaya kilat */}
-      <div ref={flashRef} className="absolute inset-0" style={{ opacity: 0 }} />
-
-      {/* Hujan & petir */}
-      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      {/* Kilau air */}
+      {ABOUT_SPARKLES.map(([left, top, delay, width], i) => (
+        <span
+          key={i}
+          className="shore-spark absolute block rounded-full"
+          style={{
+            left: `${left}%`,
+            top: `${top}%`,
+            width,
+            height: 3,
+            background: 'rgba(44, 190, 224, 0.55)',
+            animationDelay: `${delay}s`,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -550,20 +285,14 @@ export function About() {
   const { language, t } = useLanguage();
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
-  // Dipakai untuk efek parallax awan saat scroll
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-
   return (
     <section
-      ref={sectionRef}
       id="about"
-      className="relative isolate overflow-hidden pt-20 md:pt-32 px-6 bg-background"
-      style={{ paddingBottom: 'clamp(200px, 28vw, 380px)' }}
+      className="relative isolate overflow-hidden pt-20 md:pt-32 pb-24 md:pb-36 px-6 bg-background"
     >
+      {/* Latar pantai: melanjutkan Hero, menyatu ke Skills */}
+      <AboutBeachBackdrop />
+
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -left-28 top-12 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
@@ -571,10 +300,7 @@ export function About() {
         transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Awan + hujan + petir di bagian bawah About, menyambung ke Skills */}
-      <StormDivider progress={scrollYProgress} />
-
-      <div className="relative max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         {/* ---------- Kolom kiri: foto bulat + lingkaran dekoratif ---------- */}
         <motion.div
           className="lg:col-span-5 relative"
@@ -1227,6 +953,12 @@ function SkillCard({ group, index }: { group: SkillGroup; index: number }) {
   );
 }
 
+// Cahaya sore di bawah Skills. Warna SUNSET_TOP = warna awal langit kucing,
+// jadi gradasinya menyambung mulus ke area kucing.
+const SUNSET_TOP = '#ffe6c4';
+const CAT_H = 'clamp(280px, 33vw, 440px)'; // tinggi area kucing
+const GLOW_H = 'clamp(320px, 36vw, 520px)'; // seberapa tinggi oranye naik ke atas area kucing
+
 export function Skills() {
   const { t } = useLanguage();
 
@@ -1235,6 +967,20 @@ export function Skills() {
       id="skills"
       className="relative overflow-hidden bg-background pt-20 text-dark md:pt-32"
     >
+      {/* Cahaya oranye sore naik dari area kucing sampai ke bawah kartu skill */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0"
+        style={{
+          height: `calc(${CAT_H} + ${GLOW_H})`,
+          background: `linear-gradient(to bottom,
+            rgba(255, 230, 196, 0) 0px,
+            rgba(255, 220, 178, 0.35) calc(${GLOW_H} * 0.45),
+            rgba(255, 214, 168, 0.75) calc(${GLOW_H} * 0.78),
+            ${SUNSET_TOP} ${GLOW_H},
+            ${SUNSET_TOP} 100%)`,
+        }}
+      />
 
       <div className="relative mx-auto max-w-7xl px-6 z-10">
         {/* ---------- Judul & deskripsi ---------- */}
@@ -1258,9 +1004,9 @@ export function Skills() {
         </div>
       </div>
 
-      {/* Panggung Padang Rumput Kucing: Full-Bleed bebas dari tepi ke tepi layar (seperti Beranda) */}
-      <div className="relative w-full mt-10 md:mt-16 z-10">
-        <InteractivePixelCat />
+      {/* Panggung Padang Rumput Kucing (langit sore oranye): Full-Bleed dari tepi ke tepi layar */}
+      <div className="relative w-full mt-16 md:mt-24 z-10">
+        <InteractivePixelCat topColor={SUNSET_TOP} height={CAT_H} />
       </div>
     </section>
   );

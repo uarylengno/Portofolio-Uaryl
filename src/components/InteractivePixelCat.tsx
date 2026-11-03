@@ -7,6 +7,12 @@ type Props = {
   /** Teks bubble saat mengeong. */
   messages?: string[];
   className?: string;
+  /**
+   * Warna di tepi atas area ini. Samakan dengan warna bagian bawah
+   * section di atasnya (mis. pasir pantai) supaya sambungannya mulus.
+   * Bawaan: #F4F7FC (warna halaman).
+   */
+  topColor?: string;
 };
 
 type AnimVars = CSSProperties & {
@@ -170,8 +176,8 @@ function Flower({ x, y, s = 1, delay = 0, petal = '#ffffff' }: { x: number; y: n
 
 function Cloud({ x, y, s = 1, dur, delay }: { x: number; y: number; s?: number; dur: number; delay: number }) {
   return (
-    <g transform={`translate(${x} ${y}) scale(${s})`} opacity="0.7">
-      <g className="pc-cloud" style={anim(dur, delay)} fill="#ffffff">
+    <g transform={`translate(${x} ${y}) scale(${s})`} opacity="0.85">
+      <g className="pc-cloud" style={anim(dur, delay)} fill="#ffe4c6">
         <ellipse cx="0" cy="0" rx="46" ry="14" />
         <ellipse cx="-20" cy="-9" rx="24" ry="14" />
         <ellipse cx="14" cy="-13" rx="28" ry="16" />
@@ -196,7 +202,7 @@ function Butterfly({ x, y, color, delay, dur }: { x: number; y: number; color: s
   );
 }
 
-function MeadowScene() {
+function MeadowScene({ topColor }: { topColor: string }) {
   const uid = useId().replace(/:/g, '');
   const id = (name: string) => `${name}-${uid}`;
 
@@ -211,15 +217,16 @@ function MeadowScene() {
       <style>{SCENE_CSS}</style>
       <defs>
         <linearGradient id={id('sky')} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f4f7fc" />
-          <stop offset="28%" stopColor="#fdf6c4" />
-          <stop offset="62%" stopColor="#fff39a" />
-          <stop offset="100%" stopColor="#fff7b8" />
+          <stop offset="0%" stopColor={topColor} />
+          <stop offset="16%" stopColor="#ffe6c4" />
+          <stop offset="42%" stopColor="#ffc98a" />
+          <stop offset="72%" stopColor="#ffab5c" />
+          <stop offset="100%" stopColor="#ff9b4a" />
         </linearGradient>
         <radialGradient id={id('sun')} cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0%" stopColor="#fffde6" stopOpacity="0.95" />
-          <stop offset="45%" stopColor="#fff6a8" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#fff6a8" stopOpacity="0" />
+          <stop offset="0%" stopColor="#fff3d6" stopOpacity="1" />
+          <stop offset="35%" stopColor="#ffd08a" stopOpacity="0.65" />
+          <stop offset="100%" stopColor="#ff9b4a" stopOpacity="0" />
         </radialGradient>
         <linearGradient id={id('hillBack')} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#b4d94a" />
@@ -249,7 +256,8 @@ function MeadowScene() {
         </radialGradient>
       </defs>
       <rect width="1440" height="440" fill={`url(#${id('sky')})`} />
-      <circle cx="1090" cy="150" r="190" fill={`url(#${id('sun')})`} />
+      <circle cx="1090" cy="215" r="240" fill={`url(#${id('sun')})`} />
+      <circle cx="1090" cy="215" r="46" fill="#fff1cf" opacity="0.95" />
       <Cloud x={260} y={92} s={1.1} dur={46} delay={-12} />
       <Cloud x={720} y={60} s={0.8} dur={58} delay={-30} />
       <Cloud x={1180} y={112} s={1} dur={52} delay={-4} />
@@ -312,6 +320,8 @@ function MeadowScene() {
       <Flower x={1396} y={412} s={1.15} delay={-0.4} petal="#fff3f7" />
       <Flower x={826} y={432} s={1} delay={-2.5} />
       <Flower x={1000} y={430} s={0.95} delay={-0.9} />
+      {/* Cahaya sore: tint hangat tipis di atas bukit */}
+      <rect width="1440" height="440" fill="#ff8a2a" opacity="0.1" />
       <Butterfly x={300} y={300} color="#ff9ec4" delay={0} dur={11} />
       <Butterfly x={1060} y={270} color="#ffd24d" delay={-5} dur={13} />
     </svg>
@@ -326,6 +336,7 @@ export default function InteractivePixelCat({
   height,
   messages,
   className = '',
+  topColor = '#F4F7FC',
 }: Props) {
   const boxRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -416,7 +427,7 @@ export default function InteractivePixelCat({
       aria-label="Area kucing pixel berjalan di jalur tanah"
     >
       <style>{`.pc-cat-stage .pxcat-wrap.pxcat-in::after { display: none; }`}</style>
-      <MeadowScene />
+      <MeadowScene topColor={topColor} />
       <div
         ref={boxRef}
         className="pc-cat-stage absolute inset-y-0 left-[10%] right-[7%] z-[2]"
@@ -434,13 +445,13 @@ export default function InteractivePixelCat({
           }}
         />
       </div>
+      {/* Tepi atas: memudar dari warna section di atasnya (pasir pantai di Skills) */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 z-[1]"
         style={{
           height: 'clamp(72px, 11vw, 128px)',
-          background:
-            'linear-gradient(to bottom, #F4F7FC 0%, rgba(244, 247, 252, 0.82) 30%, rgba(244, 247, 252, 0.35) 65%, transparent 100%)',
+          background: `linear-gradient(to bottom, ${topColor} 0%, color-mix(in srgb, ${topColor} 82%, transparent) 30%, color-mix(in srgb, ${topColor} 35%, transparent) 65%, transparent 100%)`,
         }}
       />
       <div
