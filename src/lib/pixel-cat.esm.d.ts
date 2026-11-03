@@ -7,6 +7,7 @@ export interface PixelCatOptions {
   zIndex?: number;
   messages?: string[] | null;
   autonomous?: boolean;
+  roam?: boolean;
   sleepAfter?: number;
   timeScale?: number;
   sound?: boolean;

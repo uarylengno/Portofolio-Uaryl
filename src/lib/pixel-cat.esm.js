@@ -566,6 +566,10 @@ const STATES = {
     enter(b, p) {
       const sd = b.sd;
       sd.target = clamp(p.x, b.w.xMin, b.w.xMax);
+      if (b.opts.roam && !b.opts.reduced) {
+        b.w.roamTargetY = b.rng.range(b.w.roamMinY, b.w.roamMaxY);
+        b.w.roamTimer = b.rng.range(3, 5);
+      }
       sd.speed = TUNE.walkSpeed * (p.speedMul || 1);
       sd.step = 0.25;
       b.stateExpr = 'normal';
@@ -595,6 +599,10 @@ const STATES = {
     enter(b, p) {
       const sd = b.sd;
       sd.target = clamp(p.x, b.w.xMin, b.w.xMax);
+      if (b.opts.roam && !b.opts.reduced) {
+        b.w.roamTargetY = b.rng.range(b.w.roamMinY, b.w.roamMaxY);
+        b.w.roamTimer = b.rng.range(3, 5);
+      }
       sd.step = 0.18;
       b.stateExpr = 'normal';
       b.pose.split = null;
@@ -769,7 +777,7 @@ const STATES = {
     update(b, dt) {
       const sd = b.sd, w = b.w, p = b.p;
       const tx = clamp(p.x - sd.grabX, w.xMin, w.xMax);
-      const ty = clamp(w.ground - (p.y - sd.grabY), 0, Math.max(0, w.ground - 24));
+      const ty = clamp(w.ground - (p.y - sd.grabY), 0, Math.max(0, w.roamY - w.roamMinY));
       const k = Math.min(1, 22 * dt);
       w.x = lerp(w.x, tx, k);
       w.y = lerp(w.y, ty, k);
@@ -1194,6 +1202,7 @@ class Brain {
     this.lastItem = null;
     this.log = [];
     this.enter('IDLE', {});
+    this.w.roamTimer = this.rng.range(1, 2.5);
   }
 
   get state() {
@@ -1475,6 +1484,24 @@ class Brain {
     if (st.update) st.update(this, dt);
     const cur = STATES[this.name];
     const w = this.w;
+    if (this.opts.roam && !this.opts.reduced) {
+      const walking = (this.name === 'WALK' || this.name === 'RUN') && Math.abs(w.vx) > 2;
+      if (walking) {
+        const pointerInBounds = this.p.active && this.p.x >= 0 && this.p.x <= w.viewW && this.p.y >= 0 && this.p.y <= w.viewH;
+        if (pointerInBounds) {
+          w.roamTargetY = clamp(this.p.y - w.ground, w.roamMinY, w.roamMaxY);
+        } else {
+          w.roamTimer -= dt;
+          if (w.roamTimer <= 0) {
+            w.roamTargetY = this.rng.range(w.roamMinY, w.roamMaxY);
+            w.roamTimer = this.rng.range(3, 5);
+          }
+        }
+      } else {
+        w.roamTargetY = 0;
+      }
+      w.roamY += (w.roamTargetY - w.roamY) * (1 - Math.exp(-1.5 * dt));
+    }
     if (cur.moves && w.vx) {
       w.x += w.vx * dt;
       if (w.x < w.xMin) { w.x = w.xMin; w.vx = 0; }
@@ -1540,6 +1567,7 @@ const DEFAULT_OPTS = {
   zIndex: 9999,
   messages: null,          // teks bubble saat mengeong
   autonomous: true,        // perilaku otomatis
+  roam: false,             // izinkan kucing berpindah jalur vertikal di dalam container
   sleepAfter: 30,          // detik tanpa aktivitas sebelum boleh tidur
   respectReducedMotion: true,
   sound: true,
@@ -1689,13 +1717,13 @@ function mountPixelCat(userOpts = {}) {
   wrap.style.visibility = 'hidden';
 
   // ------------------------------------------------------------------ dunia & input
-  const world = { x: 0, y: 0, vx: 0, vy: 0, facing: -1, xMin: TUNE.edgeMargin, xMax: 300, ground: 200, viewW: 400, viewH: 300 };
+  const world = { x: 0, y: 0, vx: 0, vy: 0, facing: -1, xMin: TUNE.edgeMargin, xMax: 300, ground: 200, viewW: 400, viewH: 300, roamY: 0, roamTargetY: 0, roamMinY: 0, roamMaxY: 0 };
   const pointer = { cx: 0, cy: 0, x: 0, y: 0, active: false, speed: 0, touch: false, px: 0, py: 0, pt: 0 };
   const fx = new Fx();
   const sounds = new CatSounds(opts.sound);
   const rng = makeRng(opts.seed);
   const mql = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-  const aiOpts = { autonomous: opts.autonomous, sleepAfter: opts.sleepAfter, reduced: !!(opts.respectReducedMotion && mql && mql.matches) };
+  const aiOpts = { autonomous: opts.autonomous, roam: opts.roam, sleepAfter: opts.sleepAfter, reduced: !!(opts.respectReducedMotion && mql && mql.matches) };
 
   let sheet = null, renderer = null, brain = null;
 
@@ -1722,6 +1750,10 @@ function mountPixelCat(userOpts = {}) {
     world.viewH = boxH / cs;
     const btm = typeof opts.bottom === "function" ? opts.bottom(boxH) : (Number(opts.bottom) || 0);
     world.ground = (boxH - btm) / cs;
+    world.roamMinY = (boxH * 0.56 / cs) - world.ground;
+    world.roamMaxY = Math.max(world.roamMinY, (boxH * 0.83 / cs) - world.ground);
+    world.roamY = clamp(world.roamY, world.roamMinY, world.roamMaxY);
+    world.roamTargetY = clamp(world.roamTargetY, world.roamMinY, world.roamMaxY);
     world.xMin = TUNE.edgeMargin;
     world.xMax = Math.max(world.xMin + 1, world.viewW - TUNE.edgeMargin);
     world.x = clamp(world.x, world.xMin, world.xMax);
@@ -1918,7 +1950,7 @@ function mountPixelCat(userOpts = {}) {
     const drawn = renderer.draw(frame, pose, world.facing, fx.active);
     const cs = S.cssScale, d = S.dpr;
     const px = Math.round((world.x - AX) * cs * d) / d;
-    const py = Math.round((world.ground - world.y - AY) * cs * d) / d;
+    const py = Math.round((world.ground + world.roamY - world.y - AY) * cs * d) / d;
     const key = px + ',' + py;
     if (key !== S.posKey) {
       S.posKey = key;

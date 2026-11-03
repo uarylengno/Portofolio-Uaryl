@@ -1,19 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 357" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 357" width="100%" height="100%" preserveAspectRatio="none">
   <defs>
     <!-- Sky Gradient -->
     <linearGradient id="meadowSky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#9fc174" />
-      <stop offset="35%" stopColor="#cde09e" />
-      <stop offset="70%" stopColor="#edf5cb" />
-      <stop offset="100%" stopColor="#e4efbb" />
+      <stop offset="0%" stop-color="#e2edca" />
+      <stop offset="24%" stop-color="#fff5a0" />
+      <stop offset="58%" stop-color="#fff5a0" />
+      <stop offset="100%" stop-color="#fff7ae" />
     </linearGradient>
 
     <!-- Rolling Hills / Grass Gradient -->
     <linearGradient id="grassGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor="#7cb638" />
-      <stop offset="25%" stopColor="#8bc044" />
-      <stop offset="60%" stopColor="#9bca50" />
-      <stop offset="100%" stopColor="#a3d259" />
+      <stop offset="0%" stop-color="#9fc32b" />
+      <stop offset="25%" stop-color="#8fbb19" />
+      <stop offset="60%" stop-color="#a8cf35" />
+      <stop offset="100%" stop-color="#c9e34c" />
     </linearGradient>
 
     <!-- Daisy Flower Definition -->
@@ -44,7 +44,19 @@
   <rect width="1024" height="200" fill="url(#meadowSky)" />
 
   <!-- ==========================================
-       2. BUSHES (LEFT & RIGHT CLUSTERS)
+       3. MEADOW GRASS GROUND (ROLLING HILLS)
+       ========================================== -->
+  <!-- Main Grass Base -->
+  <path d="M 0 183 C 52 182, 91 177, 132 178 C 179 179, 211 188, 254 197 C 304 208, 351 209, 400 201 C 450 193, 487 181, 535 182 C 584 183, 621 193, 665 198 C 715 204, 757 198, 804 188 C 850 178, 888 176, 930 181 C 969 186, 997 190, 1024 184 L 1024 357 L 0 357 Z" fill="url(#grassGrad)" />
+  <path d="M 0 183 C 52 182, 91 177, 132 178 C 179 179, 211 188, 254 197 C 304 208, 351 209, 400 201 C 450 193, 487 181, 535 182 C 584 183, 621 193, 665 198 C 715 204, 757 198, 804 188 C 850 178, 888 176, 930 181 C 969 186, 997 190, 1024 184" fill="none" stroke="#4a7629" stroke-width="1" opacity="0.55" />
+
+  <!-- Subtle Rolling Grass Plains & Light Tonal Bands -->
+  <path d="M 0 228 C 112 221, 193 225, 286 234 C 379 243, 455 242, 545 232 C 644 220, 717 222, 805 228 C 897 234, 959 231, 1024 225 L 1024 357 L 0 357 Z" fill="#b5d65a" opacity="0.2" />
+  <path d="M 0 270 C 99 263, 189 266, 283 276 C 380 287, 470 286, 563 275 C 656 264, 742 261, 827 268 C 903 274, 968 271, 1024 265 L 1024 357 L 0 357 Z" fill="#d2e675" opacity="0.19" />
+  <path d="M 0 310 C 111 303, 197 306, 290 316 C 383 326, 470 326, 562 316 C 657 305, 746 300, 831 306 C 908 311, 968 310, 1024 304 L 1024 357 L 0 357 Z" fill="#e1ed8c" opacity="0.16" />
+
+  <!-- ==========================================
+       4. BUSHES (LEFT & RIGHT CLUSTERS)
        ========================================== -->
   <!-- Left Back Bush (Dark Emerald Green) -->
   <g fill="#2d5223" stroke="#213d19" stroke-width="2.5" stroke-linejoin="round">
@@ -74,77 +86,65 @@
   <use href="#grassSprout" x="490" y="188" transform="scale(0.85)" />
 
   <!-- ==========================================
-       3. MEADOW GRASS GROUND (ROLLING HILLS)
-       ========================================== -->
-  <!-- Main Grass Base -->
-  <rect y="186" width="1024" height="171" fill="url(#grassGrad)" />
-  <line x1="0" y1="186" x2="1024" y2="186" stroke="#4a7629" stroke-width="1.5" />
-
-  <!-- Subtle Rolling Grass Plains & Light Tonal Bands -->
-  <path d="M 0 215 Q 260 200 520 220 T 1024 210 L 1024 357 L 0 357 Z" fill="#8bc044" opacity="0.35" />
-  <path d="M 0 255 Q 320 240 680 260 T 1024 250 L 1024 357 L 0 357 Z" fill="#95c74c" opacity="0.4" />
-  <path d="M 0 295 Q 280 280 620 300 T 1024 290 L 1024 357 L 0 357 Z" fill="#a1d056" opacity="0.45" />
-
-  <!-- ==========================================
-       4. THE MUD PUDDLE (KUBANGAN LUMPUR)
+       5. THE MUD PUDDLE (KUBANGAN LUMPUR)
        ========================================== -->
   <!-- Layer 1: Dark Brown Shadow Border -->
   <path d="M 92 260 C 85 240, 130 225, 205 218 C 285 210, 360 200, 480 196 C 620 192, 740 198, 830 215 C 910 230, 940 250, 915 272 C 890 295, 830 305, 760 302 C 700 300, 680 318, 560 326 C 450 334, 340 332, 260 330 C 180 328, 140 315, 120 295 C 100 278, 88 270, 92 260 Z"
-        fill="#5a371c" />
+        fill="#70421f" />
 
   <!-- Layer 2: Main Rich Mud Surface -->
   <path d="M 102 258 C 98 242, 138 228, 210 222 C 288 214, 365 204, 482 201 C 618 197, 735 203, 822 219 C 898 233, 925 251, 902 269 C 878 290, 822 299, 755 297 C 696 295, 672 312, 555 320 C 448 327, 342 325, 265 323 C 188 321, 150 309, 130 291 C 112 275, 100 268, 102 258 Z"
-        fill="#7f5230" />
+        fill="#975d36" />
 
   <!-- Layer 3: Smooth Inner Silt / Mud Tone -->
   <path d="M 125 256 C 122 244, 158 233, 225 227 C 298 220, 372 212, 485 209 C 615 205, 725 211, 808 225 C 878 237, 902 253, 882 267 C 860 283, 810 292, 748 290 C 692 288, 665 303, 552 311 C 448 317, 348 316, 275 314 C 205 312, 168 302, 150 286 C 135 272, 124 266, 125 256 Z"
-        fill="#986742" />
+        fill="#b27649" />
 
   <!-- Layer 4: Upper Mud Highlight Contour -->
   <path d="M 160 252 C 158 242, 190 234, 252 230 C 322 225, 395 218, 498 216 C 618 213, 715 218, 788 230 C 850 240, 872 253, 855 264 C 835 277, 790 285, 735 283 C 685 281, 655 294, 552 301 C 458 307, 368 306, 302 305 C 238 303, 202 295, 185 282 C 172 270, 162 262, 160 252 Z"
-        fill="#aa774e" />
+        fill="#bd8758" />
 
   <!-- Mud Water Depressions & Ripples -->
   <!-- Ripple 1 (Center Left) -->
-  <ellipse cx="380" cy="242" rx="36" ry="11" fill="#7a4e2c" />
-  <ellipse cx="379" cy="241" rx="33" ry="9" fill="#93623c" />
-  <ellipse cx="378" cy="240" rx="27" ry="6" fill="#aa774f" />
-  <path d="M 355 240 Q 378 236 400 240" stroke="#c08c62" stroke-width="1.8" fill="none" opacity="0.8" />
+  <ellipse cx="380" cy="242" rx="36" ry="11" fill="#8b542f" />
+  <ellipse cx="379" cy="241" rx="33" ry="9" fill="#a66c43" />
+  <ellipse cx="378" cy="240" rx="27" ry="6" fill="#bc8052" />
+  <path d="M 355 240 Q 378 236 400 240" stroke="#d09a67" stroke-width="1.8" fill="none" opacity="0.8" />
 
   <!-- Ripple 2 (Bottom Center) -->
-  <ellipse cx="530" cy="275" rx="30" ry="9" fill="#7a4e2c" />
-  <ellipse cx="529" cy="274" rx="27" ry="7.5" fill="#93623c" />
-  <ellipse cx="528" cy="273" rx="21" ry="5" fill="#aa774f" />
-  <path d="M 512 273 Q 528 270 545 273" stroke="#c08c62" stroke-width="1.8" fill="none" opacity="0.8" />
+  <ellipse cx="530" cy="275" rx="30" ry="9" fill="#8b542f" />
+  <ellipse cx="529" cy="274" rx="27" ry="7.5" fill="#a66c43" />
+  <ellipse cx="528" cy="273" rx="21" ry="5" fill="#bc8052" />
+  <path d="M 512 273 Q 528 270 545 273" stroke="#d09a67" stroke-width="1.8" fill="none" opacity="0.8" />
 
   <!-- Ripple 3 (Left Edge) -->
-  <ellipse cx="260" cy="250" rx="24" ry="8" fill="#7a4e2c" />
-  <ellipse cx="259" cy="249" rx="21" ry="6.5" fill="#93623c" />
-  <ellipse cx="258" cy="248" rx="16" ry="4.5" fill="#aa774f" />
+  <ellipse cx="260" cy="250" rx="24" ry="8" fill="#8b542f" />
+  <ellipse cx="259" cy="249" rx="21" ry="6.5" fill="#a66c43" />
+  <ellipse cx="258" cy="248" rx="16" ry="4.5" fill="#bc8052" />
 
   <!-- Ripple 4 (Far Left Small) -->
-  <ellipse cx="198" cy="265" rx="15" ry="5" fill="#7a4e2c" />
-  <ellipse cx="197" cy="264" rx="12" ry="3.8" fill="#93623c" />
+  <ellipse cx="198" cy="265" rx="15" ry="5" fill="#8b542f" />
+  <ellipse cx="197" cy="264" rx="12" ry="3.8" fill="#a66c43" />
 
   <!-- Ripple 5 (Right Small) -->
-  <ellipse cx="745" cy="244" rx="20" ry="6.5" fill="#7a4e2c" />
-  <ellipse cx="744" cy="243" rx="17" ry="5" fill="#93623c" />
+  <ellipse cx="745" cy="244" rx="20" ry="6.5" fill="#8b542f" />
+  <ellipse cx="744" cy="243" rx="17" ry="5" fill="#a66c43" />
 
   <!-- Mud Satellite Droplets (Bottom Left) -->
-  <ellipse cx="165" cy="305" rx="14" ry="5.5" fill="#5a371c" />
-  <ellipse cx="165" cy="304" rx="12" ry="4.5" fill="#7f5230" />
-  <ellipse cx="164" cy="303" rx="8" ry="3" fill="#986742" />
+  <ellipse cx="165" cy="305" rx="14" ry="5.5" fill="#70421f" />
+  <ellipse cx="165" cy="304" rx="12" ry="4.5" fill="#975d36" />
+  <ellipse cx="164" cy="303" rx="8" ry="3" fill="#b27649" />
 
-  <ellipse cx="200" cy="312" rx="12" ry="5" fill="#5a371c" />
-  <ellipse cx="200" cy="311" rx="10" ry="4" fill="#7f5230" />
+  <ellipse cx="200" cy="312" rx="12" ry="5" fill="#70421f" />
+  <ellipse cx="200" cy="311" rx="10" ry="4" fill="#975d36" />
 
   <!-- Mud Satellite Droplets (Bottom Right) -->
-  <ellipse cx="725" cy="302" rx="16" ry="6" fill="#5a371c" />
-  <ellipse cx="725" cy="301" rx="14" ry="5" fill="#7f5230" />
-  <ellipse cx="724" cy="300" rx="10" ry="3.5" fill="#986742" />
+  <ellipse cx="725" cy="302" rx="16" ry="6" fill="#70421f" />
+  <ellipse cx="725" cy="301" rx="14" ry="5" fill="#975d36" />
+  <ellipse cx="724" cy="300" rx="10" ry="3.5" fill="#b27649" />
 
-  <ellipse cx="765" cy="312" rx="13" ry="5" fill="#5a371c" />
-  <ellipse cx="765" cy="311" rx="11" ry="4" fill="#7f5230" />
+  <ellipse cx="765" cy="312" rx="13" ry="5" fill="#70421f" />
+  <ellipse cx="765" cy="311" rx="11" ry="4" fill="#975d36" />
 
   <!-- ==========================================
        5. FLOWERS & GRASS TUFTS ON MEADOW

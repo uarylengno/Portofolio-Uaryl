@@ -153,19 +153,35 @@ export function About() {
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
   return (
-    <section id="about" className="relative isolate overflow-hidden py-20 md:py-32 px-6 bg-background">
+    <section
+      id="about"
+      className="relative isolate overflow-hidden pt-20 md:pt-32 px-6 bg-background"
+      style={{ paddingBottom: 'clamp(96px, 14vw, 176px)' }}
+    >
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute -left-28 top-12 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
         animate={{ x: [0, 42, 0], y: [0, 34, 0], scale: [1, 1.2, 1] }}
         transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <motion.div
+      <svg
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-24 right-0 h-80 w-80 rounded-full bg-accent/20 blur-3xl"
-        animate={{ x: [0, -36, 0], y: [0, -30, 0], scale: [1, 1.15, 1] }}
-        transition={{ duration: 17, repeat: Infinity, ease: 'easeInOut' }}
-      />
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[clamp(56px,8vw,100px)] w-full"
+        viewBox="0 0 1440 120"
+        preserveAspectRatio="none"
+      >
+        <defs>
+          <linearGradient id="aboutSkillsWave" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#bfeaf4" stopOpacity="0.28" />
+            <stop offset="55%" stopColor="#d8f1f6" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#F4F7FC" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M0 54 C180 82 300 78 470 50 C650 20 780 24 950 52 C1120 80 1280 79 1440 48 V120 H0 Z"
+          fill="url(#aboutSkillsWave)"
+        />
+      </svg>
       <div className="relative max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         {/* ---------- Kolom kiri: foto bulat + lingkaran dekoratif ---------- */}
         <motion.div
@@ -780,20 +796,20 @@ function SkillCard({ group, index }: { group: SkillGroup; index: number }) {
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
-        className="group relative h-full overflow-hidden rounded-[2rem] border border-surface-white/10 bg-surface-white/5 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-accent hover:bg-surface-white/10"
+        className="group relative h-full overflow-hidden rounded-[2rem] border border-gray-200 bg-white/80 p-8 text-dark shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-primary/30 hover:shadow-xl"
       >
         {/* Cahaya yang mengikuti kursor */}
         <div
           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           style={{
             background:
-              'radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(37,11,240,0.45), transparent 70%)',
+              'radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgba(44,168,196,0.14), transparent 70%)',
           }}
         />
 
         <div className="relative">
           {/* Ikon */}
-          <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-surface-white shadow-lg shadow-primary/40 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+          <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-surface-white shadow-lg shadow-cyan-500/25 transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
             <Icon size={26} strokeWidth={2} />
           </div>
 
@@ -807,7 +823,7 @@ function SkillCard({ group, index }: { group: SkillGroup; index: number }) {
             {group.skills.map((skill) => (
               <span
                 key={skill}
-                className="cursor-default rounded-full border border-surface-white/10 bg-surface-white/5 px-3.5 py-1.5 text-sm font-medium text-surface-white/80 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-dark"
+                className="cursor-default rounded-full border border-gray-200 bg-gray-50 px-3.5 py-1.5 text-sm font-medium text-dark/75 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:bg-accent hover:text-dark"
               >
                 {skill}
               </span>
@@ -825,11 +841,8 @@ export function Skills() {
   return (
     <section
       id="skills"
-      className="relative overflow-hidden bg-dark pt-20 text-surface-white md:pt-32"
+      className="relative overflow-hidden bg-background pt-20 text-dark md:pt-32"
     >
-      {/* Cahaya warna di latar belakang */}
-      <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary opacity-40 blur-3xl"></div>
-      <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-accent opacity-10 blur-3xl"></div>
 
       <div className="relative mx-auto max-w-7xl px-6 z-10">
         {/* ---------- Judul & deskripsi ---------- */}
@@ -837,7 +850,7 @@ export function Skills() {
           <h2 className="mb-6 text-4xl font-black leading-none tracking-tighter md:text-5xl lg:text-7xl">
             SKILLS
           </h2>
-          <p className="text-lg font-medium text-surface-white/60 md:text-xl">
+          <p className="text-lg font-medium text-muted md:text-xl">
             {t(
               'Teknologi, perangkat lunak, dan disiplin ilmu yang saya kuasai untuk membangun solusi digital.',
               'Technologies, software, and disciplines I use to build digital solutions.'
