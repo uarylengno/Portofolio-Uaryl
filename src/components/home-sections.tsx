@@ -1,7 +1,7 @@
 // ============================================================
 // IMPORT
 // ============================================================
-import { useState, useRef, useEffect, type MouseEvent, type CSSProperties } from 'react';
+import { useState, useRef, useEffect, type MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowUpRight,
@@ -146,134 +146,265 @@ export function Hero() {
 }
 
 // ============================================================
-// LATAR PANTAI UNTUK ABOUT & SKILLS
+// LATAR PANTAI UNTUK ABOUT: GELOMBANG AIR ALAMI
 //
-// AboutBeachBackdrop
-//    Melanjutkan suasana pantai dari Hero. Atas & bawahnya memakai
-//    warna #F4F7FC (sama dengan ujung Hero dan awal Skills), jadi
-//    tidak ada garis sambungan. Isinya: air dangkal kebiruan lembut,
-//    gelombang pelan, dan kilau air. Murni SVG + CSS.
+// Digambar di <canvas> supaya ombaknya tidak terlihat berulang
+// seperti gambar yang digeser:
+//
+// - Tiap lapisan ombak = gabungan 3 gelombang sinus berbeda panjang
+//   dan kecepatan, ditambah "swell" (naik-turunnya tinggi ombak) yang
+//   sangat pelan. Hasilnya bentuk ombak terus berubah dan tidak pernah
+//   sama persis.
+// - 5 lapisan dari jauh (pucat, kecil, lambat) ke dekat (pekat, besar),
+//   arah geraknya bergantian, jadi ada efek kedalaman (parallax).
+// - Puncak ombak diberi garis cahaya putih yang menyala di puncak
+//   dan meredup di lembah, seperti buih tipis.
+// - Kilau air: sorotan tipis memanjang yang berkedip pelan dan ikut
+//   naik-turun mengikuti permukaan ombak.
+// - Atas & bawah memudar ke #F4F7FC, sama dengan ujung Hero dan awal
+//   Skills, jadi tidak ada garis sambungan.
+// - Animasi berhenti saat section tidak terlihat atau tab disembunyikan.
+//   "Reduce motion": satu gambar diam tanpa animasi.
 // ============================================================
 
-const BEACH_W = 1440;
+const TAU = Math.PI * 2;
 
-// Path gelombang yang bisa di-loop mulus (digeser sebesar 1 panjang gelombang)
-function waveShape(y: number, amp: number, wl: number, bottom: number): string {
-  const n = Math.ceil((BEACH_W + wl * 2) / (wl / 2)) + 2;
-  let d = `M0 ${y} q ${wl / 4} ${-amp} ${wl / 2} 0`;
-  for (let i = 0; i < n; i++) d += ` t ${wl / 2} 0`;
-  d += ` V ${bottom} H 0 Z`;
-  return d;
-}
+type WaveLayer = {
+  base: number; // posisi permukaan air (pecahan dari tinggi section)
+  amp: number; // tinggi ombak (px)
+  dir: 1 | -1; // arah gerak
+  scale: number; // pengali panjang gelombang (makin dekat makin panjang)
+  phase: number;
+  top: [number, number, number, number]; // warna atas (r, g, b, alpha)
+  bottom: [number, number, number, number]; // warna bawah
+};
 
-// Variabel CSS untuk animasi gelombang
-const waveVars = (wl: number, dur: number, reverse = false): CSSProperties =>
-  ({
-    ['--wl' as string]: `${-wl}px`,
-    animationDuration: `${dur}s`,
-    animationDirection: reverse ? 'reverse' : 'normal',
-  }) as CSSProperties;
-
-const BEACH_CSS = `
-  .shore-wave { animation: shore-wave linear infinite; }
-  @keyframes shore-wave { to { transform: translateX(var(--wl)); } }
-  .shore-bob { animation: shore-bob 5.5s ease-in-out infinite alternate; }
-  @keyframes shore-bob {
-    0%   { transform: translateY(-4px); }
-    100% { transform: translateY(6px); }
-  }
-  .shore-foam { animation: shore-foam 7s ease-in-out infinite; }
-  @keyframes shore-foam {
-    0%, 100% { transform: translateY(10px); opacity: .55; }
-    50%      { transform: translateY(-9px); opacity: .95; }
-  }
-  .shore-spark { animation: shore-spark 3.6s ease-in-out infinite; }
-  @keyframes shore-spark {
-    0%, 100% { opacity: 0; }
-    50%      { opacity: .85; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .shore-wave, .shore-bob, .shore-foam, .shore-spark { animation: none !important; }
-  }
-`;
-
-// Kilau air: [left %, top %, delay detik, lebar px]
-const ABOUT_SPARKLES: [number, number, number, number][] = [
-  [8, 58, 0, 46],
-  [24, 72, 1.1, 38],
-  [41, 64, 2.2, 52],
-  [57, 78, 0.6, 40],
-  [72, 62, 1.7, 48],
-  [86, 74, 2.8, 36],
-  [15, 86, 2.0, 42],
-  [64, 90, 0.3, 50],
+// Dari yang paling jauh (atas) ke yang paling dekat (bawah)
+const WAVE_LAYERS: WaveLayer[] = [
+  { base: 0.42, amp: 6, dir: 1, scale: 0.8, phase: 0.4, top: [198, 239, 249, 0.55], bottom: [172, 233, 246, 0.55] },
+  { base: 0.52, amp: 9, dir: -1, scale: 0.96, phase: 2.1, top: [174, 233, 246, 0.6], bottom: [142, 225, 243, 0.6] },
+  { base: 0.62, amp: 13, dir: 1, scale: 1.14, phase: 4.3, top: [142, 227, 244, 0.65], bottom: [110, 215, 238, 0.65] },
+  { base: 0.72, amp: 17, dir: -1, scale: 1.32, phase: 1.2, top: [114, 217, 238, 0.7], bottom: [80, 201, 229, 0.7] },
+  { base: 0.82, amp: 22, dir: 1, scale: 1.52, phase: 5.2, top: [86, 205, 232, 0.75], bottom: [58, 189, 223, 0.75] },
 ];
 
-function AboutBeachBackdrop() {
-  return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-      <style>{BEACH_CSS}</style>
+// Tiga gelombang sinus yang ditumpuk: panjang (px), kecepatan, bobot, fase
+const WAVE_PARTS = [
+  { wl: 560, speed: 0.32, weight: 0.58, ph: 0 },
+  { wl: 310, speed: 0.55, weight: 0.3, ph: 1.7 },
+  { wl: 173, speed: 0.9, weight: 0.12, ph: 4.1 },
+];
 
-      {/* Dasar: #F4F7FC -> air dangkal tosca lembut -> #F4F7FC */}
+// Tinggi ombak naik-turun sangat pelan (swell)
+const swellOf = (l: WaveLayer, t: number) => 1 + 0.22 * Math.sin(t * 0.18 + l.phase);
+
+// Bentuk ombak di posisi x pada waktu t: hasil -1 (lembah) sampai 1 (puncak negatif = naik)
+function waveS(l: WaveLayer, x: number, t: number) {
+  let s = 0;
+  for (const p of WAVE_PARTS) {
+    s += p.weight * Math.sin((TAU * x) / (p.wl * l.scale) + l.dir * p.speed * t + p.ph + l.phase);
+  }
+  return s;
+}
+
+// Angka acak yang konsisten (supaya posisi kilau tidak loncat saat render ulang)
+function seeded(seed: number) {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+type Glint = { layer: number; xf: number; off: number; phase: number; period: number; len: number };
+
+function makeGlints(count: number): Glint[] {
+  const rnd = seeded(20261103);
+  return Array.from({ length: count }, () => ({
+    layer: 1 + Math.floor(rnd() * 4), // lapisan 1..4 (bukan yang paling jauh)
+    xf: rnd(),
+    off: 6 + rnd() * 20,
+    phase: rnd() * TAU,
+    period: 2.6 + rnd() * 3.4,
+    len: 16 + rnd() * 30,
+  }));
+}
+
+function AboutBeachBackdrop() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const canvas = canvasRef.current;
+    if (!wrap || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const STEP = 8; // jarak antar titik gelombang (px)
+
+    let w = 0;
+    let h = 0;
+    let glints: Glint[] = [];
+    let raf = 0;
+    let visible = false;
+    const t0 = performance.now();
+
+    const draw = (t: number) => {
+      if (!w || !h) return;
+      ctx.clearRect(0, 0, w, h);
+      const n = Math.ceil(w / STEP);
+
+      WAVE_LAYERS.forEach((layer) => {
+        const baseY = layer.base * h;
+        const amp = layer.amp * swellOf(layer, t);
+
+        // Garis tepi atas ombak
+        const edge = new Path2D();
+        const ss: number[] = new Array(n + 1);
+        for (let k = 0; k <= n; k++) {
+          const x = k * STEP;
+          const s = waveS(layer, x, t);
+          ss[k] = s;
+          const y = baseY + s * amp;
+          if (k === 0) edge.moveTo(x, y);
+          else edge.lineTo(x, y);
+        }
+
+        // Badan air dengan gradasi warna
+        const body = new Path2D(edge);
+        body.lineTo(n * STEP, h + 2);
+        body.lineTo(0, h + 2);
+        body.closePath();
+        const g = ctx.createLinearGradient(0, baseY - amp, 0, Math.min(h, baseY + h * 0.3));
+        g.addColorStop(0, `rgba(${layer.top[0]},${layer.top[1]},${layer.top[2]},${layer.top[3]})`);
+        g.addColorStop(1, `rgba(${layer.bottom[0]},${layer.bottom[1]},${layer.bottom[2]},${layer.bottom[3]})`);
+        ctx.fillStyle = g;
+        ctx.fill(body);
+
+        // Cahaya lembut di sepanjang permukaan
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+        ctx.lineWidth = 6;
+        ctx.stroke(edge);
+
+        // Garis buih tipis: menyala di puncak, meredup di lembah
+        ctx.lineWidth = 1.6;
+        for (let k = 0; k < n; k++) {
+          const crest = Math.max(0, -(ss[k] + ss[k + 1]) / 2);
+          if (crest < 0.2) continue;
+          const a = 0.12 + 0.6 * crest * crest;
+          const x0 = k * STEP;
+          const x1 = (k + 1) * STEP;
+          ctx.strokeStyle = `rgba(255,255,255,${a.toFixed(3)})`;
+          ctx.beginPath();
+          ctx.moveTo(x0, baseY + ss[k] * amp);
+          ctx.lineTo(x1, baseY + ss[k + 1] * amp);
+          ctx.stroke();
+        }
+      });
+
+      // Kilau air: sorotan memanjang yang berkedip pelan, ikut naik-turun dengan ombak
+      for (const gl of glints) {
+        const layer = WAVE_LAYERS[gl.layer];
+        const x = gl.xf * w;
+        const y = layer.base * h + waveS(layer, x, t) * layer.amp * swellOf(layer, t) + gl.off;
+        const a = Math.pow(Math.max(0, Math.sin((TAU * t) / gl.period + gl.phase)), 3);
+        if (a < 0.03) continue;
+        ctx.fillStyle = `rgba(60,195,228,${(0.2 * a).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.ellipse(x, y, gl.len * 0.7, 4, 0, 0, TAU);
+        ctx.fill();
+        ctx.fillStyle = `rgba(255,255,255,${(0.9 * a).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.ellipse(x, y, gl.len / 2, 1.4, 0, 0, TAU);
+        ctx.fill();
+      }
+    };
+
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      draw((now - t0) / 1000 + 3);
+    };
+    const start = () => {
+      if (!raf && visible && !document.hidden && !reduceMotion) raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    const resize = () => {
+      const rect = wrap.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width;
+      h = rect.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      glints = makeGlints(w < 700 ? 14 : 28);
+      draw(3); // gambar diam (dipakai juga saat "reduce motion")
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(wrap);
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) start();
+      else stop();
+    });
+    io.observe(wrap);
+    const onVisibility = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      stop();
+      ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
+
+  return (
+    <div ref={wrapRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+      {/* Dasar: #F4F7FC -> langit pantai yang sangat pucat -> #F4F7FC */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            'linear-gradient(to bottom, #F4F7FC 0%, #ebf9fc 30%, #d8f4f9 62%, #e9f8fb 84%, #F4F7FC 100%)',
+            'linear-gradient(to bottom, #F4F7FC 0%, #eef8fd 32%, #e8f7fc 50%, #F4F7FC 100%)',
         }}
       />
 
-      {/* Gelombang pelan di sepertiga bawah, atas & bawahnya memudar */}
+      {/* Air */}
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+
+      {/* Atas memudar ke warna halaman (menyambung dari Hero) */}
+      <div
+        className="absolute inset-x-0 top-0"
+        style={{
+          height: 'clamp(80px, 14vw, 200px)',
+          background: 'linear-gradient(to bottom, #F4F7FC 0%, rgba(244, 247, 252, 0) 100%)',
+        }}
+      />
+
+      {/* Bawah memudar ke warna halaman (menyambung ke Skills) */}
       <div
         className="absolute inset-x-0 bottom-0"
         style={{
-          height: 'clamp(320px, 46vw, 620px)',
-          WebkitMaskImage:
-            'linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)',
-          maskImage:
-            'linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%)',
+          height: 'clamp(140px, 24vw, 340px)',
+          background:
+            'linear-gradient(to bottom, rgba(244, 247, 252, 0) 0%, rgba(244, 247, 252, 0.55) 55%, #F4F7FC 100%)',
         }}
-      >
-        <svg
-          viewBox={`0 0 ${BEACH_W} 500`}
-          preserveAspectRatio="none"
-          width="100%"
-          height="100%"
-          style={{ display: 'block' }}
-        >
-          <g className="shore-bob">
-            <g className="shore-wave" style={waveVars(520, 24)}>
-              <path d={waveShape(150, 12, 520, 500)} fill="#25c6e2" opacity="0.16" />
-            </g>
-          </g>
-          <g className="shore-bob" style={{ animationDelay: '-2s' }}>
-            <g className="shore-wave" style={waveVars(420, 18, true)}>
-              <path d={waveShape(230, 14, 420, 500)} fill="#1fb7dc" opacity="0.14" />
-            </g>
-          </g>
-          <g className="shore-bob" style={{ animationDelay: '-3.5s' }}>
-            <g className="shore-wave" style={waveVars(600, 14)}>
-              <path d={waveShape(320, 16, 600, 500)} fill="#5ff0fa" opacity="0.2" />
-            </g>
-          </g>
-        </svg>
-      </div>
-
-      {/* Kilau air */}
-      {ABOUT_SPARKLES.map(([left, top, delay, width], i) => (
-        <span
-          key={i}
-          className="shore-spark absolute block rounded-full"
-          style={{
-            left: `${left}%`,
-            top: `${top}%`,
-            width,
-            height: 3,
-            background: 'rgba(44, 190, 224, 0.55)',
-            animationDelay: `${delay}s`,
-          }}
-        />
-      ))}
+      />
     </div>
   );
 }
