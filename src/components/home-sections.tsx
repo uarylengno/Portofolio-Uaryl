@@ -2,7 +2,13 @@
 // IMPORT
 // ============================================================
 import { useState, useRef, useEffect, type MouseEvent } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from 'motion/react';
 import {
   ArrowUpRight,
   Code2,
@@ -146,17 +152,417 @@ export function Hero() {
 }
 
 // ============================================================
+// STORM DIVIDER: AWAN + HUJAN + PETIR (pembatas About -> Skills)
+//
+// Siklus 30 detik, berulang terus:
+//   0-5 dtk    tenang: awan putih kebiruan melayang kiri-kanan
+//   5-10 dtk   langit mulai menggelap
+//   10-21 dtk  badai: awan gelap, hujan turun, petir menyambar tiap 3-7 dtk
+//   21-26 dtk  badai reda, awan kembali cerah
+//   26-30 dtk  tenang lagi (jeda)
+//
+// - Awan bergerak bolak-balik ke kanan dan ke kiri (arah tiap awan berbeda)
+// - Hujan & petir digambar di canvas (ringan, berhenti saat tidak terlihat)
+// - Atas dan bawah pembatas memudar (mask) sehingga menyatu mulus
+//   dengan About dan Skills, tanpa garis tepi
+// - "Reduce motion": hanya awan statis, tanpa hujan, petir, dan gerak
+// ============================================================
+
+const STORM_CYCLE = 30; // detik
+
+const smoothstep = (x: number) => x * x * (3 - 2 * x);
+
+// 0 = tenang, 1 = badai penuh
+function stormIntensity(sec: number) {
+  const p = sec % STORM_CYCLE;
+  if (p < 5) return 0;
+  if (p < 10) return smoothstep((p - 5) / 5);
+  if (p < 21) return 1;
+  if (p < 26) return 1 - smoothstep((p - 21) / 5);
+  return 0;
+}
+
+type Cluster = {
+  left: string;
+  top: string;
+  width: string;
+  dur: number;   // detik untuk satu kali bergeser kiri -> kanan
+  delay: number; // negatif: awan sudah di tengah jalan saat halaman dibuka
+  rev: boolean;  // true: mulai bergerak ke arah sebaliknya
+};
+
+const CW = 'clamp(260px, 40vw, 620px)';
+const CLUSTERS: Cluster[] = [
+  { left: '-10%', top: '4%',  width: CW, dur: 46, delay: -12, rev: false },
+  { left: '28%',  top: '0%',  width: CW, dur: 38, delay: -22, rev: true },
+  { left: '62%',  top: '6%',  width: CW, dur: 52, delay: -30, rev: false },
+  { left: '8%',   top: '22%', width: CW, dur: 42, delay: -6,  rev: true },
+  { left: '46%',  top: '24%', width: CW, dur: 34, delay: -18, rev: false },
+  { left: '78%',  top: '20%', width: CW, dur: 48, delay: -26, rev: true },
+  { left: '-4%',  top: '38%', width: CW, dur: 40, delay: -14, rev: false },
+  { left: '38%',  top: '40%', width: CW, dur: 44, delay: -34, rev: true },
+  { left: '70%',  top: '38%', width: CW, dur: 36, delay: -9,  rev: false },
+];
+
+// Bentuk satu awan = gabungan beberapa elips lembut (dalam persen)
+const BLOBS = [
+  { l: 0,  t: 34, w: 44, h: 56 },
+  { l: 20, t: 4,  w: 48, h: 72 },
+  { l: 46, t: 12, w: 44, h: 68 },
+  { l: 30, t: 40, w: 62, h: 56 },
+];
+
+const TONE_COLORS = {
+  light: [
+    'rgba(255,255,255,0.95)',
+    'rgba(206,234,248,0.9)',
+    'rgba(255,255,255,0.9)',
+    'rgba(176,215,240,0.85)',
+  ],
+  dark: [
+    'rgba(88,104,150,0.92)',
+    'rgba(58,72,115,0.95)',
+    'rgba(76,92,138,0.9)',
+    'rgba(44,56,96,0.95)',
+  ],
+};
+
+function CloudGroup({ tone }: { tone: 'light' | 'dark' }) {
+  const colors = TONE_COLORS[tone];
+  return (
+    <>
+      {CLUSTERS.map((c, i) => (
+        <div
+          key={i}
+          className="storm-cluster absolute"
+          style={{
+            left: c.left,
+            top: c.top,
+            width: c.width,
+            aspectRatio: '2 / 1',
+            filter: 'blur(9px)',
+            willChange: 'transform',
+            animation: `storm-sway ${c.dur}s ease-in-out ${c.delay}s infinite ${
+              c.rev ? 'alternate-reverse' : 'alternate'
+            }`,
+          }}
+        >
+          {BLOBS.map((b, j) => (
+            <span
+              key={j}
+              className="absolute rounded-full"
+              style={{
+                left: `${b.l}%`,
+                top: `${b.t}%`,
+                width: `${b.w}%`,
+                height: `${b.h}%`,
+                background: `radial-gradient(closest-side, ${colors[j % colors.length]} 35%, transparent)`,
+              }}
+            />
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+type Drop = { x: number; y: number; len: number; speed: number; alpha: number };
+type Pt = { x: number; y: number };
+type Bolt = { pts: Pt[]; branches: Pt[][]; born: number };
+
+const RAIN_SLANT = 0.22; // kemiringan hujan (miring ke kanan)
+
+// Kilatan petir: berkedip beberapa kali lalu padam (ms sejak petir muncul)
+function boltAlpha(age: number) {
+  if (age < 0 || age > 560) return 0;
+  if (age < 70) return 1;
+  if (age < 120) return 0.25;
+  if (age < 210) return 1;
+  if (age < 260) return 0.35;
+  if (age < 330) return 0.8;
+  return Math.max(0, 1 - (age - 330) / 230) * 0.8;
+}
+
+function StormDivider({ progress }: { progress: MotionValue<number> }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const lightRef = useRef<HTMLDivElement>(null);
+  const darkRef = useRef<HTMLDivElement>(null);
+  const hazeRef = useRef<HTMLDivElement>(null);
+  const flashRef = useRef<HTMLDivElement>(null);
+
+  // Awan bergeser sedikit saat di-scroll
+  const y = useTransform(progress, [0, 1], [26, -26]);
+
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    const canvas = canvasRef.current;
+    const light = lightRef.current;
+    const dark = darkRef.current;
+    const haze = hazeRef.current;
+    const flash = flashRef.current;
+    if (!wrap || !canvas || !light || !dark || !haze || !flash) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let w = 0;
+    let h = 0;
+    let drops: Drop[] = [];
+    let bolt: Bolt | null = null;
+    let nextStrike = 0;
+    let raf = 0;
+    let last = 0;
+    let visible = false;
+    const t0 = performance.now();
+
+    const rand = (a: number, b: number) => a + Math.random() * (b - a);
+
+    const spawnDrop = (initial: boolean): Drop => ({
+      x: rand(-40, w + 40),
+      y: initial ? rand(h * 0.2, h) : h * 0.2 + rand(-60, 0),
+      len: rand(12, 26),
+      speed: rand(650, 1050),
+      alpha: rand(0.25, 0.6),
+    });
+
+    const resize = () => {
+      const rect = wrap.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = rect.width;
+      h = rect.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const count = Math.min(240, Math.round(w / 5));
+      drops = Array.from({ length: count }, () => spawnDrop(true));
+    };
+
+    const makeBolt = (now: number): Bolt => {
+      const x0 = w * rand(0.12, 0.88);
+      const y0 = h * 0.3;
+      const y1 = h * rand(0.62, 0.82);
+      const pts: Pt[] = [{ x: x0, y: y0 }];
+      const branches: Pt[][] = [];
+      let x = x0;
+      let yy = y0;
+      while (yy < y1) {
+        yy += rand(14, 36);
+        x += rand(-19, 19);
+        pts.push({ x, y: yy });
+        if (Math.random() < 0.16 && yy < y1 - 30) {
+          const dir = Math.random() < 0.5 ? -1 : 1;
+          const n = 3 + Math.floor(Math.random() * 4);
+          const b: Pt[] = [{ x, y: yy }];
+          let bx = x;
+          let by = yy;
+          for (let i = 0; i < n; i++) {
+            by += rand(10, 26);
+            bx += dir * rand(8, 26);
+            b.push({ x: bx, y: by });
+          }
+          branches.push(b);
+        }
+      }
+      // Cahaya kilat di awan, tepat di atas posisi petir
+      flash.style.background = `radial-gradient(ellipse 55% 75% at ${(x0 / w) * 100}% 38%, rgba(255,255,255,0.95), rgba(196,181,253,0.45) 38%, transparent 72%)`;
+      return { pts, branches, born: now };
+    };
+
+    const strokePath = (pts: Pt[]) => {
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.stroke();
+    };
+
+    const drawBolt = (b: Bolt, a: number) => {
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      const paths: { pts: Pt[]; k: number }[] = [
+        { pts: b.pts, k: 1 },
+        ...b.branches.map((pts) => ({ pts, k: 0.55 })),
+      ];
+      for (const { pts, k } of paths) {
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = `rgba(167,139,250,${0.35 * a})`;
+        ctx.lineWidth = 10 * k;
+        strokePath(pts);
+        ctx.strokeStyle = `rgba(125,211,252,${0.6 * a})`;
+        ctx.lineWidth = 4 * k;
+        strokePath(pts);
+        ctx.shadowColor = 'rgba(147,197,253,1)';
+        ctx.shadowBlur = 18 * k;
+        ctx.strokeStyle = `rgba(255,255,255,${a})`;
+        ctx.lineWidth = 1.8 * k;
+        strokePath(pts);
+      }
+      ctx.shadowBlur = 0;
+    };
+
+    const update = (now: number, dt: number) => {
+      if (!w || !h) return;
+      const I = stormIntensity((now - t0) / 1000);
+      const rain = Math.min(1, Math.max(0, (I - 0.4) / 0.6));
+
+      // Jadwal petir: hanya saat badai penuh, dengan jeda acak
+      if (I > 0.85) {
+        if (nextStrike === 0) nextStrike = now + rand(1200, 2600);
+        else if (now >= nextStrike) {
+          bolt = makeBolt(now);
+          nextStrike = now + rand(3200, 7500);
+        }
+      } else {
+        nextStrike = 0;
+      }
+
+      let fa = 0;
+      if (bolt) {
+        const age = now - bolt.born;
+        if (age > 560) bolt = null;
+        else fa = boltAlpha(age);
+      }
+
+      // Awan cerah memudar, awan gelap menguat, kilat membuat awan berkedip
+      light.style.opacity = String(1 - 0.65 * I);
+      dark.style.opacity = String(Math.min(1, I * (0.95 - 0.4 * fa)));
+      haze.style.opacity = String(I);
+      flash.style.opacity = String(fa * 0.85);
+
+      ctx.clearRect(0, 0, w, h);
+
+      if (rain > 0.01) {
+        ctx.lineWidth = 1.2;
+        ctx.lineCap = 'round';
+        for (const d of drops) {
+          d.y += d.speed * dt;
+          d.x += d.speed * RAIN_SLANT * dt;
+          if (d.y > h || d.x > w + 60) Object.assign(d, spawnDrop(false));
+          ctx.strokeStyle = `rgba(80,120,185,${d.alpha * rain})`;
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(d.x - d.len * RAIN_SLANT, d.y - d.len);
+          ctx.stroke();
+        }
+      }
+
+      if (bolt && fa > 0) drawBolt(bolt, fa);
+    };
+
+    const frame = (now: number) => {
+      raf = requestAnimationFrame(frame);
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      update(now, dt);
+    };
+    const start = () => {
+      if (!raf && visible && !document.hidden) {
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+      }
+    };
+    const stop = () => {
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(wrap);
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) start();
+      else stop();
+    });
+    io.observe(wrap);
+    const onVisibility = () => (document.hidden ? stop() : start());
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      stop();
+      ro.disconnect();
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={wrapRef}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 -bottom-px z-0 overflow-hidden"
+      style={{
+        height: 'clamp(280px, 40vw, 520px)',
+        // Atas & bawah memudar: menyatu dengan About dan Skills tanpa garis tepi
+        WebkitMaskImage:
+          'linear-gradient(to bottom, transparent 0%, #000 26%, #000 60%, transparent 100%)',
+        maskImage:
+          'linear-gradient(to bottom, transparent 0%, #000 26%, #000 60%, transparent 100%)',
+      }}
+    >
+      <style>{`
+        @keyframes storm-sway {
+          from { transform: translate3d(-11vw, 0, 0); }
+          to   { transform: translate3d(11vw, 0, 0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .storm-cluster { animation: none !important; }
+        }
+      `}</style>
+
+      {/* Kabut langit yang menggelap saat badai */}
+      <div
+        ref={hazeRef}
+        className="absolute inset-0"
+        style={{
+          opacity: 0,
+          background:
+            'linear-gradient(to bottom, rgba(66,82,128,0) 0%, rgba(66,82,128,0.38) 45%, rgba(66,82,128,0) 100%)',
+        }}
+      />
+
+      <motion.div className="absolute inset-0" style={{ y }}>
+        {/* Awan cerah (tenang) */}
+        <div ref={lightRef} className="absolute inset-0">
+          <CloudGroup tone="light" />
+        </div>
+        {/* Awan gelap (badai), posisinya sama dengan awan cerah */}
+        <div ref={darkRef} className="absolute inset-0" style={{ opacity: 0 }}>
+          <CloudGroup tone="dark" />
+        </div>
+      </motion.div>
+
+      {/* Cahaya kilat */}
+      <div ref={flashRef} className="absolute inset-0" style={{ opacity: 0 }} />
+
+      {/* Hujan & petir */}
+      <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+    </div>
+  );
+}
+
+// ============================================================
 // SECTION 2: ABOUT (tentang saya)
 // ============================================================
 export function About() {
   const { language, t } = useLanguage();
   const config = language === 'id' ? APP_CONFIG : APP_CONFIG_EN;
 
+  // Dipakai untuk efek parallax awan saat scroll
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+
   return (
     <section
+      ref={sectionRef}
       id="about"
       className="relative isolate overflow-hidden pt-20 md:pt-32 px-6 bg-background"
-      style={{ paddingBottom: 'clamp(96px, 14vw, 176px)' }}
+      style={{ paddingBottom: 'clamp(200px, 28vw, 380px)' }}
     >
       <motion.div
         aria-hidden="true"
@@ -164,24 +570,10 @@ export function About() {
         animate={{ x: [0, 42, 0], y: [0, 34, 0], scale: [1, 1.2, 1] }}
         transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <svg
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[clamp(56px,8vw,100px)] w-full"
-        viewBox="0 0 1440 120"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="aboutSkillsWave" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#bfeaf4" stopOpacity="0.28" />
-            <stop offset="55%" stopColor="#d8f1f6" stopOpacity="0.16" />
-            <stop offset="100%" stopColor="#F4F7FC" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M0 54 C180 82 300 78 470 50 C650 20 780 24 950 52 C1120 80 1280 79 1440 48 V120 H0 Z"
-          fill="url(#aboutSkillsWave)"
-        />
-      </svg>
+
+      {/* Awan + hujan + petir di bagian bawah About, menyambung ke Skills */}
+      <StormDivider progress={scrollYProgress} />
+
       <div className="relative max-w-7xl mx-auto grid lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         {/* ---------- Kolom kiri: foto bulat + lingkaran dekoratif ---------- */}
         <motion.div

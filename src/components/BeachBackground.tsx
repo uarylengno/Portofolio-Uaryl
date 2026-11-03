@@ -9,11 +9,20 @@ import React from "react";
  *     <BeachBackground />
  *     <div className="relative z-10">...konten hero...</div>
  *   </section>
+ *
+ * Tambahan: ikan melompat (tuna, ikan tropis, ikan terbang, marlin, kawanan sarden)
+ * - Lompatan berbentuk parabola asli (naik ease-out, turun ease-in)
+ * - Badan ikan 3 segmen (kepala, tengah, ekor) yang meliuk berantai, tidak kaku
+ * - Rotasi mengikuti arah lintasan (hidung naik -> datar -> hidung turun)
+ * - Percikan air, cincin riak, dan tetesan saat keluar & masuk air
  */
 
 const W = 2353;
 const H = 1568;
 const HORIZON = 940;
+
+const cv = (o: Record<string, string | number>) =>
+  o as unknown as React.CSSProperties;
 
 // Path gelombang yang bisa di-loop mulus (digeser sebesar 1 panjang gelombang)
 function wavePath(y: number, amp: number, wl: number, bottom = H): string {
@@ -135,6 +144,459 @@ const Bird: React.FC<{
   </g>
 );
 
+/* ============================================================
+   IKAN MELOMPAT
+   Semua ikan digambar menghadap ke kanan (hidung di +x),
+   dibagi 3 segmen supaya badannya meliuk berantai saat melompat.
+   ============================================================ */
+
+type FishKind = "tuna" | "tropical" | "flying" | "marlin" | "sardine";
+
+interface FishShape {
+  p1: number; // titik engsel segmen tengah
+  p2: number; // titik engsel ekor
+  front: React.ReactNode;
+  mid: React.ReactNode;
+  tail: React.ReactNode;
+}
+
+const FISH_SHAPES: Record<FishKind, FishShape> = {
+  /* ---------- Tuna / tongkol: ramping, biru-perak ---------- */
+  tuna: {
+    p1: -20,
+    p2: -48,
+    front: (
+      <>
+        <path d="M-4 -15 L3 -28 L10 -16 Z" fill="#f5c542" />
+        <path
+          d="M-22 -12 C0 -21 38 -17 63 -2 C63 0 62 1 61 2 C38 12 6 16 -22 10 Z"
+          fill="url(#bb-fish-tuna)"
+        />
+        <path d="M30 7 L16 19 L39 11 Z" fill="#2a5a96" />
+        <path
+          d="M-8 -14 C12 -18 34 -14 52 -5"
+          stroke="#ffffff"
+          strokeOpacity="0.3"
+          strokeWidth="2"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <path
+          d="M-20 -2 C10 -4 34 -2 58 -1"
+          stroke="#1b3f78"
+          strokeOpacity="0.22"
+          strokeWidth="1.2"
+          fill="none"
+        />
+        <path
+          d="M36 -10 Q32 -2 36 8"
+          stroke="#0f2a55"
+          strokeOpacity="0.4"
+          strokeWidth="1.4"
+          fill="none"
+        />
+        <circle cx="50" cy="-3" r="2.9" fill="#ffffff" />
+        <circle cx="50.7" cy="-3" r="1.55" fill="#0b1b36" />
+      </>
+    ),
+    mid: (
+      <>
+        <path
+          d="M-30 -9 L-34 -16 L-39 -7 Z M-30 8 L-34 15 L-39 6 Z"
+          fill="#f5c542"
+        />
+        <path
+          d="M-20 -12 C-32 -9 -44 -5 -50 -3 L-50 3 C-44 5 -32 8 -20 10 Z"
+          fill="url(#bb-fish-tuna)"
+        />
+      </>
+    ),
+    tail: (
+      <path
+        d="M-48 -3 L-58 -4 L-74 -21 C-68 -9 -67 -3 -65 0 C-67 3 -68 9 -74 21 L-58 4 L-48 3 Z"
+        fill="#244f8c"
+      />
+    ),
+  },
+
+  /* ---------- Ikan tropis: oranye, belang putih, ekor kipas ---------- */
+  tropical: {
+    p1: -12,
+    p2: -34,
+    front: (
+      <>
+        <path
+          d="M-8 -22 Q8 -48 40 -20 Q20 -30 -8 -22 Z"
+          fill="#ff5a1f"
+        />
+        <path d="M18 18 L10 34 L30 20 Z" fill="#ff5a1f" />
+        <path
+          d="M-12 -21 C10 -33 40 -22 50 -2 C40 18 12 26 -12 20 Z"
+          fill="url(#bb-fish-tropical)"
+        />
+        <path
+          d="M12 -27 Q18 -2 10 23 L18 22 Q25 -2 19 -27 Z"
+          fill="#ffffff"
+          fillOpacity="0.93"
+          stroke="#3a2a20"
+          strokeOpacity="0.45"
+          strokeWidth="0.8"
+        />
+        <path
+          d="M32 -20 Q36 -2 31 14 L37 12 Q41 -2 38 -18 Z"
+          fill="#ffffff"
+          fillOpacity="0.93"
+          stroke="#3a2a20"
+          strokeOpacity="0.45"
+          strokeWidth="0.8"
+        />
+        <path
+          d="M-4 -19 C14 -28 34 -20 44 -8"
+          stroke="#ffffff"
+          strokeOpacity="0.35"
+          strokeWidth="2"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <circle cx="40" cy="-6" r="4.3" fill="#ffffff" stroke="#3a2a20" strokeOpacity="0.6" strokeWidth="0.8" />
+        <circle cx="41.2" cy="-6" r="2.4" fill="#16110c" />
+      </>
+    ),
+    mid: (
+      <path
+        d="M-12 -21 C-24 -14 -32 -8 -36 -4 L-36 4 C-32 8 -24 14 -12 19 Z"
+        fill="url(#bb-fish-tropical)"
+      />
+    ),
+    tail: (
+      <>
+        <path
+          d="M-34 -4 C-46 -14 -54 -28 -66 -30 C-61 -12 -61 12 -66 30 C-54 28 -46 14 -34 4 Z"
+          fill="#ff6a1f"
+        />
+        <path
+          d="M-40 0 L-62 -14 M-40 0 L-64 0 M-40 0 L-62 14"
+          stroke="#ffd27a"
+          strokeOpacity="0.75"
+          strokeWidth="1.2"
+          fill="none"
+        />
+      </>
+    ),
+  },
+
+  /* ---------- Ikan terbang: sirip dada lebar seperti sayap ---------- */
+  flying: {
+    p1: -18,
+    p2: -44,
+    front: (
+      <>
+        {/* sayap jauh */}
+        <g className="bb-wing" style={{ transformOrigin: "14px 2px" }}>
+          <path
+            d="M14 4 C4 22 -16 34 -40 33 C-28 22 -14 10 -6 2 Z"
+            fill="#cfeaff"
+            fillOpacity="0.55"
+            stroke="#7fb7e8"
+            strokeOpacity="0.6"
+            strokeWidth="1"
+          />
+        </g>
+        <path
+          d="M-18 -9 C8 -15 38 -11 58 -1 C38 9 8 12 -18 8 Z"
+          fill="url(#bb-fish-flying)"
+        />
+        <path
+          d="M-8 -9 C14 -13 36 -9 52 -3"
+          stroke="#ffffff"
+          strokeOpacity="0.35"
+          strokeWidth="1.6"
+          fill="none"
+          strokeLinecap="round"
+        />
+        {/* sayap dekat */}
+        <g className="bb-wing" style={{ transformOrigin: "16px -4px" }}>
+          <path
+            d="M16 -4 C8 -28 -16 -46 -44 -44 C-30 -30 -14 -14 -4 0 Z"
+            fill="#d9f1ff"
+            fillOpacity="0.74"
+            stroke="#7fb7e8"
+            strokeOpacity="0.85"
+            strokeWidth="1"
+          />
+          <path
+            d="M14 -4 L-38 -42 M12 -3 L-30 -30 M10 -2 L-20 -17"
+            stroke="#7fb7e8"
+            strokeOpacity="0.6"
+            strokeWidth="0.9"
+            fill="none"
+          />
+        </g>
+        <circle cx="46" cy="-3" r="2.5" fill="#ffffff" />
+        <circle cx="46.6" cy="-3" r="1.3" fill="#0b1b36" />
+      </>
+    ),
+    mid: (
+      <path
+        d="M-18 -9 C-30 -7 -40 -4 -46 -2 L-46 2 C-40 4 -30 6 -18 8 Z"
+        fill="url(#bb-fish-flying)"
+      />
+    ),
+    tail: (
+      <path
+        d="M-44 -2 L-54 -6 L-62 -14 C-58 -6 -58 -2 -56 0 C-58 6 -60 14 -70 28 L-54 4 L-44 2 Z"
+        fill="#2f64bd"
+      />
+    ),
+  },
+
+  /* ---------- Marlin: besar, layar punggung, moncong panjang ---------- */
+  marlin: {
+    p1: -26,
+    p2: -56,
+    front: (
+      <>
+        <path
+          d="M-16 -17 C-2 -44 24 -44 44 -18 C28 -23 6 -22 -16 -17 Z"
+          fill="#173f86"
+        />
+        <path
+          d="M0 -22 L2 -38 M12 -21 L16 -38 M24 -20 L30 -34"
+          stroke="#6ea0e0"
+          strokeOpacity="0.5"
+          strokeWidth="1.2"
+          fill="none"
+        />
+        <path
+          d="M-26 -15 C0 -25 34 -19 62 -4 L120 0 L62 3 C36 15 4 21 -26 13 Z"
+          fill="url(#bb-fish-marlin)"
+        />
+        <path
+          d="M-6 -20 L-2 14 M8 -22 L12 16 M22 -20 L26 12"
+          stroke="#8fc0ff"
+          strokeOpacity="0.22"
+          strokeWidth="2.5"
+          fill="none"
+        />
+        <path d="M32 8 L14 27 L41 14 Z" fill="#17408a" />
+        <path
+          d="M-10 -17 C14 -22 40 -17 58 -6"
+          stroke="#ffffff"
+          strokeOpacity="0.28"
+          strokeWidth="2"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <circle cx="50" cy="-4" r="3.3" fill="#ffffff" />
+        <circle cx="50.8" cy="-4" r="1.8" fill="#0b1b36" />
+      </>
+    ),
+    mid: (
+      <>
+        <path
+          d="M-40 -9 L-44 -16 L-50 -7 Z M-40 8 L-44 15 L-50 6 Z"
+          fill="#173f86"
+        />
+        <path
+          d="M-26 -15 C-38 -11 -50 -6 -58 -3 L-58 3 C-50 6 -38 10 -26 13 Z"
+          fill="url(#bb-fish-marlin)"
+        />
+      </>
+    ),
+    tail: (
+      <path
+        d="M-56 -3 L-64 -6 L-82 -32 C-74 -13 -72 -4 -70 0 C-72 4 -74 13 -82 32 L-64 6 L-56 3 Z"
+        fill="#173f86"
+      />
+    ),
+  },
+
+  /* ---------- Sarden: kecil, perak, berkawanan ---------- */
+  sardine: {
+    p1: -10,
+    p2: -22,
+    front: (
+      <>
+        <path d="M4 -7 L9 -12 L12 -7 Z" fill="#4a7aa5" />
+        <path
+          d="M-10 -6 C6 -9 22 -7 32 -1 C22 6 6 8 -10 5 Z"
+          fill="url(#bb-fish-sardine)"
+        />
+        <path
+          d="M-6 -4 C8 -6 20 -5 28 -2"
+          stroke="#ffffff"
+          strokeOpacity="0.55"
+          strokeWidth="1.1"
+          fill="none"
+          strokeLinecap="round"
+        />
+        <circle cx="26" cy="-1.8" r="1.5" fill="#0b1b36" />
+      </>
+    ),
+    mid: (
+      <path
+        d="M-10 -6 L-24 -3 L-24 3 L-10 5 Z"
+        fill="url(#bb-fish-sardine)"
+      />
+    ),
+    tail: <path d="M-22 -3 L-34 -11 L-31 0 L-34 11 L-22 3 Z" fill="#4a7aa5" />,
+  },
+};
+
+// Tetesan air: [lontar-x, lontar-y, radius]
+const DROPS: [number, number, number][] = [
+  [-36, -48, 3.2],
+  [-18, -64, 2.6],
+  [12, -60, 3],
+  [32, -42, 2.4],
+  [-50, -24, 2],
+  [46, -26, 2.2],
+];
+
+// Percikan saat ikan keluar ("out") atau masuk ("in") air
+const Burst: React.FC<{
+  x: number;
+  kind: "out" | "in";
+  s: number;
+  cycle: number;
+  delay: number;
+}> = ({ x, kind, s, cycle, delay }) => {
+  const t = { animationDuration: `${cycle}s` };
+  return (
+    <g transform={`translate(${x} 0)`}>
+      <ellipse
+        className={`bb-ring bb-ring-${kind}`}
+        rx={30 * s}
+        ry={7 * s}
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth={3}
+        style={{ ...t, animationDelay: `${delay}s` }}
+      />
+      <ellipse
+        className={`bb-ring bb-ring-${kind}`}
+        rx={20 * s}
+        ry={4.5 * s}
+        fill="none"
+        stroke="#ffffff"
+        strokeWidth={2}
+        style={{ ...t, animationDelay: `${delay + 0.1}s` }}
+      />
+      <g transform={`scale(${s})`}>
+        <path
+          className={`bb-crown bb-crown-${kind}`}
+          d="M-16 0 Q-14 -12 -8 -3 Q-6 -24 0 -4 Q6 -24 8 -3 Q14 -12 16 0 Z"
+          fill="#ffffff"
+          style={{ ...t, animationDelay: `${delay}s` }}
+        />
+      </g>
+      {DROPS.map(([sx, sy, r], i) => (
+        <circle
+          key={i}
+          className={`bb-drop bb-drop-${kind}`}
+          cx={0}
+          cy={0}
+          r={r * s}
+          fill="#ffffff"
+          style={cv({
+            ...t,
+            animationDelay: `${delay + i * 0.015}s`,
+            "--sx": `${sx * s}px`,
+            "--sy": `${sy * s}px`,
+          })}
+        />
+      ))}
+    </g>
+  );
+};
+
+const Fish: React.FC<{
+  kind: FishKind;
+  x: number; // titik keluar dari air
+  y: number; // garis permukaan air
+  s: number; // ukuran
+  dx: number; // jarak lompat (negatif = ke kiri)
+  h: number; // tinggi lompatan
+  cycle: number; // total siklus (detik); lompatan = 14% dari siklus
+  delay: number; // offset (detik, boleh negatif)
+  a0?: number; // sudut keluar (derajat)
+  a1?: number; // sudut masuk (derajat)
+  wag?: number; // kecepatan kibasan ekor (detik)
+}> = ({
+  kind,
+  x,
+  y,
+  s,
+  dx,
+  h,
+  cycle,
+  delay,
+  a0 = 52,
+  a1 = 58,
+  wag = 0.26,
+}) => {
+  const sh = FISH_SHAPES[kind];
+  const dir = dx >= 0 ? 1 : -1;
+  const t = { animationDuration: `${cycle}s`, animationDelay: `${delay}s` };
+
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <Burst x={0} kind="out" s={s} cycle={cycle} delay={delay} />
+      <Burst x={dx} kind="in" s={s} cycle={cycle} delay={delay} />
+
+      <g clipPath="url(#bb-fishclip)">
+        <g className="bb-fx" style={cv({ ...t, "--dx": `${dx}px` })}>
+          <g
+            className="bb-fy"
+            style={cv({ ...t, "--h": `${h}px`, "--sink": `${40 * s}px` })}
+          >
+            <g
+              className="bb-fr"
+              style={cv({
+                ...t,
+                "--a0": `${-a0 * dir}deg`,
+                "--a1": `${a1 * dir}deg`,
+              })}
+            >
+              <g transform={`scale(${dir * s} ${s})`}>
+                <g
+                  className="bb-wa"
+                  style={{
+                    animationDuration: `${wag}s`,
+                    transformOrigin: "0px 0px",
+                  }}
+                >
+                  {sh.front}
+                  <g
+                    className="bb-wb"
+                    style={{
+                      animationDuration: `${wag}s`,
+                      animationDelay: `${-wag * 0.18}s`,
+                      transformOrigin: `${sh.p1}px 0px`,
+                    }}
+                  >
+                    {sh.mid}
+                    <g
+                      className="bb-wc"
+                      style={{
+                        animationDuration: `${wag}s`,
+                        animationDelay: `${-wag * 0.36}s`,
+                        transformOrigin: `${sh.p2}px 0px`,
+                      }}
+                    >
+                      {sh.tail}
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  );
+};
+
 const wl = (v: number) => ({ ["--wl" as string]: `${v}px` } as React.CSSProperties);
 
 const BeachBackground: React.FC<{ className?: string }> = ({ className }) => {
@@ -237,10 +699,119 @@ const BeachBackground: React.FC<{ className?: string }> = ({ className }) => {
           35% { transform: scaleY(.2); }
           62% { transform: scaleY(1.12); }
         }
+
+        /* ============================================================
+           IKAN MELOMPAT
+           Lompatan = 14% pertama dari siklus, sisanya ikan di bawah air.
+           X: gerak lurus | Y: parabola (naik ease-out, turun ease-in)
+           Rotasi: hidung naik -> datar di puncak -> hidung turun
+           ============================================================ */
+        .bb-fx { animation: bb-fx linear infinite; }
+        @keyframes bb-fx {
+          0%   { transform: translateX(0); opacity: 1; }
+          14%  { transform: translateX(var(--dx)); opacity: 1; }
+          14.01%, 100% { transform: translateX(var(--dx)); opacity: 0; }
+        }
+        .bb-fy { animation: bb-fy linear infinite; }
+        @keyframes bb-fy {
+          0% {
+            transform: translateY(var(--sink));
+            animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          }
+          7% {
+            transform: translateY(calc(var(--h) * -1));
+            animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+          }
+          14%, 100% { transform: translateY(var(--sink)); }
+        }
+        .bb-fr { animation: bb-fr linear infinite; transform-origin: 0px 0px; }
+        @keyframes bb-fr {
+          0%  { transform: rotate(var(--a0)); }
+          7%  { transform: rotate(0deg); }
+          14%, 100% { transform: rotate(var(--a1)); }
+        }
+
+        /* Badan meliuk berantai (kepala -> badan -> ekor) */
+        .bb-wa { animation: bb-wa ease-in-out infinite alternate; }
+        .bb-wb { animation: bb-wb ease-in-out infinite alternate; }
+        .bb-wc { animation: bb-wc ease-in-out infinite alternate; }
+        @keyframes bb-wa { 0% { transform: rotate(-2.5deg); } 100% { transform: rotate(2.5deg); } }
+        @keyframes bb-wb { 0% { transform: rotate(-7deg); }   100% { transform: rotate(7deg); } }
+        @keyframes bb-wc { 0% { transform: rotate(-17deg); }  100% { transform: rotate(17deg); } }
+
+        /* Sirip "sayap" ikan terbang */
+        .bb-wing { animation: bb-wing 0.34s ease-in-out infinite alternate; }
+        @keyframes bb-wing {
+          0% { transform: rotate(-3deg); }
+          100% { transform: rotate(5deg); }
+        }
+
+        /* Cincin riak di permukaan air */
+        .bb-ring { opacity: 0; transform-box: fill-box; transform-origin: center; animation-timing-function: cubic-bezier(0.2, 0.6, 0.3, 1); animation-iteration-count: infinite; }
+        .bb-ring-out { animation-name: bb-ring-out; }
+        .bb-ring-in { animation-name: bb-ring-in; }
+        @keyframes bb-ring-out {
+          0%   { transform: scale(0.2); opacity: 0.95; }
+          12%  { transform: scale(1);   opacity: 0.55; }
+          22%, 100% { transform: scale(1.8); opacity: 0; }
+        }
+        @keyframes bb-ring-in {
+          0%, 13.9% { transform: scale(0.2); opacity: 0; }
+          14%  { transform: scale(0.2); opacity: 0.95; }
+          26%  { transform: scale(1);   opacity: 0.55; }
+          36%, 100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* Mahkota percikan air */
+        .bb-crown { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; animation-timing-function: ease-out; animation-iteration-count: infinite; }
+        .bb-crown-out { animation-name: bb-crown-out; }
+        .bb-crown-in { animation-name: bb-crown-in; }
+        @keyframes bb-crown-out {
+          0%   { transform: scale(0.5, 0.1); opacity: 0; }
+          1.5% { transform: scale(0.9, 0.7); opacity: 0.95; }
+          4.5% { transform: scale(1.1, 1.15); opacity: 0.9; }
+          10%, 100% { transform: scale(1, 0.2); opacity: 0; }
+        }
+        @keyframes bb-crown-in {
+          0%, 14% { transform: scale(0.5, 0.1); opacity: 0; }
+          15.5% { transform: scale(0.9, 0.7); opacity: 0.95; }
+          18.5% { transform: scale(1.1, 1.15); opacity: 0.9; }
+          24%, 100% { transform: scale(1, 0.2); opacity: 0; }
+        }
+
+        /* Tetesan air melayang (parabola kecil) */
+        .bb-drop { opacity: 0; animation-iteration-count: infinite; }
+        .bb-drop-out { animation-name: bb-drop-out; }
+        .bb-drop-in { animation-name: bb-drop-in; }
+        @keyframes bb-drop-out {
+          0% {
+            transform: translate(0, 0); opacity: 1;
+            animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          }
+          5% {
+            transform: translate(calc(var(--sx) * 0.55), var(--sy)); opacity: 1;
+            animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+          }
+          11%, 100% { transform: translate(var(--sx), 0px); opacity: 0; }
+        }
+        @keyframes bb-drop-in {
+          0%, 13.9% { transform: translate(0, 0); opacity: 0; }
+          14% {
+            transform: translate(0, 0); opacity: 1;
+            animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          }
+          19% {
+            transform: translate(calc(var(--sx) * 0.55), var(--sy)); opacity: 1;
+            animation-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+          }
+          25%, 100% { transform: translate(var(--sx), 0px); opacity: 0; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .bb-sway,.bb-frond,.bb-leaf,.bb-w1,.bb-w2,.bb-w3,.bb-w4,.bb-w5,
           .bb-bobwater,.bb-foam,.bb-sparkle,.bb-sun-core,.bb-sun-corona,.bb-sun-ambient,.bb-haze,.bb-fly,
           .bb-bob,.bb-flap { animation: none !important; }
+          .bb-fishwrap { display: none; }
         }
       `}</style>
 
@@ -291,6 +862,41 @@ const BeachBackground: React.FC<{ className?: string }> = ({ className }) => {
           </linearGradient>
           <clipPath id="bb-seaclip">
             <rect x="0" y={HORIZON} width={W} height={H - HORIZON} />
+          </clipPath>
+
+          {/* Gradien ikan (userSpaceOnUse agar warna konsisten antar segmen) */}
+          <linearGradient id="bb-fish-tuna" gradientUnits="userSpaceOnUse" x1="0" y1="-20" x2="0" y2="18">
+            <stop offset="0" stopColor="#1d3f7a" />
+            <stop offset="0.35" stopColor="#3f7fc4" />
+            <stop offset="0.58" stopColor="#cfe3f2" />
+            <stop offset="1" stopColor="#ffffff" />
+          </linearGradient>
+          <linearGradient id="bb-fish-tropical" gradientUnits="userSpaceOnUse" x1="0" y1="-30" x2="0" y2="26">
+            <stop offset="0" stopColor="#ff7a1a" />
+            <stop offset="0.5" stopColor="#ffb02e" />
+            <stop offset="1" stopColor="#fff0b0" />
+          </linearGradient>
+          <linearGradient id="bb-fish-flying" gradientUnits="userSpaceOnUse" x1="0" y1="-12" x2="0" y2="10">
+            <stop offset="0" stopColor="#2457b8" />
+            <stop offset="0.5" stopColor="#7fb7e8" />
+            <stop offset="1" stopColor="#f3fbff" />
+          </linearGradient>
+          <linearGradient id="bb-fish-marlin" gradientUnits="userSpaceOnUse" x1="0" y1="-24" x2="0" y2="20">
+            <stop offset="0" stopColor="#0f2f6b" />
+            <stop offset="0.55" stopColor="#2a65b5" />
+            <stop offset="0.8" stopColor="#9cc3e8" />
+            <stop offset="1" stopColor="#eef6fb" />
+          </linearGradient>
+          <linearGradient id="bb-fish-sardine" gradientUnits="userSpaceOnUse" x1="0" y1="-8" x2="0" y2="7">
+            <stop offset="0" stopColor="#3a6f9e" />
+            <stop offset="0.45" stopColor="#a9c8de" />
+            <stop offset="0.6" stopColor="#eef5fa" />
+            <stop offset="1" stopColor="#ffffff" />
+          </linearGradient>
+
+          {/* Memotong bagian ikan yang ada di bawah permukaan air */}
+          <clipPath id="bb-fishclip">
+            <rect x="-700" y="-700" width="2600" height="700" />
           </clipPath>
         </defs>
 
@@ -441,6 +1047,100 @@ const BeachBackground: React.FC<{ className?: string }> = ({ className }) => {
               />
             ))}
           </g>
+        </g>
+
+        {/* Ikan-ikan melompat (di atas air, di bawah tepi pantai) */}
+        <g className="bb-fishwrap">
+          {/* Kawanan sarden (jauh, kecil, melompat berurutan) */}
+          {[0, 1, 2, 3].map((i) => (
+            <Fish
+              key={`sar-${i}`}
+              kind="sardine"
+              x={1120 + i * 46}
+              y={1088 + (i % 2) * 10}
+              s={1}
+              dx={240 + i * 12}
+              h={72 - i * 7}
+              cycle={8}
+              delay={-2 - i * 0.14}
+              a0={46}
+              a1={50}
+              wag={0.17}
+            />
+          ))}
+
+          {/* Tuna kecil di kejauhan, melompat ke kiri */}
+          <Fish
+            kind="tuna"
+            x={1720}
+            y={1075}
+            s={0.9}
+            dx={-300}
+            h={95}
+            cycle={10}
+            delay={-5}
+            a0={50}
+            a1={55}
+          />
+
+          {/* Ikan terbang: lompatan rendah & panjang */}
+          <Fish
+            kind="flying"
+            x={880}
+            y={1135}
+            s={1.5}
+            dx={640}
+            h={85}
+            cycle={13}
+            delay={-1}
+            a0={34}
+            a1={38}
+            wag={0.3}
+          />
+
+          {/* Tuna utama */}
+          <Fish
+            kind="tuna"
+            x={1000}
+            y={1220}
+            s={1.4}
+            dx={380}
+            h={160}
+            cycle={9}
+            delay={-3}
+            a0={52}
+            a1={58}
+          />
+
+          {/* Marlin besar, melompat tinggi ke kiri */}
+          <Fish
+            kind="marlin"
+            x={1900}
+            y={1190}
+            s={1.6}
+            dx={-540}
+            h={240}
+            cycle={17}
+            delay={-9}
+            a0={56}
+            a1={60}
+            wag={0.34}
+          />
+
+          {/* Ikan tropis oranye */}
+          <Fish
+            kind="tropical"
+            x={1380}
+            y={1285}
+            s={1.3}
+            dx={310}
+            h={140}
+            cycle={11}
+            delay={-7}
+            a0={54}
+            a1={58}
+            wag={0.22}
+          />
         </g>
 
         {/* Tepi pantai */}
